@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/dash_bg"
+    android:padding="14dp">
+
+    <!-- ── Section LANGUE ──────────────────────────────────────────── -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/bg_card_rounded"
+        android:layout_marginBottom="10dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_language"
+            android:textColor="@color/dash_text_lo"
+            android:textSize="9sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.12"
+            android:textAllCaps="true"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="7dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/dash_border" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="12dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_lang_fr"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="6dp"
+                android:text="@string/settings_language_fr"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                app:backgroundTint="@color/dash_btn"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/dash_border"
+                app:cornerRadius="8dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_lang_en"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:layout_marginStart="6dp"
+                android:text="@string/settings_language_en"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                app:backgroundTint="@color/dash_btn"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/dash_border"
+                app:cornerRadius="8dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- ── Section PRÉFÉRENCES ──────────────────────────────────────── -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/bg_card_rounded"
+        android:layout_marginBottom="10dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_auto_apply"
+            android:textColor="@color/dash_text_lo"
+            android:textSize="9sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.12"
+            android:textAllCaps="true"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="7dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/dash_border" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="12dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/settings_auto_apply_desc"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp" />
+
+            <Switch
+                android:id="@+id/switch_auto_apply"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Spacer -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- ── Bouton INFOS ──────────────────────────────────────────────── -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_infos"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:text="@string/btn_infos"
+        android:textColor="@color/text_secondary"
+        android:textSize="12sp"
+        android:letterSpacing="0.06"
+        android:textAllCaps="true"
+        app:backgroundTint="@color/dash_btn"
+        app:strokeWidth="1dp"
+        app:strokeColor="@color/dash_border"
+        app:cornerRadius="10dp"
+        app:icon="@android:drawable/ic_dialog_info"
+        app:iconTint="@color/dash_text_lo"
+        app:iconGravity="textStart" />
+
+</LinearLayout>

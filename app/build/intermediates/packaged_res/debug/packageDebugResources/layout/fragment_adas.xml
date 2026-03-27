@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_dark"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!--  Section SWI133 (Off / Limiteur / Auto / ACC / ICA)           -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <LinearLayout
+            android:id="@+id/section_swi133"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/adas_section_sounds"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                android:letterSpacing="0.1"
+                android:textAllCaps="true"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@color/bg_card"
+                android:padding="12dp"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/adas_overspeed_alarm"
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp" />
+
+                <Switch
+                    android:id="@+id/switch_overspeed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@color/bg_card"
+                android:padding="12dp"
+                android:layout_marginBottom="24dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/adas_speed_limit_tone"
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp" />
+
+                <Switch
+                    android:id="@+id/switch_speed_tone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/adas_section_drive"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                android:letterSpacing="0.1"
+                android:textAllCaps="true"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="4dp">
+
+                <Button
+                    android:id="@+id/btn_adas_off"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="56dp"
+                    android:layout_margin="4dp"
+                    android:text="@string/adas_off"
+                    android:textColor="@color/text_primary"
+                    android:backgroundTint="@color/bg_button"
+                    android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/btn_adas_limiteur"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="56dp"
+                    android:layout_margin="4dp"
+                    android:text="@string/adas_limiteur"
+                    android:textColor="@color/text_primary"
+                    android:backgroundTint="@color/bg_button"
+                    android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/btn_adas_auto"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="56dp"
+                    android:layout_margin="4dp"
+                    android:text="@string/adas_auto"
+                    android:textColor="@color/text_primary"
+                    android:backgroundTint="@color/bg_button"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_adas_acc"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="56dp"
+                    android:layout_margin="4dp"
+                    android:text="@string/adas_acc"
+                    android:textColor="@color/text_primary"
+                    android:backgroundTint="@color/bg_button"
+                    android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/btn_adas_ica"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="56dp"
+                    android:layout_margin="4dp"
+                    android:text="@string/adas_ica"
+                    android:textColor="@color/text_primary"
+                    android:backgroundTint="@color/bg_button"
+                    android:textSize="12sp" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="56dp"
+                    android:layout_margin="4dp"
+                    android:visibility="invisible" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!--  Section SWI68 (Désactiver / ACC / TJA + 1 alerte sonore)     -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <LinearLayout
+            android:id="@+id/section_swi68"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/adas_section_sounds"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                android:letterSpacing="0.1"
+                android:textAllCaps="true"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@color/bg_card"
+                android:padding="12dp"
+                android:layout_marginBottom="24dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/adas_sound_warning"
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp" />
+
+                <Switch
+                    android:id="@+id/switch_sound_warning"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/adas_section_drive"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                android:letterSpacing="0.1"
+                android:textAllCaps="true"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_swi68_off"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="56dp"
+                    android:layout_margin="4dp"
+                    android:text="@string/adas_desactiver"
+                    android:textColor="@color/text_primary"
+                    android:backgroundTint="@color/bg_button"
+                    android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/btn_swi68_acc"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="56dp"
+                    android:layout_margin="4dp"
+                    android:text="@string/adas_acc"
+                    android:textColor="@color/text_primary"
+                    android:backgroundTint="@color/bg_button"
+                    android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/btn_swi68_tja"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="56dp"
+                    android:layout_margin="4dp"
+                    android:text="@string/adas_tja"
+                    android:textColor="@color/text_primary"
+                    android:backgroundTint="@color/bg_button"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

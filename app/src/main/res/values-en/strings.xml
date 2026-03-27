@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MG4 Control</string>
+
+    <!-- Bottom navigation -->
+    <string name="nav_drive">Drive</string>
+    <string name="nav_climate">Climate</string>
+    <string name="nav_profiles">Profiles</string>
+    <string name="nav_adas">ADAS</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Drive modes -->
+    <string name="drive_eco">ECO</string>
+    <string name="drive_normal">NORMAL</string>
+    <string name="drive_sport">SPORT</string>
+    <string name="drive_snow">SNOW</string>
+    <string name="drive_custom">CUSTOM</string>
+
+    <!-- Drive tab section headers -->
+    <string name="drive_section_mode">Drive mode</string>
+    <string name="drive_section_regen">Regeneration</string>
+
+    <!-- Regen levels -->
+    <string name="regen_off">Off</string>
+    <string name="regen_low">Low</string>
+    <string name="regen_medium">Medium</string>
+    <string name="regen_high">High</string>
+    <string name="regen_adaptive">Adaptive</string>
+    <string name="regen_one_pedal">1 Pedal</string>
+    <string name="regen_adaptive_short">Adapt.</string>
+    <string name="regen_one_pedal_short">1 Ped.</string>
+
+    <!-- Climate -->
+    <string name="climate_steering_heat">Heated steering</string>
+    <string name="climate_seat_left">Left seat</string>
+    <string name="climate_seat_right">Right seat</string>
+    <string name="climate_off">Off</string>
+    <string name="climate_on">On</string>
+    <string name="climate_level">Lvl.</string>
+    <string name="climate_level_1">Lvl. 1</string>
+    <string name="climate_level_2">Lvl. 2</string>
+    <string name="climate_level_3">Lvl. 3</string>
+
+    <!-- Profiles -->
+    <string name="profiles_title">Driving profiles</string>
+    <string name="profile_add">New profile</string>
+    <string name="profile_default_badge">DEFAULT</string>
+    <string name="profile_apply_now">Apply now</string>
+    <string name="profile_set_default">Set as default</string>
+    <string name="profile_set_as_default">Set as default profile</string>
+    <string name="profile_delete">Delete</string>
+    <string name="profile_edit">Edit</string>
+    <string name="profile_name_hint">Profile name</string>
+    <string name="profile_name_required">Name is required</string>
+    <string name="profile_save">Save</string>
+    <string name="profile_cancel">Cancel</string>
+    <string name="profile_applied">Profile applied: %s</string>
+    <string name="profile_max_reached">Maximum %d profiles reached</string>
+    <string name="profile_auto_applied">Default profile applied at startup</string>
+
+    <!-- ADAS -->
+    <string name="adas_section_sounds">Sound alerts</string>
+    <string name="adas_overspeed_alarm">Overspeed alert</string>
+    <string name="adas_speed_limit_tone">Speed limit change tone</string>
+    <string name="adas_section_drive">Driving assistance</string>
+    <string name="adas_off">Off</string>
+    <string name="adas_limiteur">Limiter</string>
+    <string name="adas_limiteur_short">Lim.</string>
+    <string name="adas_auto">Auto</string>
+    <string name="adas_acc">ACC</string>
+    <string name="adas_ica">ICA</string>
+    <!-- ADAS SWI68 -->
+    <string name="adas_sound_warning">Sound warning</string>
+    <string name="adas_desactiver">Disable</string>
+    <string name="adas_tja">TJA</string>
+
+    <!-- Infos / About -->
+    <string name="btn_infos">Info</string>
+    <string name="info_title">About</string>
+    <string name="info_app_label">Application</string>
+    <string name="info_version_label">Version</string>
+    <string name="info_firmware_label">Firmware</string>
+    <string name="info_github_link">github.com/SliDeeN/MG4Control</string>
+    <string name="info_made_with_love">Made with ❤ by SliDeeN and Claude IA</string>
+    <string name="info_close">Close</string>
+
+    <!-- Dashboard — card headers -->
+    <string name="card_drive">Drive settings</string>
+    <string name="card_climate">Climate settings</string>
+    <string name="card_alerts">Alert settings</string>
+
+    <!-- Console (debug) -->
+    <string name="console_title">⬛  MG4 Console</string>
+    <string name="console_clear">Clear</string>
+
+    <!-- Settings -->
+    <string name="settings_auto_apply">Apply profile at startup</string>
+    <string name="settings_auto_apply_desc">The default profile is applied automatically at launch</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_language_fr">Français</string>
+    <string name="settings_language_en">English</string>
+    <string name="settings_language_pick_title">Choose your language</string>
+    <string name="settings_language_pick_msg">This can be changed later in Settings.</string>
+    <string name="settings_firmware_version">Firmware version</string>
+    <string name="settings_firmware_loading">Reading…</string>
+</resources>

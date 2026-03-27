@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Layout principal de l'activité.
+    Remplace la BottomNavigationView par une top-bar fixe avec :
+      • Logo "MG4Control"
+      • Indicateur firmware read-only (chip SWI133 / chip SWI68)
+      • Bouton PROFILS
+      • Bouton RÉGLAGES
+    La zone de contenu en dessous est gérée par le NavController.
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/dash_bg">
+
+    <!-- ── TOP BAR ─────────────────────────────────────────────────── -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="12dp"
+        android:background="@color/dash_card"
+        android:elevation="4dp">
+
+        <!-- Logo : "MG4" normal + "Control" en couleur accent (géré en code) -->
+        <TextView
+            android:id="@+id/topbar_logo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/app_name"
+            android:textColor="@color/text_primary"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.04" />
+
+        <!-- Indicateur firmware (read-only) -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_fw_indicator"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:layout_marginEnd="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/settings_firmware_version"
+                android:textColor="@color/dash_text_lo"
+                android:textSize="10sp"
+                android:layout_marginEnd="6dp" />
+
+            <!-- Chip SWI133 — stylisé depuis MainActivity -->
+            <TextView
+                android:id="@+id/chip_swi133"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SWI133"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.06"
+                android:paddingStart="9dp"
+                android:paddingEnd="9dp"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp"
+                android:layout_marginEnd="4dp" />
+
+            <!-- Chip SWI68 — stylisé depuis MainActivity -->
+            <TextView
+                android:id="@+id/chip_swi68"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SWI68"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.06"
+                android:paddingStart="9dp"
+                android:paddingEnd="9dp"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp" />
+
+        </LinearLayout>
+
+        <!-- Bouton PROFILS -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_nav_profiles"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="@string/nav_profiles"
+            android:textSize="11sp"
+            android:letterSpacing="0.06"
+            android:textAllCaps="true"
+            android:textColor="@color/text_secondary"
+            app:backgroundTint="@color/dash_btn"
+            android:layout_marginEnd="8dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/dash_border"
+            app:cornerRadius="8dp" />
+
+        <!-- Bouton RÉGLAGES -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_nav_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="@string/nav_settings"
+            android:textSize="11sp"
+            android:letterSpacing="0.06"
+            android:textAllCaps="true"
+            android:textColor="@color/text_secondary"
+            app:backgroundTint="@color/dash_btn"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/dash_border"
+            app:cornerRadius="8dp" />
+
+    </LinearLayout>
+
+    <!-- ── ZONE DE CONTENU (NavController) ────────────────────────── -->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/nav_host_fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/nav_graph" />
+
+</LinearLayout>

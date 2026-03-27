@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Couleurs historiques (gardées pour compatibilité) -->
+    <color name="bg_dark">#FF111111</color>
+    <color name="bg_card">#FF1E1E1E</color>
+    <color name="bg_button">#FF2A2A2A</color>
+    <color name="bg_button_active">#FF0D47A1</color>
+
+    <color name="accent_eco">#FF2E7D32</color>
+    <color name="accent_normal">#FF1565C0</color>
+    <color name="accent_sport">#FFB71C1C</color>
+    <color name="accent_snow">#FF0288D1</color>
+    <color name="accent_custom">#FF6A1B9A</color>
+
+    <color name="accent_regen">#FF00838F</color>
+    <color name="accent_default">#FF2A2A2A</color>
+
+    <color name="text_primary">#FFFFFFFF</color>
+    <color name="text_secondary">#FFB0B0B0</color>
+    <color name="text_active">#FFFFFFFF</color>
+
+    <color name="accent_warn">#FFE65100</color>
+    <color name="divider">#FF333333</color>
+
+    <!-- ── Palette dashboard (design sombre, inspiré du mockup) ── -->
+    <color name="dash_bg">#FF0C0C0E</color>
+    <color name="dash_card">#FF141416</color>
+    <color name="dash_section">#FF1C1C1F</color>
+    <color name="dash_border">#FF2A2A2E</color>
+    <color name="dash_btn">#FF222226</color>
+    <color name="dash_text_lo">#FF52525B</color>
+
+    <!-- Accent cyan (bleu clair) -->
+    <color name="dash_accent">#FF38BDF8</color>
+    <color name="dash_accent_dim">#FF0C4A6E</color>
+
+    <!-- ECO vert vif -->
+    <color name="dash_eco">#FF22C55E</color>
+    <color name="dash_eco_dim">#FF14532D</color>
+
+    <!-- SPORT ambre/orange -->
+    <color name="dash_warn">#FFF59E0B</color>
+    <color name="dash_warn_dim">#FF451A03</color>
+
+    <!-- Danger (supprimer) -->
+    <color name="dash_danger">#FFF43F5E</color>
+    <color name="dash_danger_dim">#FF4C0519</color>
+</resources>

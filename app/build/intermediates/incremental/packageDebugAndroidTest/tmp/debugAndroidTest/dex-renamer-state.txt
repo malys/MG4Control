@@ -1,0 +1,4 @@
+#Wed Mar 25 10:17:04 CET 2026
+base.0=C\:\\Users\\SliDS\\Documents\\MG4 Project\\MG4Control\\app\\build\\intermediates\\dex\\debugAndroidTest\\mergeProjectDexDebugAndroidTest\\0\\classes.dex
+path.0=0/classes.dex
+renamed.0=classes.dex

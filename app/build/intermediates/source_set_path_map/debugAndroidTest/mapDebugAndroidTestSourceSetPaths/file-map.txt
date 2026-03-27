@@ -1,0 +1,4 @@
+com.mg4.control.test.app-androidTest-0 C:\Users\SliDS\Documents\MG4 Project\MG4Control\app\build\generated\res\resValues\androidTest\debug
+com.mg4.control.test.app-mergeDebugAndroidTestResources-1 C:\Users\SliDS\Documents\MG4 Project\MG4Control\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
+com.mg4.control.test.app-mergeDebugAndroidTestResources-2 C:\Users\SliDS\Documents\MG4 Project\MG4Control\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
+com.mg4.control.test.app-debugAndroidTest-3 C:\Users\SliDS\Documents\MG4 Project\MG4Control\app\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources

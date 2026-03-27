@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_card_rounded"
+    android:padding="12dp"
+    android:layout_marginBottom="8dp">
+
+    <!-- Nom + badge PAR DÉFAUT -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="10dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_profile_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_profile_summary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/dash_text_lo"
+                android:textSize="11sp"
+                android:layout_marginTop="2dp" />
+
+        </LinearLayout>
+
+        <!-- Badge PAR DÉFAUT -->
+        <TextView
+            android:id="@+id/tv_default_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/profile_default_badge"
+            android:textColor="@color/dash_accent"
+            android:textSize="9sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.08"
+            android:background="@drawable/bg_chip_active"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+    <!-- Séparateur -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/dash_border"
+        android:layout_marginBottom="10dp" />
+
+    <!-- Boutons ligne 1 : Appliquer + Par défaut -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="6dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_apply"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="5dp"
+            android:text="@string/profile_apply_now"
+            android:textColor="@color/dash_eco"
+            android:textSize="11sp"
+            android:textAllCaps="true"
+            app:backgroundTint="@color/dash_eco_dim"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/dash_eco"
+            app:cornerRadius="7dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_set_default"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_weight="1"
+            android:layout_marginStart="5dp"
+            android:text="@string/profile_set_default"
+            android:textColor="@color/text_secondary"
+            android:textSize="11sp"
+            android:textAllCaps="true"
+            app:backgroundTint="@color/dash_btn"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/dash_border"
+            app:cornerRadius="7dp" />
+
+    </LinearLayout>
+
+    <!-- Boutons ligne 2 : Modifier + Supprimer -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_edit"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="5dp"
+            android:text="@string/profile_edit"
+            android:textColor="@color/text_secondary"
+            android:textSize="11sp"
+            android:textAllCaps="true"
+            app:backgroundTint="@color/dash_btn"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/dash_border"
+            app:cornerRadius="7dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_delete"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_weight="1"
+            android:layout_marginStart="5dp"
+            android:text="@string/profile_delete"
+            android:textColor="@color/dash_danger"
+            android:textSize="11sp"
+            android:textAllCaps="true"
+            app:backgroundTint="@color/dash_danger_dim"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/dash_danger"
+            app:cornerRadius="7dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

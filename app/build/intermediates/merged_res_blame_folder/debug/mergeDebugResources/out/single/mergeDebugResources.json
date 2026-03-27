@@ -1,0 +1,82 @@
+[
+    {
+        "merged": "com.mg4.control.app-debug-47:/layout_fragment_dashboard.xml.flat",
+        "source": "com.mg4.control.app-main-49:/layout/fragment_dashboard.xml"
+    },
+    {
+        "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-47:\\layout_fragment_dashboard.xml.flat",
+        "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-49:\\layout\\fragment_dashboard.xml"
+    },
+    {
+        "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-47:\\drawable_bg_chip_inactive.xml.flat",
+        "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-49:\\drawable\\bg_chip_inactive.xml"
+    },
+    {
+        "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-47:\\layout_activity_main.xml.flat",
+        "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-49:\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-47:\\layout_fragment_adas.xml.flat",
+        "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-49:\\layout\\fragment_adas.xml"
+    },
+    {
+        "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-47:\\layout_fragment_console.xml.flat",
+        "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-49:\\layout\\fragment_console.xml"
+    },
+    {
+        "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-47:\\layout_fragment_drive_regen.xml.flat",
+        "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-49:\\layout\\fragment_drive_regen.xml"
+    },
+    {
+        "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-47:\\menu_bottom_nav_menu.xml.flat",
+        "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-49:\\menu\\bottom_nav_menu.xml"
+    },
+    {
+        "merged": "com.mg4.control.app-debug-47:/layout_dialog_profile_edit.xml.flat",
+        "source": "com.mg4.control.app-main-49:/layout/dialog_profile_edit.xml"
+    },
+    {
+        "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-47:\\layout_dialog_profile_edit.xml.flat",
+        "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-49:\\layout\\dialog_profile_edit.xml"
+    },
+    {
+        "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-47:\\drawable_bg_fw_indicator.xml.flat",
+        "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-49:\\drawable\\bg_fw_indicator.xml"
+    },
+    {
+        "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-47:\\navigation_nav_graph.xml.flat",
+        "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-49:\\navigation\\nav_graph.xml"
+    },
+    {
+        "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-47:\\layout_fragment_profile.xml.flat",
+        "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-49:\\layout\\fragment_profile.xml"
+    },
+    {
+        "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-47:\\layout_fragment_settings.xml.flat",
+        "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-49:\\layout\\fragment_settings.xml"
+    },
+    {
+        "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-47:\\layout_fragment_climate.xml.flat",
+        "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-49:\\layout\\fragment_climate.xml"
+    },
+    {
+        "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-47:\\drawable_bg_section_rounded.xml.flat",
+        "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-49:\\drawable\\bg_section_rounded.xml"
+    },
+    {
+        "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-47:\\drawable_bg_chip_active.xml.flat",
+        "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-49:\\drawable\\bg_chip_active.xml"
+    },
+    {
+        "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-47:\\layout_item_profile.xml.flat",
+        "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-49:\\layout\\item_profile.xml"
+    },
+    {
+        "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-47:\\layout_dialog_app_info.xml.flat",
+        "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-49:\\layout\\dialog_app_info.xml"
+    },
+    {
+        "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-47:\\drawable_bg_card_rounded.xml.flat",
+        "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-49:\\drawable\\bg_card_rounded.xml"
+    }
+]
