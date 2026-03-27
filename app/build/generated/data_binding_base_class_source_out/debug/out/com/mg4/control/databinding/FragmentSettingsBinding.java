@@ -21,6 +21,12 @@ public final class FragmentSettingsBinding implements ViewBinding {
   private final LinearLayout rootView;
 
   @NonNull
+  public final MaterialButton btnCheckUpdate;
+
+  @NonNull
+  public final MaterialButton btnCloseSettings;
+
+  @NonNull
   public final MaterialButton btnInfos;
 
   @NonNull
@@ -32,10 +38,13 @@ public final class FragmentSettingsBinding implements ViewBinding {
   @NonNull
   public final Switch switchAutoApply;
 
-  private FragmentSettingsBinding(@NonNull LinearLayout rootView, @NonNull MaterialButton btnInfos,
-      @NonNull MaterialButton btnLangEn, @NonNull MaterialButton btnLangFr,
-      @NonNull Switch switchAutoApply) {
+  private FragmentSettingsBinding(@NonNull LinearLayout rootView,
+      @NonNull MaterialButton btnCheckUpdate, @NonNull MaterialButton btnCloseSettings,
+      @NonNull MaterialButton btnInfos, @NonNull MaterialButton btnLangEn,
+      @NonNull MaterialButton btnLangFr, @NonNull Switch switchAutoApply) {
     this.rootView = rootView;
+    this.btnCheckUpdate = btnCheckUpdate;
+    this.btnCloseSettings = btnCloseSettings;
     this.btnInfos = btnInfos;
     this.btnLangEn = btnLangEn;
     this.btnLangFr = btnLangFr;
@@ -69,6 +78,18 @@ public final class FragmentSettingsBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
+      id = R.id.btn_check_update;
+      MaterialButton btnCheckUpdate = ViewBindings.findChildViewById(rootView, id);
+      if (btnCheckUpdate == null) {
+        break missingId;
+      }
+
+      id = R.id.btn_close_settings;
+      MaterialButton btnCloseSettings = ViewBindings.findChildViewById(rootView, id);
+      if (btnCloseSettings == null) {
+        break missingId;
+      }
+
       id = R.id.btn_infos;
       MaterialButton btnInfos = ViewBindings.findChildViewById(rootView, id);
       if (btnInfos == null) {
@@ -93,8 +114,8 @@ public final class FragmentSettingsBinding implements ViewBinding {
         break missingId;
       }
 
-      return new FragmentSettingsBinding((LinearLayout) rootView, btnInfos, btnLangEn, btnLangFr,
-          switchAutoApply);
+      return new FragmentSettingsBinding((LinearLayout) rootView, btnCheckUpdate, btnCloseSettings,
+          btnInfos, btnLangEn, btnLangFr, switchAutoApply);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

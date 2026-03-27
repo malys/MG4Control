@@ -131,24 +131,53 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <!-- ── Bouton VÉRIFIER MISE À JOUR ─────────────────────────────── -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_check_update"
+    <!-- ── Boutons MAJ (2 colonnes : Vérifier | Nettoyer) ──────────── -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="44dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/btn_check_update"
-        android:textColor="@color/dash_accent"
-        android:textSize="12sp"
-        android:letterSpacing="0.06"
-        android:textAllCaps="true"
-        app:backgroundTint="@color/dash_accent_dim"
-        app:strokeWidth="1dp"
-        app:strokeColor="@color/dash_accent"
-        app:cornerRadius="10dp"
-        app:icon="@android:drawable/stat_sys_download"
-        app:iconTint="@color/dash_accent"
-        app:iconGravity="textStart" />
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
+
+        <!-- Vérifier les mises à jour -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_check_update"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginEnd="6dp"
+            android:text="@string/btn_check_update"
+            android:textColor="@color/dash_accent"
+            android:textSize="11sp"
+            android:letterSpacing="0.06"
+            android:textAllCaps="true"
+            app:backgroundTint="@color/dash_accent_dim"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/dash_accent"
+            app:cornerRadius="10dp"
+            app:icon="@android:drawable/stat_sys_download"
+            app:iconTint="@color/dash_accent"
+            app:iconGravity="textStart" />
+
+        <!-- Nettoyer les anciens APK -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_clean_apk"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/btn_clean_apk"
+            android:textColor="@color/text_secondary"
+            android:textSize="11sp"
+            android:letterSpacing="0.06"
+            android:textAllCaps="true"
+            app:backgroundTint="@color/dash_btn"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/dash_border"
+            app:cornerRadius="10dp"
+            app:icon="@android:drawable/ic_menu_delete"
+            app:iconTint="@color/dash_text_lo"
+            app:iconGravity="textStart" />
+
+    </LinearLayout>
 
     <!-- ── Bouton INFOS ──────────────────────────────────────────────── -->
     <com.google.android.material.button.MaterialButton

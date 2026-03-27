@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
+import com.google.android.material.button.MaterialButton;
 import com.mg4.control.R;
 import java.lang.NullPointerException;
 import java.lang.Override;
@@ -19,6 +20,9 @@ import java.lang.String;
 public final class DialogAppInfoBinding implements ViewBinding {
   @NonNull
   private final LinearLayout rootView;
+
+  @NonNull
+  public final MaterialButton btnInfoClose;
 
   @NonNull
   public final ImageView ivQrCode;
@@ -32,10 +36,11 @@ public final class DialogAppInfoBinding implements ViewBinding {
   @NonNull
   public final TextView tvGithubLink;
 
-  private DialogAppInfoBinding(@NonNull LinearLayout rootView, @NonNull ImageView ivQrCode,
-      @NonNull TextView tvAppVersion, @NonNull TextView tvFirmwareInfo,
+  private DialogAppInfoBinding(@NonNull LinearLayout rootView, @NonNull MaterialButton btnInfoClose,
+      @NonNull ImageView ivQrCode, @NonNull TextView tvAppVersion, @NonNull TextView tvFirmwareInfo,
       @NonNull TextView tvGithubLink) {
     this.rootView = rootView;
+    this.btnInfoClose = btnInfoClose;
     this.ivQrCode = ivQrCode;
     this.tvAppVersion = tvAppVersion;
     this.tvFirmwareInfo = tvFirmwareInfo;
@@ -69,6 +74,12 @@ public final class DialogAppInfoBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
+      id = R.id.btn_info_close;
+      MaterialButton btnInfoClose = ViewBindings.findChildViewById(rootView, id);
+      if (btnInfoClose == null) {
+        break missingId;
+      }
+
       id = R.id.iv_qr_code;
       ImageView ivQrCode = ViewBindings.findChildViewById(rootView, id);
       if (ivQrCode == null) {
@@ -93,7 +104,7 @@ public final class DialogAppInfoBinding implements ViewBinding {
         break missingId;
       }
 
-      return new DialogAppInfoBinding((LinearLayout) rootView, ivQrCode, tvAppVersion,
+      return new DialogAppInfoBinding((LinearLayout) rootView, btnInfoClose, ivQrCode, tvAppVersion,
           tvFirmwareInfo, tvGithubLink);
     }
     String missingId = rootView.getResources().getResourceName(id);

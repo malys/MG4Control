@@ -9,6 +9,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -104,6 +105,45 @@ class SettingsFragment : Fragment() {
                     if (isAdded) showUpdateError(btnUpdate, originalUpdateText)
                 }
             )
+        }
+
+        // ── Bouton Nettoyer APK ──────────────────────────────────────────────
+        val btnClean = view.findViewById<MaterialButton>(R.id.btn_clean_apk)
+        val originalCleanText = getString(R.string.btn_clean_apk)
+
+        btnClean.setOnClickListener {
+            val downloadsDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DOWNLOADS
+            )
+            val apkFiles = downloadsDir.listFiles { _, name ->
+                name.startsWith("MGControl") && name.endsWith(".apk")
+            } ?: emptyArray()
+
+            val count = apkFiles.count { it.delete() }
+
+            btnClean.isEnabled = false
+            if (count > 0) {
+                btnClean.text = getString(R.string.clean_apk_done, count)
+                btnClean.backgroundTintList = ColorStateList.valueOf(
+                    requireContext().getColor(R.color.dash_eco_dim))
+                btnClean.strokeColor = ColorStateList.valueOf(
+                    requireContext().getColor(R.color.dash_eco))
+                btnClean.setTextColor(requireContext().getColor(R.color.dash_eco))
+            } else {
+                btnClean.text = getString(R.string.clean_apk_none)
+            }
+
+            btnClean.postDelayed({
+                if (isAdded) {
+                    btnClean.text = originalCleanText
+                    btnClean.backgroundTintList = ColorStateList.valueOf(
+                        requireContext().getColor(R.color.dash_btn))
+                    btnClean.strokeColor = ColorStateList.valueOf(
+                        requireContext().getColor(R.color.dash_border))
+                    btnClean.setTextColor(requireContext().getColor(R.color.text_secondary))
+                    btnClean.isEnabled = true
+                }
+            }, 3_000)
         }
 
         // ── Bouton Infos ─────────────────────────────────────────────────────

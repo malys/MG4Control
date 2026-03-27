@@ -3294,9 +3294,16 @@ id btn_adas_swi68_off_d
 id btn_adas_swi68_tja_d
 id btn_add_profile
 id btn_apply
+id btn_cancel_download
+id btn_check_update
 id btn_clear_console
+id btn_close_manual
+id btn_close_profiles
+id btn_close_settings
 id btn_custom
 id btn_delete
+id btn_dialog_cancel
+id btn_dialog_save
 id btn_drive_custom_d
 id btn_drive_eco_d
 id btn_drive_normal_d
@@ -3304,6 +3311,7 @@ id btn_drive_snow_d
 id btn_drive_sport_d
 id btn_eco
 id btn_edit
+id btn_info_close
 id btn_infos
 id btn_lang_en
 id btn_lang_fr
@@ -3346,6 +3354,9 @@ id btn_steer_on_d
 id btn_swi68_acc
 id btn_swi68_off
 id btn_swi68_tja
+id btn_update_auto
+id btn_update_later
+id btn_update_manual
 id buttonPanel
 id cache_measures
 id callMeasure
@@ -3463,6 +3474,9 @@ id gone
 id graph
 id graph_wrap
 id group_divider
+id group_info
+id group_manual
+id group_progress
 id grouping
 id groups
 id header_title
@@ -3487,6 +3501,7 @@ id inward
 id italic
 id item_touch_helper_previous_elevation
 id iv_qr_code
+id iv_update_qr
 id jumpToEnd
 id jumpToStart
 id labeled
@@ -3619,6 +3634,7 @@ id position
 id postLayout
 id pressed
 id profileFragment
+id progress_bar
 id progress_circular
 id progress_horizontal
 id radio
@@ -3632,6 +3648,7 @@ id rightToLeft
 id right_icon
 id right_side
 id rounded
+id row_data_warning
 id row_index_key
 id rtl
 id save_non_transition_alpha
@@ -3761,12 +3778,20 @@ id transition_position
 id transition_scene_layoutid_cache
 id transition_transform
 id triangle
+id tv_apk_path
 id tv_app_version
 id tv_default_badge
+id tv_dialog_title
 id tv_firmware_info
 id tv_github_link
+id tv_manual_instructions
 id tv_profile_name
 id tv_profile_summary
+id tv_progress_status
+id tv_release_notes
+id tv_update_gh_link
+id tv_version_from
+id tv_version_to
 id unchecked
 id uniform
 id unlabeled
@@ -3924,6 +3949,7 @@ layout design_text_input_end_icon
 layout design_text_input_start_icon
 layout dialog_app_info
 layout dialog_profile_edit
+layout dialog_update
 layout fragment_adas
 layout fragment_climate
 layout fragment_console
@@ -4047,6 +4073,7 @@ string bottomsheet_action_expand
 string bottomsheet_action_expand_halfway
 string bottomsheet_drag_handle_clicked
 string bottomsheet_drag_handle_content_description
+string btn_check_update
 string btn_infos
 string call_notification_answer_action
 string call_notification_answer_video_action
@@ -4200,6 +4227,7 @@ string nav_adas
 string nav_app_bar_navigate_up_description
 string nav_app_bar_open_drawer_description
 string nav_climate
+string nav_close
 string nav_drive
 string nav_profiles
 string nav_settings
@@ -4247,6 +4275,33 @@ string settings_language_pick_title
 string side_sheet_accessibility_pane_title
 string side_sheet_behavior
 string status_bar_notification_info_overflow
+string update_auto_btn
+string update_available_title
+string update_cancel
+string update_close
+string update_continue
+string update_current_label
+string update_data_warn_message
+string update_data_warn_title
+string update_data_warning
+string update_downloaded_instructions
+string update_downloaded_title
+string update_downloading
+string update_downloading_pct
+string update_error_download
+string update_error_install
+string update_gh_releases_link
+string update_install_error
+string update_installed
+string update_installing
+string update_later_btn
+string update_manual_btn
+string update_manual_instructions
+string update_manual_title
+string update_network_error
+string update_new_label
+string update_release_notes_label
+string update_up_to_date
 style AlertDialog_AppCompat
 style AlertDialog_AppCompat_Light
 style Animation_AppCompat_Dialog
@@ -5543,3 +5598,4 @@ styleable ViewPager2 android_orientation
 styleable ViewStubCompat android_id android_layout android_inflatedId
 styleable ViewTransition android_id SharedValue SharedValueId clearsTag duration ifTagNotSet ifTagSet motionInterpolator motionTarget onStateTransition pathMotionArc setsTag transitionDisable upDuration viewTransitionMode
 styleable include constraintSet
+xml file_provider_paths

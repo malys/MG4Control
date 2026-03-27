@@ -14,6 +14,7 @@
     <string name="adas_speed_limit_tone">Speed limit change tone</string>
     <string name="adas_tja">TJA</string>
     <string name="app_name">MG4 Control</string>
+    <string name="btn_check_update">Check for updates</string>
     <string name="btn_infos">Info</string>
     <string name="card_alerts">Alert settings</string>
     <string name="card_climate">Climate settings</string>
@@ -45,6 +46,7 @@
     <string name="info_version_label">Version</string>
     <string name="nav_adas">ADAS</string>
     <string name="nav_climate">Climate</string>
+    <string name="nav_close">Close</string>
     <string name="nav_drive">Drive</string>
     <string name="nav_profiles">Profiles</string>
     <string name="nav_settings">Settings</string>
@@ -80,4 +82,31 @@
     <string name="settings_language_fr">Français</string>
     <string name="settings_language_pick_msg">This can be changed later in Settings.</string>
     <string name="settings_language_pick_title">Choose your language</string>
+    <string name="update_auto_btn">Download APK</string>
+    <string name="update_available_title">Update available</string>
+    <string name="update_cancel">Cancel</string>
+    <string name="update_close">Close</string>
+    <string name="update_continue">Continue</string>
+    <string name="update_current_label">Current version</string>
+    <string name="update_data_warn_message">Your car doesn\'t seem to be connected to WiFi. The download (~10 MB) will use your car\'s mobile data. Continue?</string>
+    <string name="update_data_warn_title">Mobile data</string>
+    <string name="update_data_warning">⚠️ No WiFi detected — this download will use your car\'s mobile data.</string>
+    <string name="update_downloaded_instructions">The Downloads folder should have opened automatically.\n\nTap MG4Control-*.apk to install.\n\nIf the folder did not open, go to the File Manager and navigate to Downloads.</string>
+    <string name="update_downloaded_title">APK downloaded ✓</string>
+    <string name="update_downloading">Downloading…</string>
+    <string name="update_downloading_pct">Downloading… %d%%</string>
+    <string name="update_error_download">Download failed. Check your connection.</string>
+    <string name="update_error_install">Installation failed.</string>
+    <string name="update_gh_releases_link">github.com/SliDeeN/MG4Control/releases</string>
+    <string name="update_install_error">Install error: %s</string>
+    <string name="update_installed">✅ Update installed successfully!</string>
+    <string name="update_installing">Installing…</string>
+    <string name="update_later_btn">Later</string>
+    <string name="update_manual_btn">Manual install</string>
+    <string name="update_manual_instructions">1. Scan the QR code or open the link\n2. Download the MG4Control.apk file\n3. Copy it to a FAT32 USB drive\n4. Plug the USB drive into your MG4\n5. Open the File Manager\n6. Select the APK file and install it</string>
+    <string name="update_manual_title">Manual installation</string>
+    <string name="update_network_error">✕  Network error</string>
+    <string name="update_new_label">New version</string>
+    <string name="update_release_notes_label">Release notes</string>
+    <string name="update_up_to_date">✓  Up to date</string>
 </resources>

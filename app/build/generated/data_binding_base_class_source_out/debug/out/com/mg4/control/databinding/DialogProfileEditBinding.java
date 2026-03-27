@@ -5,8 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.Switch;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewbinding.ViewBinding;
@@ -20,7 +20,7 @@ import java.lang.String;
 
 public final class DialogProfileEditBinding implements ViewBinding {
   @NonNull
-  private final ScrollView rootView;
+  private final LinearLayout rootView;
 
   @NonNull
   public final LinearLayout adasSectionSwi133;
@@ -51,6 +51,12 @@ public final class DialogProfileEditBinding implements ViewBinding {
 
   @NonNull
   public final MaterialButton btnAdasSwi68TjaD;
+
+  @NonNull
+  public final MaterialButton btnDialogCancel;
+
+  @NonNull
+  public final MaterialButton btnDialogSave;
 
   @NonNull
   public final MaterialButton btnDriveCustomD;
@@ -133,12 +139,16 @@ public final class DialogProfileEditBinding implements ViewBinding {
   @NonNull
   public final Switch swSpeedLimitTone;
 
-  private DialogProfileEditBinding(@NonNull ScrollView rootView,
+  @NonNull
+  public final TextView tvDialogTitle;
+
+  private DialogProfileEditBinding(@NonNull LinearLayout rootView,
       @NonNull LinearLayout adasSectionSwi133, @NonNull LinearLayout adasSectionSwi68,
       @NonNull MaterialButton btnAdasAccD, @NonNull MaterialButton btnAdasAutoD,
       @NonNull MaterialButton btnAdasIcaD, @NonNull MaterialButton btnAdasLimD,
       @NonNull MaterialButton btnAdasOffD, @NonNull MaterialButton btnAdasSwi68AccD,
       @NonNull MaterialButton btnAdasSwi68OffD, @NonNull MaterialButton btnAdasSwi68TjaD,
+      @NonNull MaterialButton btnDialogCancel, @NonNull MaterialButton btnDialogSave,
       @NonNull MaterialButton btnDriveCustomD, @NonNull MaterialButton btnDriveEcoD,
       @NonNull MaterialButton btnDriveNormalD, @NonNull MaterialButton btnDriveSnowD,
       @NonNull MaterialButton btnDriveSportD, @NonNull MaterialButton btnRegenAdaptiveD,
@@ -152,7 +162,7 @@ public final class DialogProfileEditBinding implements ViewBinding {
       @NonNull MaterialButton btnSteerOnD, @NonNull TextInputEditText etProfileName,
       @NonNull LinearLayout sectionRegenDialog, @NonNull Switch swOverspeedAlarm,
       @NonNull Switch swSetDefault, @NonNull Switch swSoundWarning,
-      @NonNull Switch swSpeedLimitTone) {
+      @NonNull Switch swSpeedLimitTone, @NonNull TextView tvDialogTitle) {
     this.rootView = rootView;
     this.adasSectionSwi133 = adasSectionSwi133;
     this.adasSectionSwi68 = adasSectionSwi68;
@@ -164,6 +174,8 @@ public final class DialogProfileEditBinding implements ViewBinding {
     this.btnAdasSwi68AccD = btnAdasSwi68AccD;
     this.btnAdasSwi68OffD = btnAdasSwi68OffD;
     this.btnAdasSwi68TjaD = btnAdasSwi68TjaD;
+    this.btnDialogCancel = btnDialogCancel;
+    this.btnDialogSave = btnDialogSave;
     this.btnDriveCustomD = btnDriveCustomD;
     this.btnDriveEcoD = btnDriveEcoD;
     this.btnDriveNormalD = btnDriveNormalD;
@@ -191,11 +203,12 @@ public final class DialogProfileEditBinding implements ViewBinding {
     this.swSetDefault = swSetDefault;
     this.swSoundWarning = swSoundWarning;
     this.swSpeedLimitTone = swSpeedLimitTone;
+    this.tvDialogTitle = tvDialogTitle;
   }
 
   @Override
   @NonNull
-  public ScrollView getRoot() {
+  public LinearLayout getRoot() {
     return rootView;
   }
 
@@ -277,6 +290,18 @@ public final class DialogProfileEditBinding implements ViewBinding {
       id = R.id.btn_adas_swi68_tja_d;
       MaterialButton btnAdasSwi68TjaD = ViewBindings.findChildViewById(rootView, id);
       if (btnAdasSwi68TjaD == null) {
+        break missingId;
+      }
+
+      id = R.id.btn_dialog_cancel;
+      MaterialButton btnDialogCancel = ViewBindings.findChildViewById(rootView, id);
+      if (btnDialogCancel == null) {
+        break missingId;
+      }
+
+      id = R.id.btn_dialog_save;
+      MaterialButton btnDialogSave = ViewBindings.findChildViewById(rootView, id);
+      if (btnDialogSave == null) {
         break missingId;
       }
 
@@ -442,13 +467,20 @@ public final class DialogProfileEditBinding implements ViewBinding {
         break missingId;
       }
 
-      return new DialogProfileEditBinding((ScrollView) rootView, adasSectionSwi133,
+      id = R.id.tv_dialog_title;
+      TextView tvDialogTitle = ViewBindings.findChildViewById(rootView, id);
+      if (tvDialogTitle == null) {
+        break missingId;
+      }
+
+      return new DialogProfileEditBinding((LinearLayout) rootView, adasSectionSwi133,
           adasSectionSwi68, btnAdasAccD, btnAdasAutoD, btnAdasIcaD, btnAdasLimD, btnAdasOffD,
-          btnAdasSwi68AccD, btnAdasSwi68OffD, btnAdasSwi68TjaD, btnDriveCustomD, btnDriveEcoD,
-          btnDriveNormalD, btnDriveSnowD, btnDriveSportD, btnRegenAdaptiveD, btnRegenHighD,
-          btnRegenLowD, btnRegenMediumD, btnRegenOffD, btnRegenOnePedalD, btnSl0D, btnSl1D, btnSl2D,
-          btnSl3D, btnSr0D, btnSr1D, btnSr2D, btnSr3D, btnSteerOffD, btnSteerOnD, etProfileName,
-          sectionRegenDialog, swOverspeedAlarm, swSetDefault, swSoundWarning, swSpeedLimitTone);
+          btnAdasSwi68AccD, btnAdasSwi68OffD, btnAdasSwi68TjaD, btnDialogCancel, btnDialogSave,
+          btnDriveCustomD, btnDriveEcoD, btnDriveNormalD, btnDriveSnowD, btnDriveSportD,
+          btnRegenAdaptiveD, btnRegenHighD, btnRegenLowD, btnRegenMediumD, btnRegenOffD,
+          btnRegenOnePedalD, btnSl0D, btnSl1D, btnSl2D, btnSl3D, btnSr0D, btnSr1D, btnSr2D, btnSr3D,
+          btnSteerOffD, btnSteerOnD, etProfileName, sectionRegenDialog, swOverspeedAlarm,
+          swSetDefault, swSoundWarning, swSpeedLimitTone, tvDialogTitle);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

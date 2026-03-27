@@ -1,146 +1,204 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Dialog "À propos / Infos"
-    Disposition paysage : infos app (gauche) | QR code + crédits (droite)
+    Dialog "À propos / Infos" — style dark dashboard
+    Titre + séparateur en haut, contenu 2 colonnes, bouton Fermer en bas
 -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:background="@color/dash_card"
-    android:minWidth="560dp"
-    android:padding="20dp">
+    android:orientation="vertical"
+    android:background="@drawable/bg_card_rounded"
+    android:minWidth="560dp">
 
-    <!-- ── Colonne gauche : infos app ─────────────────────────────── -->
-    <LinearLayout
-        android:layout_width="0dp"
+    <!-- ── En-tête ─────────────────────────────────────────────────── -->
+    <TextView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:layout_marginEnd="20dp">
+        android:text="@string/info_title"
+        android:textColor="@color/dash_text_lo"
+        android:textSize="9sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.12"
+        android:textAllCaps="true"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="14dp" />
 
-        <!-- Nom app -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/app_name"
-            android:textColor="@color/text_primary"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="4dp" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/dash_border" />
 
-        <!-- Version -->
+    <!-- ── Corps : 2 colonnes ──────────────────────────────────────── -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="20dp">
+
+        <!-- Colonne gauche : infos app -->
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="10dp">
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginEnd="20dp">
 
+            <!-- Nom app -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/info_version_label"
+                android:text="@string/app_name"
+                android:textColor="@color/text_primary"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="4dp" />
+
+            <!-- Version -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/info_version_label"
+                    android:textColor="@color/dash_text_lo"
+                    android:textSize="11sp"
+                    android:textAllCaps="true"
+                    android:letterSpacing="0.08"
+                    android:layout_marginEnd="8dp" />
+
+                <TextView
+                    android:id="@+id/tv_app_version"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp"
+                    android:fontFamily="monospace" />
+
+            </LinearLayout>
+
+            <!-- Séparateur -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/dash_border"
+                android:layout_marginBottom="10dp" />
+
+            <!-- Firmware -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/info_firmware_label"
                 android:textColor="@color/dash_text_lo"
                 android:textSize="11sp"
                 android:textAllCaps="true"
                 android:letterSpacing="0.08"
-                android:layout_marginEnd="8dp" />
+                android:layout_marginBottom="4dp" />
 
             <TextView
-                android:id="@+id/tv_app_version"
+                android:id="@+id/tv_firmware_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/text_secondary"
-                android:textSize="13sp"
+                android:text="@string/settings_firmware_loading"
+                android:textColor="@color/dash_accent"
+                android:textSize="14sp"
+                android:textStyle="bold"
                 android:fontFamily="monospace" />
 
         </LinearLayout>
 
-        <!-- Séparateur -->
+        <!-- Séparateur vertical -->
         <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
             android:background="@color/dash_border"
-            android:layout_marginBottom="10dp" />
+            android:layout_marginEnd="20dp" />
 
-        <!-- Firmware -->
-        <TextView
-            android:layout_width="wrap_content"
+        <!-- Colonne droite : QR code + crédits -->
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/info_firmware_label"
-            android:textColor="@color/dash_text_lo"
-            android:textSize="11sp"
-            android:textAllCaps="true"
-            android:letterSpacing="0.08"
-            android:layout_marginBottom="4dp" />
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
 
-        <TextView
-            android:id="@+id/tv_firmware_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/settings_firmware_loading"
-            android:textColor="@color/dash_accent"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:fontFamily="monospace" />
+            <!-- QR Code (généré en code) -->
+            <ImageView
+                android:id="@+id/iv_qr_code"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:scaleType="fitCenter"
+                android:background="#FFFFFFFF"
+                android:padding="4dp"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Lien GitHub cliquable -->
+            <TextView
+                android:id="@+id/tv_github_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/info_github_link"
+                android:textColor="@color/dash_accent"
+                android:textSize="12sp"
+                android:textStyle="italic"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_marginBottom="10dp" />
+
+            <!-- Séparateur -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/dash_border"
+                android:layout_marginBottom="10dp" />
+
+            <!-- Made with love -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/info_made_with_love"
+                android:textColor="@color/dash_text_lo"
+                android:textSize="11sp"
+                android:gravity="center" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
-    <!-- Séparateur vertical -->
+    <!-- ── Pied de page : bouton Fermer ───────────────────────────── -->
     <View
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:background="@color/dash_border"
-        android:layout_marginEnd="20dp" />
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/dash_border" />
 
-    <!-- ── Colonne droite : QR code + crédits ─────────────────────── -->
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:gravity="center_horizontal">
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:padding="12dp">
 
-        <!-- QR Code (généré en code) -->
-        <ImageView
-            android:id="@+id/iv_qr_code"
-            android:layout_width="160dp"
-            android:layout_height="160dp"
-            android:scaleType="fitCenter"
-            android:background="#FFFFFFFF"
-            android:padding="4dp"
-            android:layout_marginBottom="12dp" />
-
-        <!-- Lien GitHub cliquable -->
-        <TextView
-            android:id="@+id/tv_github_link"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_info_close"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/info_github_link"
-            android:textColor="@color/dash_accent"
-            android:textSize="12sp"
-            android:textStyle="italic"
-            android:clickable="true"
-            android:focusable="true"
-            android:layout_marginBottom="10dp" />
-
-        <!-- Séparateur -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/dash_border"
-            android:layout_marginBottom="10dp" />
-
-        <!-- Made with love -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/info_made_with_love"
-            android:textColor="@color/dash_text_lo"
+            android:layout_height="40dp"
+            android:text="@string/info_close"
+            android:textColor="@color/text_secondary"
             android:textSize="11sp"
-            android:gravity="center" />
+            android:textAllCaps="true"
+            android:backgroundTint="@color/dash_btn"
+            app:strokeColor="@color/dash_border"
+            app:strokeWidth="1dp"
+            app:cornerRadius="8dp" />
 
     </LinearLayout>
 

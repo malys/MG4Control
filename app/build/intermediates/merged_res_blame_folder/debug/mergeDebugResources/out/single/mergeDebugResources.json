@@ -1,9 +1,5 @@
 [
     {
-        "merged": "com.mg4.control.app-debug-47:/layout_fragment_dashboard.xml.flat",
-        "source": "com.mg4.control.app-main-49:/layout/fragment_dashboard.xml"
-    },
-    {
         "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-47:\\layout_fragment_dashboard.xml.flat",
         "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-49:\\layout\\fragment_dashboard.xml"
     },
@@ -12,8 +8,16 @@
         "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-49:\\drawable\\bg_chip_inactive.xml"
     },
     {
+        "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-47:\\layout_dialog_update.xml.flat",
+        "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-49:\\layout\\dialog_update.xml"
+    },
+    {
         "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-47:\\layout_activity_main.xml.flat",
         "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-49:\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "com.mg4.control.app-debug-47:/layout_dialog_update.xml.flat",
+        "source": "com.mg4.control.app-main-49:/layout/dialog_update.xml"
     },
     {
         "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-47:\\layout_fragment_adas.xml.flat",
@@ -30,10 +34,6 @@
     {
         "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-47:\\menu_bottom_nav_menu.xml.flat",
         "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-49:\\menu\\bottom_nav_menu.xml"
-    },
-    {
-        "merged": "com.mg4.control.app-debug-47:/layout_dialog_profile_edit.xml.flat",
-        "source": "com.mg4.control.app-main-49:/layout/dialog_profile_edit.xml"
     },
     {
         "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-47:\\layout_dialog_profile_edit.xml.flat",
@@ -62,6 +62,10 @@
     {
         "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-47:\\drawable_bg_section_rounded.xml.flat",
         "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-49:\\drawable\\bg_section_rounded.xml"
+    },
+    {
+        "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-47:\\xml_file_provider_paths.xml.flat",
+        "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-49:\\xml\\file_provider_paths.xml"
     },
     {
         "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-47:\\drawable_bg_chip_active.xml.flat",

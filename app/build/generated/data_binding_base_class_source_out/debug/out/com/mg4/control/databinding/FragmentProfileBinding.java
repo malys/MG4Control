@@ -24,12 +24,17 @@ public final class FragmentProfileBinding implements ViewBinding {
   public final MaterialButton btnAddProfile;
 
   @NonNull
+  public final MaterialButton btnCloseProfiles;
+
+  @NonNull
   public final RecyclerView recyclerProfiles;
 
   private FragmentProfileBinding(@NonNull LinearLayout rootView,
-      @NonNull MaterialButton btnAddProfile, @NonNull RecyclerView recyclerProfiles) {
+      @NonNull MaterialButton btnAddProfile, @NonNull MaterialButton btnCloseProfiles,
+      @NonNull RecyclerView recyclerProfiles) {
     this.rootView = rootView;
     this.btnAddProfile = btnAddProfile;
+    this.btnCloseProfiles = btnCloseProfiles;
     this.recyclerProfiles = recyclerProfiles;
   }
 
@@ -66,13 +71,20 @@ public final class FragmentProfileBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.btn_close_profiles;
+      MaterialButton btnCloseProfiles = ViewBindings.findChildViewById(rootView, id);
+      if (btnCloseProfiles == null) {
+        break missingId;
+      }
+
       id = R.id.recycler_profiles;
       RecyclerView recyclerProfiles = ViewBindings.findChildViewById(rootView, id);
       if (recyclerProfiles == null) {
         break missingId;
       }
 
-      return new FragmentProfileBinding((LinearLayout) rootView, btnAddProfile, recyclerProfiles);
+      return new FragmentProfileBinding((LinearLayout) rootView, btnAddProfile, btnCloseProfiles,
+          recyclerProfiles);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

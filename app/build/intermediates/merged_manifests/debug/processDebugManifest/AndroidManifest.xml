@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mg4.control"
     android:sharedUserId="android.uid.system"
-    android:versionCode="3"
-    android:versionName="2.1" >
+    android:versionCode="2"
+    android:versionName="2.0" >
 
     <uses-sdk
         android:minSdkVersion="28"
@@ -56,6 +56,17 @@
             android:name="com.mg4.control.service.MG4ControlService"
             android:directBootAware="true"
             android:exported="false" />
+
+        <!-- FileProvider pour ouvrir l'APK dans le gestionnaire de fichiers AAOS -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.mg4.control.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true" >
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_provider_paths" />
+        </provider>
 
         <!-- Récepteur résultat d'installation silencieuse -->
         <receiver

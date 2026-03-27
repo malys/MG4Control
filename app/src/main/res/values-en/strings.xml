@@ -4,6 +4,10 @@
 
     <!-- Close button (back to dashboard) -->
     <string name="nav_close">Close</string>
+    <!-- APK cleanup -->
+    <string name="btn_clean_apk">Clean APK</string>
+    <string name="clean_apk_done">✓ %1$d file(s) deleted</string>
+    <string name="clean_apk_none">✓ Nothing to clean</string>
 
     <!-- Bottom navigation -->
     <string name="nav_drive">Drive</string>
@@ -101,7 +105,7 @@
     <string name="update_new_label">New version</string>
     <string name="update_release_notes_label">Release notes</string>
     <string name="update_data_warning">⚠️ No WiFi detected — this download will use your car\'s mobile data.</string>
-    <string name="update_auto_btn">Install automatically</string>
+    <string name="update_auto_btn">Download APK</string>
     <string name="update_manual_btn">Manual install</string>
     <string name="update_later_btn">Later</string>
     <string name="update_data_warn_title">Mobile data</string>
@@ -118,6 +122,8 @@
     <string name="update_install_error">Install error: %s</string>
     <string name="update_manual_title">Manual installation</string>
     <string name="update_manual_instructions">1. Scan the QR code or open the link\n2. Download the MG4Control.apk file\n3. Copy it to a FAT32 USB drive\n4. Plug the USB drive into your MG4\n5. Open the File Manager\n6. Select the APK file and install it</string>
+    <string name="update_downloaded_title">APK downloaded ✓</string>
+    <string name="update_downloaded_instructions">The Downloads folder should have opened automatically.\n\nTap MG4Control-*.apk to install.\n\nIf the folder did not open, go to the File Manager and navigate to Downloads.</string>
     <string name="update_gh_releases_link">github.com/SliDeeN/MG4Control/releases</string>
 
     <!-- Console (debug) -->
