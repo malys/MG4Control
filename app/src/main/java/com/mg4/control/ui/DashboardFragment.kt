@@ -10,6 +10,7 @@ import android.widget.Switch
 import androidx.fragment.app.Fragment
 import com.mg4.control.R
 import com.mg4.control.hardware.MG4Hardware
+import com.mg4.control.hardware.MG4Hardware.AebMode
 import com.mg4.control.hardware.MG4Hardware.Swi68Mode
 import com.mg4.control.model.DriveMode
 import com.mg4.control.model.RegenLevel
@@ -59,6 +60,11 @@ class DashboardFragment : Fragment() {
 
     // ── Alertes SWI68 ────────────────────────────────────────────────────────
     private var switchSoundWarning: Switch? = null
+
+    // ── AEB (commun SWI133 + SWI68) ──────────────────────────────────────────
+    private var switchAeb: Switch? = null
+    private var btnAebAlarm: Button? = null
+    private var btnAebAlarmBrake: Button? = null
 
     // ── Couleurs (lazy pour contexte disponible) ──────────────────────────────
     private val colorActive   by lazy { requireContext().getColor(R.color.dash_accent_dim) }
@@ -127,15 +133,24 @@ class DashboardFragment : Fragment() {
         switchOverspeed    = view.findViewById(R.id.switch_overspeed)
         switchSpeedTone    = view.findViewById(R.id.switch_speed_tone)
         switchSoundWarning = view.findViewById(R.id.switch_sound_warning)
+
+        // AEB
+        switchAeb        = view.findViewById(R.id.switch_aeb)
+        btnAebAlarm      = view.findViewById(R.id.btn_aeb_alarm)
+        btnAebAlarmBrake = view.findViewById(R.id.btn_aeb_alarm_brake)
     }
 
     /** Affiche la section ADAS et alertes correspondant au firmware détecté. */
     private fun applyFirmwareVisibility(view: View) {
-        val isSWI68 = FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI68
-        view.findViewById<View>(R.id.adas_group_swi133).visibility    = if (!isSWI68) View.VISIBLE else View.GONE
-        view.findViewById<View>(R.id.adas_group_swi68).visibility     = if (isSWI68)  View.VISIBLE else View.GONE
-        view.findViewById<View>(R.id.alerts_group_swi133).visibility  = if (!isSWI68) View.VISIBLE else View.GONE
-        view.findViewById<View>(R.id.alerts_group_swi68).visibility   = if (isSWI68)  View.VISIBLE else View.GONE
+        val gen     = FirmwareInfo.getGeneration()
+        val isSWI68 = gen == FirmwareInfo.Gen.SWI68
+        val isKnown = gen != FirmwareInfo.Gen.UNKNOWN
+        view.findViewById<View>(R.id.adas_group_swi133).visibility   = if (!isSWI68) View.VISIBLE else View.GONE
+        view.findViewById<View>(R.id.adas_group_swi68).visibility    = if (isSWI68)  View.VISIBLE else View.GONE
+        view.findViewById<View>(R.id.alerts_group_swi133).visibility = if (!isSWI68) View.VISIBLE else View.GONE
+        view.findViewById<View>(R.id.alerts_group_swi68).visibility  = if (isSWI68)  View.VISIBLE else View.GONE
+        // AEB disponible uniquement si firmware connu
+        view.findViewById<View>(R.id.aeb_group).visibility           = if (isKnown)  View.VISIBLE else View.GONE
     }
 
     // ── Listeners ────────────────────────────────────────────────────────────
@@ -213,6 +228,31 @@ class DashboardFragment : Fragment() {
                     CoroutineScope(Dispatchers.IO).launch { MG4Hardware.setSoundWarning(checked) }
             }
         }
+
+        // AEB (commun SWI133 + SWI68)
+        val isKnown = FirmwareInfo.getGeneration() != FirmwareInfo.Gen.UNKNOWN
+        if (isKnown) {
+            switchAeb?.setOnCheckedChangeListener { _, checked ->
+                if (switchAeb?.isPressed == true) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        MG4Hardware.setAebEnabled(checked)
+                        withContext(Dispatchers.Main) { if (isAdded) applyAebModeButtonsEnabled(checked) }
+                    }
+                }
+            }
+            btnAebAlarm?.setOnClickListener {
+                CoroutineScope(Dispatchers.IO).launch {
+                    MG4Hardware.setAebMode(AebMode.ALARM)
+                    withContext(Dispatchers.Main) { if (isAdded) applyAebModeUI(AebMode.ALARM) }
+                }
+            }
+            btnAebAlarmBrake?.setOnClickListener {
+                CoroutineScope(Dispatchers.IO).launch {
+                    MG4Hardware.setAebMode(AebMode.ALARM_BRAKE)
+                    withContext(Dispatchers.Main) { if (isAdded) applyAebModeUI(AebMode.ALARM_BRAKE) }
+                }
+            }
+        }
     }
 
     // ── Rafraîchissement de l'état hardware ──────────────────────────────────
@@ -270,6 +310,8 @@ class DashboardFragment : Fragment() {
         val adasMode  = MG4Hardware.getMixedIntelligentDrive()
         val overspeed = MG4Hardware.isOverspeedAlarmOn()
         val speedTone = MG4Hardware.isSpeedLimitToneOn()
+        val aebOn     = MG4Hardware.isAebEnabled()
+        val aebMode   = MG4Hardware.getAebMode()
         withContext(Dispatchers.Main) {
             if (!isAdded) return@withContext
             if (adasMode < 0) {
@@ -279,12 +321,17 @@ class DashboardFragment : Fragment() {
             switchOverspeed?.isChecked = overspeed
             switchSpeedTone?.isChecked = speedTone
             applySwi133AdasUI(adasMode)
+            switchAeb?.isChecked = aebOn
+            applyAebModeButtonsEnabled(aebOn)
+            if (aebMode > 0) applyAebModeUI(aebMode)
         }
     }
 
     private suspend fun refreshSwi68Adas() {
-        val mode  = MG4Hardware.getAccTjaMode()
-        val sound = MG4Hardware.isSoundWarningOn()
+        val mode    = MG4Hardware.getAccTjaMode()
+        val sound   = MG4Hardware.isSoundWarningOn()
+        val aebOn   = MG4Hardware.isAebEnabled()
+        val aebMode = MG4Hardware.getAebMode()
         withContext(Dispatchers.Main) {
             if (!isAdded) return@withContext
             if (mode < 0) {
@@ -293,6 +340,9 @@ class DashboardFragment : Fragment() {
             }
             switchSoundWarning?.isChecked = sound
             applySwi68AdasUI(mode)
+            switchAeb?.isChecked = aebOn
+            applyAebModeButtonsEnabled(aebOn)
+            if (aebMode > 0) applyAebModeUI(aebMode)
         }
     }
 
@@ -350,6 +400,20 @@ class DashboardFragment : Fragment() {
                 onLevel(index)
             }
         }
+    }
+
+    private fun applyAebModeUI(activeMode: Int) {
+        btnAebAlarm?.backgroundTintList      = ColorStateList.valueOf(if (activeMode == AebMode.ALARM)       colorActive else colorInactive)
+        btnAebAlarm?.setTextColor(                                    if (activeMode == AebMode.ALARM)       colorTextActive else colorTextInactive)
+        btnAebAlarmBrake?.backgroundTintList = ColorStateList.valueOf(if (activeMode == AebMode.ALARM_BRAKE) colorActive else colorInactive)
+        btnAebAlarmBrake?.setTextColor(                               if (activeMode == AebMode.ALARM_BRAKE) colorTextActive else colorTextInactive)
+    }
+
+    private fun applyAebModeButtonsEnabled(enabled: Boolean) {
+        btnAebAlarm?.isEnabled      = enabled
+        btnAebAlarmBrake?.isEnabled = enabled
+        btnAebAlarm?.alpha          = if (enabled) 1f else 0.35f
+        btnAebAlarmBrake?.alpha     = if (enabled) 1f else 0.35f
     }
 
     private fun applySeatUI(buttons: List<Button>, activeIndex: Int) {

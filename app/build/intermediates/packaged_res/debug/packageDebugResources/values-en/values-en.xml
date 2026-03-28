@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="adas_acc">ACC</string>
+    <string name="adas_aeb_alarm">Alert</string>
+    <string name="adas_aeb_alarm_brake">Alert + Auto brake</string>
+    <string name="adas_aeb_switch">Forward collision assist system</string>
     <string name="adas_auto">Auto</string>
     <string name="adas_desactiver">Disable</string>
     <string name="adas_ica">ICA</string>
@@ -8,6 +11,7 @@
     <string name="adas_limiteur_short">Lim.</string>
     <string name="adas_off">Off</string>
     <string name="adas_overspeed_alarm">Overspeed alert</string>
+    <string name="adas_section_aeb">Active safety</string>
     <string name="adas_section_drive">Driving assistance</string>
     <string name="adas_section_sounds">Sound alerts</string>
     <string name="adas_sound_warning">Sound warning</string>
@@ -17,7 +21,7 @@
     <string name="btn_check_update">Check for updates</string>
     <string name="btn_clean_apk">Clean APK</string>
     <string name="btn_infos">Info</string>
-    <string name="card_alerts">Alert settings</string>
+    <string name="card_alerts">Security &amp; Alerts</string>
     <string name="card_climate">Climate settings</string>
     <string name="card_drive">Drive settings</string>
     <string name="clean_apk_done">✓ %1$d file(s) deleted</string>

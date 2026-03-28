@@ -31,6 +31,9 @@
     <color name="text_primary">#FFFFFFFF</color>
     <color name="text_secondary">#FFB0B0B0</color>
     <string name="adas_acc">ACC</string>
+    <string name="adas_aeb_alarm">Alerte</string>
+    <string name="adas_aeb_alarm_brake">Alerte + Freinage auto</string>
+    <string name="adas_aeb_switch">Système anti-collision avant</string>
     <string name="adas_auto">Auto</string>
     <string name="adas_desactiver">Désactiver</string>
     <string name="adas_ica">ICA</string>
@@ -38,6 +41,7 @@
     <string name="adas_limiteur_short">Lim.</string>
     <string name="adas_off">Off</string>
     <string name="adas_overspeed_alarm">Alerte excès de vitesse</string>
+    <string name="adas_section_aeb">Sécurité active</string>
     <string name="adas_section_drive">Assistance à la conduite</string>
     <string name="adas_section_sounds">Alertes sonores</string>
     <string name="adas_sound_warning">Avertissement sonore</string>
@@ -47,7 +51,7 @@
     <string name="btn_check_update">Vérifier les mises à jour</string>
     <string name="btn_clean_apk">Nettoyer APK</string>
     <string name="btn_infos">Infos</string>
-    <string name="card_alerts">Paramètres d\'alertes</string>
+    <string name="card_alerts">Sécurité &amp; Alertes</string>
     <string name="card_climate">Paramètres de climatisation</string>
     <string name="card_drive">Paramètres de conduite</string>
     <string name="clean_apk_done">✓ %1$d fichier(s) supprimé(s)</string>

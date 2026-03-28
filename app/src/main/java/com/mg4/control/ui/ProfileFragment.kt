@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.mg4.control.R
 import com.mg4.control.hardware.MG4Hardware
+import com.mg4.control.hardware.MG4Hardware.AebMode
 import com.mg4.control.hardware.MG4Hardware.Swi68Mode
 import com.mg4.control.model.DriveMode
 import com.mg4.control.model.DrivingProfile
@@ -118,7 +119,9 @@ class ProfileFragment : Fragment() {
                     seatHeatLeft  = MG4Hardware.getSeatHeatLeft().coerceAtLeast(0),
                     seatHeatRight = MG4Hardware.getSeatHeatRight().coerceAtLeast(0),
                     soundWarning  = MG4Hardware.isSoundWarningOn(),
-                    swi68AdasMode = MG4Hardware.getAccTjaMode().let { if (it < 0) Swi68Mode.OFF else it }
+                    swi68AdasMode = MG4Hardware.getAccTjaMode().let { if (it < 0) Swi68Mode.OFF else it },
+                    aebEnabled    = MG4Hardware.isAebEnabled(),
+                    aebMode       = MG4Hardware.getAebMode().let { if (it < 1) AebMode.ALARM else it }
                 )
                 else -> DrivingProfile(
                     name           = "",
@@ -129,7 +132,9 @@ class ProfileFragment : Fragment() {
                     seatHeatRight  = MG4Hardware.getSeatHeatRight().coerceAtLeast(0),
                     overspeedAlarm = MG4Hardware.isOverspeedAlarmOn(),
                     speedLimitTone = MG4Hardware.isSpeedLimitToneOn(),
-                    adasMode       = MG4Hardware.getMixedIntelligentDrive().coerceAtLeast(0)
+                    adasMode       = MG4Hardware.getMixedIntelligentDrive().coerceAtLeast(0),
+                    aebEnabled     = MG4Hardware.isAebEnabled(),
+                    aebMode        = MG4Hardware.getAebMode().let { if (it < 1) AebMode.ALARM else it }
                 )
             }
             withContext(Dispatchers.Main) {
@@ -176,6 +181,8 @@ class ProfileFragment : Fragment() {
         var seatRight       = data.seatHeatRight
         var adasMode        = data.adasMode
         var swi68Mode       = data.swi68AdasMode
+        var aebEnabledSel   = data.aebEnabled
+        var aebModeSel      = data.aebMode
 
         // ── Mode de conduite ─────────────────────────────────────────────────
         val drivePairs = listOf(
@@ -243,6 +250,32 @@ class ProfileFragment : Fragment() {
             dialogView.findViewById<MaterialButton>(R.id.btn_sr_3_d) to 3
         )
         bindGroup(seatRightPairs, seatRight) { seatRight = it }
+
+        // ── Section AEB (commune SWI133 + SWI68) ────────────────────────────
+        val sectionAeb = dialogView.findViewById<View>(R.id.adas_section_aeb)
+        if (gen != FirmwareInfo.Gen.UNKNOWN) {
+            sectionAeb.visibility = View.VISIBLE
+            val swAeb         = dialogView.findViewById<Switch>(R.id.sw_aeb_enabled)
+            val btnAebAlarmD  = dialogView.findViewById<MaterialButton>(R.id.btn_aeb_alarm_d)
+            val btnAebBrakeD  = dialogView.findViewById<MaterialButton>(R.id.btn_aeb_alarm_brake_d)
+
+            fun setAebModeButtonsEnabled(enabled: Boolean) {
+                listOf(btnAebAlarmD, btnAebBrakeD).forEach { btn ->
+                    btn.isEnabled = enabled
+                    btn.alpha     = if (enabled) 1f else 0.35f
+                }
+            }
+
+            swAeb.isChecked = aebEnabledSel
+            setAebModeButtonsEnabled(aebEnabledSel)
+            swAeb.setOnCheckedChangeListener { _, checked ->
+                aebEnabledSel = checked
+                setAebModeButtonsEnabled(checked)
+            }
+
+            val aebModePairs = listOf(btnAebAlarmD to AebMode.ALARM, btnAebBrakeD to AebMode.ALARM_BRAKE)
+            bindGroup(aebModePairs, aebModeSel) { aebModeSel = it }
+        }
 
         // ── Sections ADAS ────────────────────────────────────────────────────
         val sectionSwi133 = dialogView.findViewById<View>(R.id.adas_section_swi133)
@@ -334,7 +367,9 @@ class ProfileFragment : Fragment() {
                 speedLimitTone = speedLimitTone,
                 adasMode       = adasMode,
                 soundWarning   = soundWarning,
-                swi68AdasMode  = swi68Mode
+                swi68AdasMode  = swi68Mode,
+                aebEnabled     = aebEnabledSel,
+                aebMode        = aebModeSel
             )
             manager.save(profile)
             if (swDefault.isChecked) manager.setDefault(profile.id)
@@ -343,5 +378,12 @@ class ProfileFragment : Fragment() {
         }
 
         dialog.show()
+
+        // Borner la hauteur du dialog : footer toujours visible même sur petit écran
+        val maxH = (requireActivity().resources.displayMetrics.heightPixels * 0.88).toInt()
+        dialog.window?.setLayout(
+            android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+            maxH
+        )
     }
 }

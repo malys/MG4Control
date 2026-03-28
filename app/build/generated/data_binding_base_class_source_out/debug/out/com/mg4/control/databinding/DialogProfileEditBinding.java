@@ -23,6 +23,9 @@ public final class DialogProfileEditBinding implements ViewBinding {
   private final LinearLayout rootView;
 
   @NonNull
+  public final LinearLayout adasSectionAeb;
+
+  @NonNull
   public final LinearLayout adasSectionSwi133;
 
   @NonNull
@@ -51,6 +54,12 @@ public final class DialogProfileEditBinding implements ViewBinding {
 
   @NonNull
   public final MaterialButton btnAdasSwi68TjaD;
+
+  @NonNull
+  public final MaterialButton btnAebAlarmBrakeD;
+
+  @NonNull
+  public final MaterialButton btnAebAlarmD;
 
   @NonNull
   public final MaterialButton btnDialogCancel;
@@ -128,6 +137,9 @@ public final class DialogProfileEditBinding implements ViewBinding {
   public final LinearLayout sectionRegenDialog;
 
   @NonNull
+  public final Switch swAebEnabled;
+
+  @NonNull
   public final Switch swOverspeedAlarm;
 
   @NonNull
@@ -143,27 +155,30 @@ public final class DialogProfileEditBinding implements ViewBinding {
   public final TextView tvDialogTitle;
 
   private DialogProfileEditBinding(@NonNull LinearLayout rootView,
-      @NonNull LinearLayout adasSectionSwi133, @NonNull LinearLayout adasSectionSwi68,
-      @NonNull MaterialButton btnAdasAccD, @NonNull MaterialButton btnAdasAutoD,
-      @NonNull MaterialButton btnAdasIcaD, @NonNull MaterialButton btnAdasLimD,
-      @NonNull MaterialButton btnAdasOffD, @NonNull MaterialButton btnAdasSwi68AccD,
-      @NonNull MaterialButton btnAdasSwi68OffD, @NonNull MaterialButton btnAdasSwi68TjaD,
-      @NonNull MaterialButton btnDialogCancel, @NonNull MaterialButton btnDialogSave,
-      @NonNull MaterialButton btnDriveCustomD, @NonNull MaterialButton btnDriveEcoD,
-      @NonNull MaterialButton btnDriveNormalD, @NonNull MaterialButton btnDriveSnowD,
-      @NonNull MaterialButton btnDriveSportD, @NonNull MaterialButton btnRegenAdaptiveD,
-      @NonNull MaterialButton btnRegenHighD, @NonNull MaterialButton btnRegenLowD,
-      @NonNull MaterialButton btnRegenMediumD, @NonNull MaterialButton btnRegenOffD,
-      @NonNull MaterialButton btnRegenOnePedalD, @NonNull MaterialButton btnSl0D,
-      @NonNull MaterialButton btnSl1D, @NonNull MaterialButton btnSl2D,
-      @NonNull MaterialButton btnSl3D, @NonNull MaterialButton btnSr0D,
-      @NonNull MaterialButton btnSr1D, @NonNull MaterialButton btnSr2D,
-      @NonNull MaterialButton btnSr3D, @NonNull MaterialButton btnSteerOffD,
-      @NonNull MaterialButton btnSteerOnD, @NonNull TextInputEditText etProfileName,
-      @NonNull LinearLayout sectionRegenDialog, @NonNull Switch swOverspeedAlarm,
-      @NonNull Switch swSetDefault, @NonNull Switch swSoundWarning,
-      @NonNull Switch swSpeedLimitTone, @NonNull TextView tvDialogTitle) {
+      @NonNull LinearLayout adasSectionAeb, @NonNull LinearLayout adasSectionSwi133,
+      @NonNull LinearLayout adasSectionSwi68, @NonNull MaterialButton btnAdasAccD,
+      @NonNull MaterialButton btnAdasAutoD, @NonNull MaterialButton btnAdasIcaD,
+      @NonNull MaterialButton btnAdasLimD, @NonNull MaterialButton btnAdasOffD,
+      @NonNull MaterialButton btnAdasSwi68AccD, @NonNull MaterialButton btnAdasSwi68OffD,
+      @NonNull MaterialButton btnAdasSwi68TjaD, @NonNull MaterialButton btnAebAlarmBrakeD,
+      @NonNull MaterialButton btnAebAlarmD, @NonNull MaterialButton btnDialogCancel,
+      @NonNull MaterialButton btnDialogSave, @NonNull MaterialButton btnDriveCustomD,
+      @NonNull MaterialButton btnDriveEcoD, @NonNull MaterialButton btnDriveNormalD,
+      @NonNull MaterialButton btnDriveSnowD, @NonNull MaterialButton btnDriveSportD,
+      @NonNull MaterialButton btnRegenAdaptiveD, @NonNull MaterialButton btnRegenHighD,
+      @NonNull MaterialButton btnRegenLowD, @NonNull MaterialButton btnRegenMediumD,
+      @NonNull MaterialButton btnRegenOffD, @NonNull MaterialButton btnRegenOnePedalD,
+      @NonNull MaterialButton btnSl0D, @NonNull MaterialButton btnSl1D,
+      @NonNull MaterialButton btnSl2D, @NonNull MaterialButton btnSl3D,
+      @NonNull MaterialButton btnSr0D, @NonNull MaterialButton btnSr1D,
+      @NonNull MaterialButton btnSr2D, @NonNull MaterialButton btnSr3D,
+      @NonNull MaterialButton btnSteerOffD, @NonNull MaterialButton btnSteerOnD,
+      @NonNull TextInputEditText etProfileName, @NonNull LinearLayout sectionRegenDialog,
+      @NonNull Switch swAebEnabled, @NonNull Switch swOverspeedAlarm, @NonNull Switch swSetDefault,
+      @NonNull Switch swSoundWarning, @NonNull Switch swSpeedLimitTone,
+      @NonNull TextView tvDialogTitle) {
     this.rootView = rootView;
+    this.adasSectionAeb = adasSectionAeb;
     this.adasSectionSwi133 = adasSectionSwi133;
     this.adasSectionSwi68 = adasSectionSwi68;
     this.btnAdasAccD = btnAdasAccD;
@@ -174,6 +189,8 @@ public final class DialogProfileEditBinding implements ViewBinding {
     this.btnAdasSwi68AccD = btnAdasSwi68AccD;
     this.btnAdasSwi68OffD = btnAdasSwi68OffD;
     this.btnAdasSwi68TjaD = btnAdasSwi68TjaD;
+    this.btnAebAlarmBrakeD = btnAebAlarmBrakeD;
+    this.btnAebAlarmD = btnAebAlarmD;
     this.btnDialogCancel = btnDialogCancel;
     this.btnDialogSave = btnDialogSave;
     this.btnDriveCustomD = btnDriveCustomD;
@@ -199,6 +216,7 @@ public final class DialogProfileEditBinding implements ViewBinding {
     this.btnSteerOnD = btnSteerOnD;
     this.etProfileName = etProfileName;
     this.sectionRegenDialog = sectionRegenDialog;
+    this.swAebEnabled = swAebEnabled;
     this.swOverspeedAlarm = swOverspeedAlarm;
     this.swSetDefault = swSetDefault;
     this.swSoundWarning = swSoundWarning;
@@ -233,6 +251,12 @@ public final class DialogProfileEditBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
+      id = R.id.adas_section_aeb;
+      LinearLayout adasSectionAeb = ViewBindings.findChildViewById(rootView, id);
+      if (adasSectionAeb == null) {
+        break missingId;
+      }
+
       id = R.id.adas_section_swi133;
       LinearLayout adasSectionSwi133 = ViewBindings.findChildViewById(rootView, id);
       if (adasSectionSwi133 == null) {
@@ -290,6 +314,18 @@ public final class DialogProfileEditBinding implements ViewBinding {
       id = R.id.btn_adas_swi68_tja_d;
       MaterialButton btnAdasSwi68TjaD = ViewBindings.findChildViewById(rootView, id);
       if (btnAdasSwi68TjaD == null) {
+        break missingId;
+      }
+
+      id = R.id.btn_aeb_alarm_brake_d;
+      MaterialButton btnAebAlarmBrakeD = ViewBindings.findChildViewById(rootView, id);
+      if (btnAebAlarmBrakeD == null) {
+        break missingId;
+      }
+
+      id = R.id.btn_aeb_alarm_d;
+      MaterialButton btnAebAlarmD = ViewBindings.findChildViewById(rootView, id);
+      if (btnAebAlarmD == null) {
         break missingId;
       }
 
@@ -443,6 +479,12 @@ public final class DialogProfileEditBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.sw_aeb_enabled;
+      Switch swAebEnabled = ViewBindings.findChildViewById(rootView, id);
+      if (swAebEnabled == null) {
+        break missingId;
+      }
+
       id = R.id.sw_overspeed_alarm;
       Switch swOverspeedAlarm = ViewBindings.findChildViewById(rootView, id);
       if (swOverspeedAlarm == null) {
@@ -473,14 +515,15 @@ public final class DialogProfileEditBinding implements ViewBinding {
         break missingId;
       }
 
-      return new DialogProfileEditBinding((LinearLayout) rootView, adasSectionSwi133,
-          adasSectionSwi68, btnAdasAccD, btnAdasAutoD, btnAdasIcaD, btnAdasLimD, btnAdasOffD,
-          btnAdasSwi68AccD, btnAdasSwi68OffD, btnAdasSwi68TjaD, btnDialogCancel, btnDialogSave,
-          btnDriveCustomD, btnDriveEcoD, btnDriveNormalD, btnDriveSnowD, btnDriveSportD,
-          btnRegenAdaptiveD, btnRegenHighD, btnRegenLowD, btnRegenMediumD, btnRegenOffD,
-          btnRegenOnePedalD, btnSl0D, btnSl1D, btnSl2D, btnSl3D, btnSr0D, btnSr1D, btnSr2D, btnSr3D,
-          btnSteerOffD, btnSteerOnD, etProfileName, sectionRegenDialog, swOverspeedAlarm,
-          swSetDefault, swSoundWarning, swSpeedLimitTone, tvDialogTitle);
+      return new DialogProfileEditBinding((LinearLayout) rootView, adasSectionAeb,
+          adasSectionSwi133, adasSectionSwi68, btnAdasAccD, btnAdasAutoD, btnAdasIcaD, btnAdasLimD,
+          btnAdasOffD, btnAdasSwi68AccD, btnAdasSwi68OffD, btnAdasSwi68TjaD, btnAebAlarmBrakeD,
+          btnAebAlarmD, btnDialogCancel, btnDialogSave, btnDriveCustomD, btnDriveEcoD,
+          btnDriveNormalD, btnDriveSnowD, btnDriveSportD, btnRegenAdaptiveD, btnRegenHighD,
+          btnRegenLowD, btnRegenMediumD, btnRegenOffD, btnRegenOnePedalD, btnSl0D, btnSl1D, btnSl2D,
+          btnSl3D, btnSr0D, btnSr1D, btnSr2D, btnSr3D, btnSteerOffD, btnSteerOnD, etProfileName,
+          sectionRegenDialog, swAebEnabled, swOverspeedAlarm, swSetDefault, swSoundWarning,
+          swSpeedLimitTone, tvDialogTitle);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

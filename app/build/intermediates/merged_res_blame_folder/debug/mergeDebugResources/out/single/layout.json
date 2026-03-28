@@ -24,12 +24,16 @@
         "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-49:\\layout\\fragment_settings.xml"
     },
     {
-        "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-mergeDebugResources-46:\\layout\\fragment_climate.xml",
-        "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-49:\\layout\\fragment_climate.xml"
+        "merged": "com.mg4.control.app-mergeDebugResources-46:/layout/dialog_profile_edit.xml",
+        "source": "com.mg4.control.app-main-49:/layout/dialog_profile_edit.xml"
     },
     {
         "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-mergeDebugResources-46:\\layout\\fragment_dashboard.xml",
         "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-49:\\layout\\fragment_dashboard.xml"
+    },
+    {
+        "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-mergeDebugResources-46:\\layout\\fragment_climate.xml",
+        "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-49:\\layout\\fragment_climate.xml"
     },
     {
         "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-mergeDebugResources-46:\\layout\\fragment_profile.xml",
@@ -38,10 +42,6 @@
     {
         "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-mergeDebugResources-46:\\layout\\dialog_profile_edit.xml",
         "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-49:\\layout\\dialog_profile_edit.xml"
-    },
-    {
-        "merged": "com.mg4.control.app-mergeDebugResources-46:/layout/dialog_app_info.xml",
-        "source": "com.mg4.control.app-main-49:/layout/dialog_app_info.xml"
     },
     {
         "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-mergeDebugResources-46:\\layout\\activity_main.xml",

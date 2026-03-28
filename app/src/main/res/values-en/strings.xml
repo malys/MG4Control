@@ -80,6 +80,11 @@
     <string name="adas_sound_warning">Sound warning</string>
     <string name="adas_desactiver">Disable</string>
     <string name="adas_tja">TJA</string>
+    <!-- AEB — Forward collision assist (SWI133 + SWI68) -->
+    <string name="adas_section_aeb">Active safety</string>
+    <string name="adas_aeb_switch">Forward collision assist system</string>
+    <string name="adas_aeb_alarm">Alert</string>
+    <string name="adas_aeb_alarm_brake">Alert + Auto brake</string>
 
     <!-- Infos / About -->
     <string name="btn_check_update">Check for updates</string>
@@ -98,7 +103,7 @@
     <!-- Dashboard — card headers -->
     <string name="card_drive">Drive settings</string>
     <string name="card_climate">Climate settings</string>
-    <string name="card_alerts">Alert settings</string>
+    <string name="card_alerts">Security &amp; Alerts</string>
 
     <!-- Auto-update -->
     <string name="update_available_title">Update available</string>

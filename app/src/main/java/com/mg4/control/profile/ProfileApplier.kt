@@ -60,12 +60,20 @@ object ProfileApplier {
                         AppLogger.i(TAG, "  SpeedLimitTone=${profile.speedLimitTone} → $stOk")
                         val adOk = MG4Hardware.setMixedIntelligentDrive(profile.adasMode)
                         AppLogger.i(TAG, "  AdasMode=${profile.adasMode} → $adOk")
+                        val aebOk = MG4Hardware.setAebEnabled(profile.aebEnabled)
+                        AppLogger.i(TAG, "  AebEnabled=${profile.aebEnabled} → $aebOk")
+                        val aebModeOk = MG4Hardware.setAebMode(profile.aebMode)
+                        AppLogger.i(TAG, "  AebMode=${profile.aebMode} → $aebModeOk")
                     }
                     FirmwareInfo.Gen.SWI68 -> {
                         val swOk = MG4Hardware.setSoundWarning(profile.soundWarning)
                         AppLogger.i(TAG, "  SoundWarning=${profile.soundWarning} → $swOk")
                         val adOk = MG4Hardware.setAccTjaMode(profile.swi68AdasMode)
                         AppLogger.i(TAG, "  Swi68AdasMode=0x${profile.swi68AdasMode.toString(16)} → $adOk")
+                        val aebOk = MG4Hardware.setAebEnabled(profile.aebEnabled)
+                        AppLogger.i(TAG, "  AebEnabled=${profile.aebEnabled} → $aebOk")
+                        val aebModeOk = MG4Hardware.setAebMode(profile.aebMode)
+                        AppLogger.i(TAG, "  AebMode=${profile.aebMode} → $aebModeOk")
                     }
                 }
             }

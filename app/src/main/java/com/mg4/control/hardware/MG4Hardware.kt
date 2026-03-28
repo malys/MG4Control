@@ -52,6 +52,15 @@ object MG4Hardware {
     private const val PROP_SPEED_LIMIT_TONE      = 0x503004f
     private const val PROP_MIX_INTELLIGENT_DRIVE = 0x32
 
+    // AEB — Système anti-collision avant (SWI133)
+    // PROP_AEB_SWITCH    : CarPropertyManager, AREA_GLOBAL, 1=OFF / 2=ON
+    private const val PROP_AEB_SWITCH    = 0x2140a108  // AAD_FRONT_COLLISION_ASST_SYS (CPM)
+    // PROP_AEB_SYS_MODE  : VPM, ID_AAD_FRONT_COLLISION_ASST_SYS, 1=Alerte / 2=Alerte+Freinage
+    // PROP_AEB_MODE      : VPM, ID_AAD_AUTO_EME_BREAK,            1=Alerte / 2=Alerte+Freinage
+    // Le smali vehiclesettings écrit toujours les deux simultanément via setIntPropertyRecovery
+    private const val PROP_AEB_SYS_MODE  = 0x302000a  // ID_AAD_FRONT_COLLISION_ASST_SYS (VPM)
+    private const val PROP_AEB_MODE      = 0x302000b  // ID_AAD_AUTO_EME_BREAK (VPM)
+
     // SWI68 : VehicleSettingManager class name (loaded via launcher context)
     private const val VSM_CLASS = "com.saicmotor.sdk.vehiclesettings.manager.VehicleSettingManager"
 
@@ -60,6 +69,12 @@ object MG4Hardware {
         const val OFF = 0x4   // Désactiver
         const val ACC = 0x1   // ACC
         const val TJA = 0x2   // TJA (Traffic Jam Assist)
+    }
+
+    /** Valeurs du mode AEB (communes SWI133 + SWI68). */
+    object AebMode {
+        const val ALARM       = 1   // Alerte seule (FCW)
+        const val ALARM_BRAKE = 2   // Alerte + Freinage automatique d'urgence
     }
 
     @Volatile private var sAppContext: Context? = null
@@ -602,6 +617,21 @@ object MG4Hardware {
         } catch (_: Exception) { false }
     }
 
+    /** Variante avec recovery — utilisée par vehiclesettings pour les propriétés FCW/AEB. */
+    private fun setIntPropertyVpmRecovery(propId: Int, value: Int): Boolean {
+        val vpm = sVpm ?: return false
+        return try {
+            vpm.javaClass.getMethod("setIntPropertyRecovery", Int::class.java, Int::class.java)
+                .invoke(vpm, propId, value)
+            if (logEnabled) AppLogger.i(TAG, "  VPM setIntRecovery 0x${propId.toString(16)} value=$value ✓")
+            true
+        } catch (e: Exception) {
+            // Fallback sur setIntProperty si setIntPropertyRecovery absent
+            AppLogger.d(TAG, "  VPM setIntRecovery fallback for 0x${propId.toString(16)}: ${e.message}")
+            setIntPropertyVpm(propId, value)
+        }
+    }
+
     private fun getMixIntProperty(propId: Int): Int {
         val vpm = sVpm ?: return -1
         return try {
@@ -639,6 +669,18 @@ object MG4Hardware {
     // -------------------------------------------------------------------------
     // Low-level property accessors
     // -------------------------------------------------------------------------
+
+    private fun getIntPropertyCPM(propId: Int, areaId: Int): Int {
+        val cpm = sCarPropertyManager ?: return -1
+        return try {
+            (cpm.javaClass
+                .getMethod("getIntProperty", Int::class.java, Int::class.java)
+                .invoke(cpm, propId, areaId) as? Int) ?: -1
+        } catch (e: Exception) {
+            AppLogger.d(TAG, "  CPM getInt 0x${Integer.toHexString(propId)} exc: ${e.message}")
+            -1
+        }
+    }
 
     private fun setIntPropertyCPM(propId: Int, areaId: Int, value: Int): Boolean {
         val cpm = sCarPropertyManager ?: run {
@@ -864,6 +906,76 @@ object MG4Hardware {
         if (logEnabled) AppLogger.i(TAG, "setSoundWarning → $on")
         callVsm("setLaneKeepingWarningSound", if (on) 1 else 0) ?: return false
         return true
+    }
+
+    // ── AEB — Système anti-collision avant (SWI133 + SWI68) ─────────────────
+
+    /**
+     * Retourne true si le système anti-collision avant est activé.
+     * SWI133 : lit PROP_AEB_SWITCH (2=ON, 1=OFF) via CarPropertyManager (même couche que DRIVE_MODE).
+     * SWI68  : getFcwAlarmMode() == 2 (2=ON, 1=OFF) — méthode utilisée par vehiclesettings.
+     */
+    fun isAebEnabled(): Boolean {
+        return if (FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI68) {
+            (callVsm("getFcwAlarmMode") as? Int) == 2
+        } else {
+            getIntPropertyCPM(PROP_AEB_SWITCH, AREA_GLOBAL) == 0x2
+        }
+    }
+
+    fun setAebEnabled(on: Boolean): Boolean {
+        if (logEnabled) AppLogger.i(TAG, "setAebEnabled → $on")
+        return if (FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI68) {
+            // Reproduction exacte du smali vehiclesettings SWI68 (SafeSettingsViewModel) :
+            // • ON  → setFcwAlarmMode(2)  [le frein auto reste selon son propre état]
+            // • OFF → setFcwAlarmMode(1) + setFcwAutoBrakeMode(1)
+            if (on) {
+                callVsm("setFcwAlarmMode", 2) != null
+            } else {
+                val r1 = callVsm("setFcwAlarmMode", 1) != null
+                val r2 = callVsm("setFcwAutoBrakeMode", 1) != null
+                r1 || r2
+            }
+        } else {
+            setIntPropertyCPM(PROP_AEB_SWITCH, AREA_GLOBAL, if (on) 0x2 else 0x1)
+        }
+    }
+
+    /**
+     * Retourne le mode AEB courant (1=Alerte, 2=Alerte+Freinage), ou -1 si pas prêt.
+     * SWI133 : lit PROP_AEB_MODE (0x302000b) via VehiclePropertyManager.
+     * SWI68  : getFcwAutoBrakeMode() — 2=Alerte+Freinage, 1=Alerte seule.
+     */
+    fun getAebMode(): Int {
+        return if (FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI68) {
+            (callVsm("getFcwAutoBrakeMode") as? Int) ?: AebMode.ALARM
+        } else {
+            val raw = getIntPropertyVpm(PROP_AEB_MODE)
+            if (raw < 1) -1 else raw
+        }
+    }
+
+    fun setAebMode(mode: Int): Boolean {
+        if (logEnabled) AppLogger.i(TAG, "setAebMode → $mode")
+        return if (FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI68) {
+            // Reproduction exacte du smali vehiclesettings SWI68 (SafeSettingsViewModel$1) :
+            // • Alerte seule    → setFcwAlarmMode(2) + setFcwAutoBrakeMode(1)
+            // • Alerte+Freinage → setFcwAlarmMode(2) + setFcwAutoBrakeMode(2)
+            val r1 = callVsm("setFcwAlarmMode", 2) != null
+            val r2 = callVsm("setFcwAutoBrakeMode", if (mode == AebMode.ALARM_BRAKE) 2 else 1) != null
+            r1 || r2
+        } else {
+            // Reproduction exacte du smali vehiclesettings (r0/h.smali) :
+            // • Alerte seule    → écrit UNIQUEMENT 0x302000b = 1  (ne pas toucher à 0x302000a)
+            // • Alerte+Freinage → écrit 0x302000a = 2  ET  0x302000b = 2
+            if (mode == AebMode.ALARM_BRAKE) {
+                val r1 = setIntPropertyVpmRecovery(PROP_AEB_SYS_MODE, AebMode.ALARM_BRAKE)
+                val r2 = setIntPropertyVpmRecovery(PROP_AEB_MODE, AebMode.ALARM_BRAKE)
+                r1 || r2
+            } else {
+                setIntPropertyVpmRecovery(PROP_AEB_MODE, AebMode.ALARM)
+            }
+        }
     }
 
     fun isKatman4Ready(): Boolean = when (FirmwareInfo.getGeneration()) {

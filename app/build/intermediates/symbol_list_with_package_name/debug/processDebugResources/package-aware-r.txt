@@ -3246,12 +3246,16 @@ id activity_chooser_view_content
 id adasFragment
 id adas_group_swi133
 id adas_group_swi68
+id adas_section_aeb
 id adas_section_swi133
 id adas_section_swi68
 id add
+id aeb_group
 id alertTitle
 id alerts_group_swi133
 id alerts_group_swi68
+id alerts_swi133
+id alerts_swi68
 id aligned
 id all
 id allStates
@@ -3293,6 +3297,10 @@ id btn_adas_swi68_acc_d
 id btn_adas_swi68_off_d
 id btn_adas_swi68_tja_d
 id btn_add_profile
+id btn_aeb_alarm
+id btn_aeb_alarm_brake
+id btn_aeb_alarm_brake_d
+id btn_aeb_alarm_d
 id btn_apply
 id btn_cancel_download
 id btn_check_update
@@ -3674,6 +3682,8 @@ id search_mag_icon
 id search_plate
 id search_src_text
 id search_voice_btn
+id section_aeb
+id section_bottom_row
 id section_regen
 id section_regen_dialog
 id section_swi133
@@ -3722,10 +3732,12 @@ id stretch
 id submenuarrow
 id submit_area
 id supportScrollUp
+id sw_aeb_enabled
 id sw_overspeed_alarm
 id sw_set_default
 id sw_sound_warning
 id sw_speed_limit_tone
+id switch_aeb
 id switch_auto_apply
 id switch_overspeed
 id switch_sound_warning
@@ -4058,6 +4070,9 @@ string abc_shareactionprovider_share_with
 string abc_shareactionprovider_share_with_application
 string abc_toolbar_collapse_description
 string adas_acc
+string adas_aeb_alarm
+string adas_aeb_alarm_brake
+string adas_aeb_switch
 string adas_auto
 string adas_desactiver
 string adas_ica
@@ -4065,6 +4080,7 @@ string adas_limiteur
 string adas_limiteur_short
 string adas_off
 string adas_overspeed_alarm
+string adas_section_aeb
 string adas_section_drive
 string adas_section_sounds
 string adas_sound_warning

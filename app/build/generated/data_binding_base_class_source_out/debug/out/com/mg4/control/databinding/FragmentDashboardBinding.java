@@ -27,6 +27,9 @@ public final class FragmentDashboardBinding implements ViewBinding {
   public final LinearLayout adasGroupSwi68;
 
   @NonNull
+  public final LinearLayout aebGroup;
+
+  @NonNull
   public final LinearLayout alertsGroupSwi133;
 
   @NonNull
@@ -43,6 +46,12 @@ public final class FragmentDashboardBinding implements ViewBinding {
 
   @NonNull
   public final Button btnAdasOff;
+
+  @NonNull
+  public final Button btnAebAlarm;
+
+  @NonNull
+  public final Button btnAebAlarmBrake;
 
   @NonNull
   public final Button btnCustom;
@@ -114,6 +123,9 @@ public final class FragmentDashboardBinding implements ViewBinding {
   public final LinearLayout sectionRegen;
 
   @NonNull
+  public final Switch switchAeb;
+
+  @NonNull
   public final Switch switchOverspeed;
 
   @NonNull
@@ -127,27 +139,32 @@ public final class FragmentDashboardBinding implements ViewBinding {
 
   private FragmentDashboardBinding(@NonNull LinearLayout rootView,
       @NonNull LinearLayout adasGroupSwi133, @NonNull LinearLayout adasGroupSwi68,
-      @NonNull LinearLayout alertsGroupSwi133, @NonNull LinearLayout alertsGroupSwi68,
-      @NonNull Button btnAdasAcc, @NonNull Button btnAdasIca, @NonNull Button btnAdasLimiteur,
-      @NonNull Button btnAdasOff, @NonNull Button btnCustom, @NonNull Button btnEco,
-      @NonNull Button btnNormal, @NonNull Button btnRegenAdaptive, @NonNull Button btnRegenHigh,
-      @NonNull Button btnRegenLow, @NonNull Button btnRegenMedium, @NonNull Button btnRegenOff,
-      @NonNull Button btnRegenOnePedal, @NonNull Button btnSeatLeft0, @NonNull Button btnSeatLeft1,
-      @NonNull Button btnSeatLeft2, @NonNull Button btnSeatLeft3, @NonNull Button btnSeatRight0,
-      @NonNull Button btnSeatRight1, @NonNull Button btnSeatRight2, @NonNull Button btnSeatRight3,
-      @NonNull Button btnSnow, @NonNull Button btnSport, @NonNull Button btnSwi68Acc,
-      @NonNull Button btnSwi68Off, @NonNull Button btnSwi68Tja, @NonNull LinearLayout sectionRegen,
+      @NonNull LinearLayout aebGroup, @NonNull LinearLayout alertsGroupSwi133,
+      @NonNull LinearLayout alertsGroupSwi68, @NonNull Button btnAdasAcc,
+      @NonNull Button btnAdasIca, @NonNull Button btnAdasLimiteur, @NonNull Button btnAdasOff,
+      @NonNull Button btnAebAlarm, @NonNull Button btnAebAlarmBrake, @NonNull Button btnCustom,
+      @NonNull Button btnEco, @NonNull Button btnNormal, @NonNull Button btnRegenAdaptive,
+      @NonNull Button btnRegenHigh, @NonNull Button btnRegenLow, @NonNull Button btnRegenMedium,
+      @NonNull Button btnRegenOff, @NonNull Button btnRegenOnePedal, @NonNull Button btnSeatLeft0,
+      @NonNull Button btnSeatLeft1, @NonNull Button btnSeatLeft2, @NonNull Button btnSeatLeft3,
+      @NonNull Button btnSeatRight0, @NonNull Button btnSeatRight1, @NonNull Button btnSeatRight2,
+      @NonNull Button btnSeatRight3, @NonNull Button btnSnow, @NonNull Button btnSport,
+      @NonNull Button btnSwi68Acc, @NonNull Button btnSwi68Off, @NonNull Button btnSwi68Tja,
+      @NonNull LinearLayout sectionRegen, @NonNull Switch switchAeb,
       @NonNull Switch switchOverspeed, @NonNull Switch switchSoundWarning,
       @NonNull Switch switchSpeedTone, @NonNull Switch switchSteeringHeat) {
     this.rootView = rootView;
     this.adasGroupSwi133 = adasGroupSwi133;
     this.adasGroupSwi68 = adasGroupSwi68;
+    this.aebGroup = aebGroup;
     this.alertsGroupSwi133 = alertsGroupSwi133;
     this.alertsGroupSwi68 = alertsGroupSwi68;
     this.btnAdasAcc = btnAdasAcc;
     this.btnAdasIca = btnAdasIca;
     this.btnAdasLimiteur = btnAdasLimiteur;
     this.btnAdasOff = btnAdasOff;
+    this.btnAebAlarm = btnAebAlarm;
+    this.btnAebAlarmBrake = btnAebAlarmBrake;
     this.btnCustom = btnCustom;
     this.btnEco = btnEco;
     this.btnNormal = btnNormal;
@@ -171,6 +188,7 @@ public final class FragmentDashboardBinding implements ViewBinding {
     this.btnSwi68Off = btnSwi68Off;
     this.btnSwi68Tja = btnSwi68Tja;
     this.sectionRegen = sectionRegen;
+    this.switchAeb = switchAeb;
     this.switchOverspeed = switchOverspeed;
     this.switchSoundWarning = switchSoundWarning;
     this.switchSpeedTone = switchSpeedTone;
@@ -216,6 +234,12 @@ public final class FragmentDashboardBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.aeb_group;
+      LinearLayout aebGroup = ViewBindings.findChildViewById(rootView, id);
+      if (aebGroup == null) {
+        break missingId;
+      }
+
       id = R.id.alerts_group_swi133;
       LinearLayout alertsGroupSwi133 = ViewBindings.findChildViewById(rootView, id);
       if (alertsGroupSwi133 == null) {
@@ -249,6 +273,18 @@ public final class FragmentDashboardBinding implements ViewBinding {
       id = R.id.btn_adas_off;
       Button btnAdasOff = ViewBindings.findChildViewById(rootView, id);
       if (btnAdasOff == null) {
+        break missingId;
+      }
+
+      id = R.id.btn_aeb_alarm;
+      Button btnAebAlarm = ViewBindings.findChildViewById(rootView, id);
+      if (btnAebAlarm == null) {
+        break missingId;
+      }
+
+      id = R.id.btn_aeb_alarm_brake;
+      Button btnAebAlarmBrake = ViewBindings.findChildViewById(rootView, id);
+      if (btnAebAlarmBrake == null) {
         break missingId;
       }
 
@@ -390,6 +426,12 @@ public final class FragmentDashboardBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.switch_aeb;
+      Switch switchAeb = ViewBindings.findChildViewById(rootView, id);
+      if (switchAeb == null) {
+        break missingId;
+      }
+
       id = R.id.switch_overspeed;
       Switch switchOverspeed = ViewBindings.findChildViewById(rootView, id);
       if (switchOverspeed == null) {
@@ -415,12 +457,12 @@ public final class FragmentDashboardBinding implements ViewBinding {
       }
 
       return new FragmentDashboardBinding((LinearLayout) rootView, adasGroupSwi133, adasGroupSwi68,
-          alertsGroupSwi133, alertsGroupSwi68, btnAdasAcc, btnAdasIca, btnAdasLimiteur, btnAdasOff,
-          btnCustom, btnEco, btnNormal, btnRegenAdaptive, btnRegenHigh, btnRegenLow, btnRegenMedium,
-          btnRegenOff, btnRegenOnePedal, btnSeatLeft0, btnSeatLeft1, btnSeatLeft2, btnSeatLeft3,
-          btnSeatRight0, btnSeatRight1, btnSeatRight2, btnSeatRight3, btnSnow, btnSport,
-          btnSwi68Acc, btnSwi68Off, btnSwi68Tja, sectionRegen, switchOverspeed, switchSoundWarning,
-          switchSpeedTone, switchSteeringHeat);
+          aebGroup, alertsGroupSwi133, alertsGroupSwi68, btnAdasAcc, btnAdasIca, btnAdasLimiteur,
+          btnAdasOff, btnAebAlarm, btnAebAlarmBrake, btnCustom, btnEco, btnNormal, btnRegenAdaptive,
+          btnRegenHigh, btnRegenLow, btnRegenMedium, btnRegenOff, btnRegenOnePedal, btnSeatLeft0,
+          btnSeatLeft1, btnSeatLeft2, btnSeatLeft3, btnSeatRight0, btnSeatRight1, btnSeatRight2,
+          btnSeatRight3, btnSnow, btnSport, btnSwi68Acc, btnSwi68Off, btnSwi68Tja, sectionRegen,
+          switchAeb, switchOverspeed, switchSoundWarning, switchSpeedTone, switchSteeringHeat);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

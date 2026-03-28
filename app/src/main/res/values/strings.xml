@@ -81,6 +81,11 @@
     <string name="adas_sound_warning">Avertissement sonore</string>
     <string name="adas_desactiver">Désactiver</string>
     <string name="adas_tja">TJA</string>
+    <!-- AEB — Système anti-collision avant (commun SWI133 + SWI68) -->
+    <string name="adas_section_aeb">Sécurité active</string>
+    <string name="adas_aeb_switch">Système anti-collision avant</string>
+    <string name="adas_aeb_alarm">Alerte</string>
+    <string name="adas_aeb_alarm_brake">Alerte + Freinage auto</string>
 
     <!-- Infos / À propos -->
     <string name="btn_check_update">Vérifier les mises à jour</string>
@@ -99,7 +104,7 @@
     <!-- Dashboard — en-têtes de cartes -->
     <string name="card_drive">Paramètres de conduite</string>
     <string name="card_climate">Paramètres de climatisation</string>
-    <string name="card_alerts">Paramètres d\'alertes</string>
+    <string name="card_alerts">Sécurité &amp; Alertes</string>
 
     <!-- Mise à jour automatique -->
     <string name="update_available_title">Mise à jour disponible</string>

@@ -25,7 +25,12 @@ class ProfileManager(private val context: Context) {
         val json = prefs.getString(KEY_PROFILES, null) ?: return emptyList()
         return try {
             val type = object : TypeToken<List<DrivingProfile>>() {}.type
-            gson.fromJson(json, type) ?: emptyList()
+            val list: List<DrivingProfile> = gson.fromJson(json, type) ?: emptyList()
+            // Migration : profils créés avant l'ajout AEB ont aebMode=0 (valeur JVM par défaut).
+            // On les initialise à AEB activé + mode Alerte+Freinage par défaut.
+            list.map { p ->
+                if (p.aebMode == 0) p.copy(aebEnabled = true, aebMode = 2) else p
+            }
         } catch (_: Exception) { emptyList() }
     }
 

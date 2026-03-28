@@ -17,5 +17,8 @@ data class DrivingProfile(
     // ADAS SWI68 — champs distincts pour isoler les configurations par firmware
     val soundWarning: Boolean = false,
     val swi68AdasMode: Int = 0x4,     // 0x4=Off, 0x1=ACC, 0x2=TJA
+    // AEB — Système anti-collision avant (commun SWI133 + SWI68)
+    val aebEnabled: Boolean = false,   // false=OFF, true=ON
+    val aebMode: Int = 1,              // 1=Alerte seule, 2=Alerte+Freinage auto
     val isDefault: Boolean = false
 )

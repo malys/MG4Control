@@ -22,6 +22,12 @@ public final class FragmentAdasBinding implements ViewBinding {
   private final ScrollView rootView;
 
   @NonNull
+  public final LinearLayout alertsSwi133;
+
+  @NonNull
+  public final LinearLayout alertsSwi68;
+
+  @NonNull
   public final Button btnAdasAcc;
 
   @NonNull
@@ -37,6 +43,12 @@ public final class FragmentAdasBinding implements ViewBinding {
   public final Button btnAdasOff;
 
   @NonNull
+  public final Button btnAebAlarm;
+
+  @NonNull
+  public final Button btnAebAlarmBrake;
+
+  @NonNull
   public final Button btnSwi68Acc;
 
   @NonNull
@@ -46,10 +58,19 @@ public final class FragmentAdasBinding implements ViewBinding {
   public final Button btnSwi68Tja;
 
   @NonNull
+  public final LinearLayout sectionAeb;
+
+  @NonNull
+  public final LinearLayout sectionBottomRow;
+
+  @NonNull
   public final LinearLayout sectionSwi133;
 
   @NonNull
   public final LinearLayout sectionSwi68;
+
+  @NonNull
+  public final Switch switchAeb;
 
   @NonNull
   public final Switch switchOverspeed;
@@ -60,23 +81,33 @@ public final class FragmentAdasBinding implements ViewBinding {
   @NonNull
   public final Switch switchSpeedTone;
 
-  private FragmentAdasBinding(@NonNull ScrollView rootView, @NonNull Button btnAdasAcc,
-      @NonNull Button btnAdasAuto, @NonNull Button btnAdasIca, @NonNull Button btnAdasLimiteur,
-      @NonNull Button btnAdasOff, @NonNull Button btnSwi68Acc, @NonNull Button btnSwi68Off,
-      @NonNull Button btnSwi68Tja, @NonNull LinearLayout sectionSwi133,
-      @NonNull LinearLayout sectionSwi68, @NonNull Switch switchOverspeed,
-      @NonNull Switch switchSoundWarning, @NonNull Switch switchSpeedTone) {
+  private FragmentAdasBinding(@NonNull ScrollView rootView, @NonNull LinearLayout alertsSwi133,
+      @NonNull LinearLayout alertsSwi68, @NonNull Button btnAdasAcc, @NonNull Button btnAdasAuto,
+      @NonNull Button btnAdasIca, @NonNull Button btnAdasLimiteur, @NonNull Button btnAdasOff,
+      @NonNull Button btnAebAlarm, @NonNull Button btnAebAlarmBrake, @NonNull Button btnSwi68Acc,
+      @NonNull Button btnSwi68Off, @NonNull Button btnSwi68Tja, @NonNull LinearLayout sectionAeb,
+      @NonNull LinearLayout sectionBottomRow, @NonNull LinearLayout sectionSwi133,
+      @NonNull LinearLayout sectionSwi68, @NonNull Switch switchAeb,
+      @NonNull Switch switchOverspeed, @NonNull Switch switchSoundWarning,
+      @NonNull Switch switchSpeedTone) {
     this.rootView = rootView;
+    this.alertsSwi133 = alertsSwi133;
+    this.alertsSwi68 = alertsSwi68;
     this.btnAdasAcc = btnAdasAcc;
     this.btnAdasAuto = btnAdasAuto;
     this.btnAdasIca = btnAdasIca;
     this.btnAdasLimiteur = btnAdasLimiteur;
     this.btnAdasOff = btnAdasOff;
+    this.btnAebAlarm = btnAebAlarm;
+    this.btnAebAlarmBrake = btnAebAlarmBrake;
     this.btnSwi68Acc = btnSwi68Acc;
     this.btnSwi68Off = btnSwi68Off;
     this.btnSwi68Tja = btnSwi68Tja;
+    this.sectionAeb = sectionAeb;
+    this.sectionBottomRow = sectionBottomRow;
     this.sectionSwi133 = sectionSwi133;
     this.sectionSwi68 = sectionSwi68;
+    this.switchAeb = switchAeb;
     this.switchOverspeed = switchOverspeed;
     this.switchSoundWarning = switchSoundWarning;
     this.switchSpeedTone = switchSpeedTone;
@@ -109,6 +140,18 @@ public final class FragmentAdasBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
+      id = R.id.alerts_swi133;
+      LinearLayout alertsSwi133 = ViewBindings.findChildViewById(rootView, id);
+      if (alertsSwi133 == null) {
+        break missingId;
+      }
+
+      id = R.id.alerts_swi68;
+      LinearLayout alertsSwi68 = ViewBindings.findChildViewById(rootView, id);
+      if (alertsSwi68 == null) {
+        break missingId;
+      }
+
       id = R.id.btn_adas_acc;
       Button btnAdasAcc = ViewBindings.findChildViewById(rootView, id);
       if (btnAdasAcc == null) {
@@ -139,6 +182,18 @@ public final class FragmentAdasBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.btn_aeb_alarm;
+      Button btnAebAlarm = ViewBindings.findChildViewById(rootView, id);
+      if (btnAebAlarm == null) {
+        break missingId;
+      }
+
+      id = R.id.btn_aeb_alarm_brake;
+      Button btnAebAlarmBrake = ViewBindings.findChildViewById(rootView, id);
+      if (btnAebAlarmBrake == null) {
+        break missingId;
+      }
+
       id = R.id.btn_swi68_acc;
       Button btnSwi68Acc = ViewBindings.findChildViewById(rootView, id);
       if (btnSwi68Acc == null) {
@@ -157,6 +212,18 @@ public final class FragmentAdasBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.section_aeb;
+      LinearLayout sectionAeb = ViewBindings.findChildViewById(rootView, id);
+      if (sectionAeb == null) {
+        break missingId;
+      }
+
+      id = R.id.section_bottom_row;
+      LinearLayout sectionBottomRow = ViewBindings.findChildViewById(rootView, id);
+      if (sectionBottomRow == null) {
+        break missingId;
+      }
+
       id = R.id.section_swi133;
       LinearLayout sectionSwi133 = ViewBindings.findChildViewById(rootView, id);
       if (sectionSwi133 == null) {
@@ -166,6 +233,12 @@ public final class FragmentAdasBinding implements ViewBinding {
       id = R.id.section_swi68;
       LinearLayout sectionSwi68 = ViewBindings.findChildViewById(rootView, id);
       if (sectionSwi68 == null) {
+        break missingId;
+      }
+
+      id = R.id.switch_aeb;
+      Switch switchAeb = ViewBindings.findChildViewById(rootView, id);
+      if (switchAeb == null) {
         break missingId;
       }
 
@@ -187,9 +260,10 @@ public final class FragmentAdasBinding implements ViewBinding {
         break missingId;
       }
 
-      return new FragmentAdasBinding((ScrollView) rootView, btnAdasAcc, btnAdasAuto, btnAdasIca,
-          btnAdasLimiteur, btnAdasOff, btnSwi68Acc, btnSwi68Off, btnSwi68Tja, sectionSwi133,
-          sectionSwi68, switchOverspeed, switchSoundWarning, switchSpeedTone);
+      return new FragmentAdasBinding((ScrollView) rootView, alertsSwi133, alertsSwi68, btnAdasAcc,
+          btnAdasAuto, btnAdasIca, btnAdasLimiteur, btnAdasOff, btnAebAlarm, btnAebAlarmBrake,
+          btnSwi68Acc, btnSwi68Off, btnSwi68Tja, sectionAeb, sectionBottomRow, sectionSwi133,
+          sectionSwi68, switchAeb, switchOverspeed, switchSoundWarning, switchSpeedTone);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));
