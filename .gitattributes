@@ -1,1 +1,3 @@
 *.html linguist-detectable=false
+gradle/ linguist-vendored=true
+mockup/ linguist-detectable=false

@@ -6,6 +6,9 @@ build/
 # Local config (ne jamais committer — contient les chemins locaux SDK)
 local.properties
 
+# Claude Code (config locale IDE)
+.claude/
+
 # Android Studio
 .idea/
 *.iml
