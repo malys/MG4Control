@@ -131,8 +131,8 @@ L'application communique avec le véhicule via le SDK propriétaire SAIC, en acc
 | Résolution d'écran | 1280 × 480 (orientation paysage forcée) |
 | Firmware SWI133 | Compatible ✅ |
 | Firmware SWI68 | Compatible ✅ |
-| Firmware SWI69 / SWI131 | Compatible ✅ (AEB uniquement) |
-| Firmware SWI165 | Compatible ✅ (ADAS ACC/TJA + AEB + sièges/volant chauffants) |
+| Firmware SWI69 / SWI131 | Compatible ✅ |
+| Firmware SWI165 | Compatible ✅ |
 | Firmware UNKNOWN | Mode forcé SWI133/SWI68/SWI69/SWI131/SWI165 disponible ⚠️ |
 
 ---
@@ -543,8 +543,8 @@ The app communicates with the vehicle through the proprietary SAIC SDK, accessin
 | Screen resolution | 1280 × 480 (forced landscape) |
 | SWI133 firmware | Supported ✅ |
 | SWI68 firmware | Supported ✅ |
-| SWI69 / SWI131 firmware | Supported ✅ (AEB only) |
-| SWI165 firmware | Supported ✅ (ADAS ACC/TJA + AEB + heated seats/steering) |
+| SWI69 / SWI131 firmware | Supported ✅ |
+| SWI165 firmware | Supported ✅ |
 | UNKNOWN firmware | Forced SWI133/SWI68/SWI69/SWI131/SWI165 mode available ⚠️ |
 
 ---
