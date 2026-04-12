@@ -9,11 +9,13 @@ import android.content.Context
  * SWI68  : "SWI68-xxxxx"  — ADAS via VehicleSettingManager (acc/tja), sièges+volant chauffants
  * SWI69  : "SWI69-xxxxx"  — ADAS via VehicleSettingManager "nouvelle gen", sans sièges/volant chauffants
  * SWI131 : "SWI131-xxxxx" — Identique SWI69 (même package, même API), sans sièges/volant chauffants
+ * SWI165 : "SWI165-xxxxx" — ADAS via VehicleSettingManager (même SDK que SWI68), AEB via setFcwAlarmMode
+ *                            sièges+volant chauffants disponibles
  * UNKNOWN : firmware non reconnu — l'utilisateur peut forcer un mode de compatibilité
  */
 object FirmwareInfo {
 
-    enum class Gen { SWI133, SWI68, SWI69, SWI131, UNKNOWN }
+    enum class Gen { SWI133, SWI68, SWI69, SWI131, SWI165, UNKNOWN }
 
     private const val PREF_NAME       = "mg4_settings"
     private const val PREF_FORCED_GEN = "forced_firmware_gen"
@@ -39,6 +41,7 @@ object FirmwareInfo {
         detectedString = version
         val gen = when {
             version == null               -> Gen.UNKNOWN
+            version.startsWith("SWI165")  -> Gen.SWI165
             version.startsWith("SWI133")  -> Gen.SWI133
             version.startsWith("SWI131")  -> Gen.SWI131
             version.startsWith("SWI68")   -> Gen.SWI68
@@ -90,23 +93,30 @@ object FirmwareInfo {
     }
 
     /**
-     * SWI68, SWI69 et SWI131 utilisent tous le VehicleSettingManager SAIC
+     * SWI68, SWI69, SWI131 et SWI165 utilisent tous le VehicleSettingManager SAIC
      * pour l'ADAS (ACC/TJA) et les alertes sonores.
      * SWI133 utilise VehiclePropertyManager (getMixProperty).
      */
     fun isVsmBased(): Boolean {
         val gen = getGeneration()
-        return gen == Gen.SWI68 || gen == Gen.SWI69 || gen == Gen.SWI131
+        return gen == Gen.SWI68 || gen == Gen.SWI69 || gen == Gen.SWI131 || gen == Gen.SWI165
     }
 
     /**
-     * Seuls SWI133 et SWI68 ont les sièges chauffants et le volant chauffant.
+     * SWI133, SWI68 et SWI165 ont les sièges chauffants et le volant chauffant.
      * SWI69 et SWI131 sont des finitions Standard/SE sans ces équipements.
      */
     fun hasHeatFeatures(): Boolean {
         val gen = getGeneration()
-        return gen == Gen.SWI133 || gen == Gen.SWI68
+        return gen == Gen.SWI133 || gen == Gen.SWI68 || gen == Gen.SWI165
     }
+
+    /**
+     * SWI165 utilise le même SDK VehicleSettingManager que SWI68.
+     * L'AEB est contrôlé par setFcwAlarmMode() (même API que SWI68).
+     * setAutoEmergencyBraking() existe dans le SDK mais n'est pas utilisé par l'app officielle.
+     */
+    fun isSWI165(): Boolean = getGeneration() == Gen.SWI165
 
     private fun readProp(key: String): String? = try {
         val sp  = Class.forName("android.os.SystemProperties")

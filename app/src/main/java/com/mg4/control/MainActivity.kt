@@ -97,13 +97,14 @@ class MainActivity : AppCompatActivity() {
         tv.text = span
     }
 
-    // ── Indicateur firmware (chips SWI133 / SWI68 / SWI69 / SWI131) ─────────
+    // ── Indicateur firmware (chips SWI133 / SWI68 / SWI69 / SWI131 / SWI165) ──
 
     private fun setupFirmwareChips() {
         val chip133 = findViewById<TextView>(R.id.chip_swi133)
         val chip68  = findViewById<TextView>(R.id.chip_swi68)
         val chip69  = findViewById<TextView>(R.id.chip_swi69)
         val chip131 = findViewById<TextView>(R.id.chip_swi131)
+        val chip165 = findViewById<TextView>(R.id.chip_swi165)
         val gen     = FirmwareInfo.getGeneration()
         val forced  = FirmwareInfo.isForced(this)
 
@@ -130,38 +131,32 @@ class MainActivity : AppCompatActivity() {
         }
 
         val isNaturalUnknown = gen == FirmwareInfo.Gen.UNKNOWN && !forced
+        val allChips = listOf(chip133, chip68, chip69, chip131, chip165)
 
         when {
             isNaturalUnknown -> {
-                // Les quatre chips en mode "à choisir" (rouge dim, aucune barrée)
-                styleChipSelectable(chip133)
-                styleChipSelectable(chip68)
-                styleChipSelectable(chip69)
-                styleChipSelectable(chip131)
+                // Les cinq chips en mode "à choisir" (rouge dim, aucune barrée)
+                allChips.forEach { styleChipSelectable(it) }
+            }
+            gen == FirmwareInfo.Gen.SWI165 -> {
+                styleChipActive(chip165)
+                listOf(chip133, chip68, chip69, chip131).forEach { styleChipInactive(it) }
             }
             gen == FirmwareInfo.Gen.SWI131 -> {
                 styleChipActive(chip131)
-                styleChipInactive(chip133)
-                styleChipInactive(chip68)
-                styleChipInactive(chip69)
+                listOf(chip133, chip68, chip69, chip165).forEach { styleChipInactive(it) }
             }
             gen == FirmwareInfo.Gen.SWI69 -> {
                 styleChipActive(chip69)
-                styleChipInactive(chip133)
-                styleChipInactive(chip68)
-                styleChipInactive(chip131)
+                listOf(chip133, chip68, chip131, chip165).forEach { styleChipInactive(it) }
             }
             gen == FirmwareInfo.Gen.SWI68 -> {
                 styleChipActive(chip68)
-                styleChipInactive(chip133)
-                styleChipInactive(chip69)
-                styleChipInactive(chip131)
+                listOf(chip133, chip69, chip131, chip165).forEach { styleChipInactive(it) }
             }
             else -> { // SWI133 ou forcé SWI133
                 styleChipActive(chip133)
-                styleChipInactive(chip68)
-                styleChipInactive(chip69)
-                styleChipInactive(chip131)
+                listOf(chip68, chip69, chip131, chip165).forEach { styleChipInactive(it) }
             }
         }
 
@@ -181,6 +176,10 @@ class MainActivity : AppCompatActivity() {
             }
             chip131.setOnClickListener {
                 FirmwareInfo.forceGeneration(this, FirmwareInfo.Gen.SWI131)
+                recreate()
+            }
+            chip165.setOnClickListener {
+                FirmwareInfo.forceGeneration(this, FirmwareInfo.Gen.SWI165)
                 recreate()
             }
         }

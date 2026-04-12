@@ -914,7 +914,8 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="38dp"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="6dp">
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btn_aeb_alarm_d"
@@ -932,6 +933,169 @@
                             android:layout_width="0dp" android:layout_height="match_parent"
                             android:layout_weight="1" android:layout_marginStart="2dp"
                             android:text="@string/adas_aeb_alarm_brake"
+                            android:textColor="@color/text_secondary" android:textSize="10sp"
+                            android:textAllCaps="true" android:backgroundTint="@color/dash_btn"
+                            app:strokeColor="@color/dash_border" app:strokeWidth="1dp" app:cornerRadius="6dp" />
+
+                    </LinearLayout>
+
+                    <!-- Sensibilité AEB — SWI133 uniquement -->
+                    <LinearLayout
+                        android:id="@+id/aeb_sen_section_d"
+                        android:layout_width="match_parent"
+                        android:layout_height="38dp"
+                        android:orientation="horizontal"
+                        android:visibility="gone">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_aeb_sen_low_d"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="0dp" android:layout_height="match_parent"
+                            android:layout_weight="1" android:layout_marginEnd="2dp"
+                            android:text="@string/aeb_sensitivity_low"
+                            android:textColor="@color/text_secondary" android:textSize="10sp"
+                            android:textAllCaps="true" android:backgroundTint="@color/dash_btn"
+                            app:strokeColor="@color/dash_border" app:strokeWidth="1dp" app:cornerRadius="6dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_aeb_sen_standard_d"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="0dp" android:layout_height="match_parent"
+                            android:layout_weight="1" android:layout_marginStart="2dp" android:layout_marginEnd="2dp"
+                            android:text="@string/aeb_sensitivity_standard"
+                            android:textColor="@color/text_secondary" android:textSize="10sp"
+                            android:textAllCaps="true" android:backgroundTint="@color/dash_btn"
+                            app:strokeColor="@color/dash_border" app:strokeWidth="1dp" app:cornerRadius="6dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_aeb_sen_high_d"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="0dp" android:layout_height="match_parent"
+                            android:layout_weight="1" android:layout_marginStart="2dp"
+                            android:text="@string/aeb_sensitivity_high"
+                            android:textColor="@color/text_secondary" android:textSize="10sp"
+                            android:textAllCaps="true" android:backgroundTint="@color/dash_btn"
+                            app:strokeColor="@color/dash_border" app:strokeWidth="1dp" app:cornerRadius="6dp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- ═══ ELK — Assistant de sortie de voie (SWI133 uniquement) ═══ -->
+                <LinearLayout
+                    android:id="@+id/elk_section_dialog"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_section_rounded"
+                    android:padding="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/elk_card_title"
+                        android:textColor="@color/dash_text_lo"
+                        android:textSize="9sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.12"
+                        android:textAllCaps="true"
+                        android:paddingBottom="5dp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/dash_border"
+                        android:layout_marginBottom="6dp" />
+
+                    <!-- Toggle ELK ON/OFF -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="7dp">
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/elk_profile_label"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="11sp" />
+                        <Switch android:id="@+id/sw_elk_enabled"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <!-- Mode : Alerte / Aider / Maintien d'urgence -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="38dp"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="3dp">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_elk_alert_d"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="0dp" android:layout_height="match_parent"
+                            android:layout_weight="1" android:layout_marginEnd="2dp"
+                            android:text="@string/elk_mode_alert"
+                            android:textColor="@color/text_secondary" android:textSize="10sp"
+                            android:textAllCaps="true" android:backgroundTint="@color/dash_btn"
+                            app:strokeColor="@color/dash_border" app:strokeWidth="1dp" app:cornerRadius="6dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_elk_assist_d"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="0dp" android:layout_height="match_parent"
+                            android:layout_weight="1" android:layout_marginStart="2dp" android:layout_marginEnd="2dp"
+                            android:text="@string/elk_mode_assist"
+                            android:textColor="@color/text_secondary" android:textSize="10sp"
+                            android:textAllCaps="true" android:backgroundTint="@color/dash_btn"
+                            app:strokeColor="@color/dash_border" app:strokeWidth="1dp" app:cornerRadius="6dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_elk_emergency_d"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="0dp" android:layout_height="match_parent"
+                            android:layout_weight="1" android:layout_marginStart="2dp"
+                            android:text="@string/elk_mode_emergency"
+                            android:textColor="@color/text_secondary" android:textSize="9sp"
+                            android:textAllCaps="true" android:backgroundTint="@color/dash_btn"
+                            app:strokeColor="@color/dash_border" app:strokeWidth="1dp" app:cornerRadius="6dp" />
+
+                    </LinearLayout>
+
+                    <!-- Sensibilité : Faible / Standard / Élevé -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="38dp"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_elk_sen_low_d"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="0dp" android:layout_height="match_parent"
+                            android:layout_weight="1" android:layout_marginEnd="2dp"
+                            android:text="@string/elk_sensitivity_low"
+                            android:textColor="@color/text_secondary" android:textSize="10sp"
+                            android:textAllCaps="true" android:backgroundTint="@color/dash_btn"
+                            app:strokeColor="@color/dash_border" app:strokeWidth="1dp" app:cornerRadius="6dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_elk_sen_standard_d"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="0dp" android:layout_height="match_parent"
+                            android:layout_weight="1" android:layout_marginStart="2dp" android:layout_marginEnd="2dp"
+                            android:text="@string/elk_sensitivity_standard"
+                            android:textColor="@color/text_secondary" android:textSize="10sp"
+                            android:textAllCaps="true" android:backgroundTint="@color/dash_btn"
+                            app:strokeColor="@color/dash_border" app:strokeWidth="1dp" app:cornerRadius="6dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_elk_sen_high_d"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="0dp" android:layout_height="match_parent"
+                            android:layout_weight="1" android:layout_marginStart="2dp"
+                            android:text="@string/elk_sensitivity_high"
                             android:textColor="@color/text_secondary" android:textSize="10sp"
                             android:textAllCaps="true" android:backgroundTint="@color/dash_btn"
                             app:strokeColor="@color/dash_border" app:strokeWidth="1dp" app:cornerRadius="6dp" />

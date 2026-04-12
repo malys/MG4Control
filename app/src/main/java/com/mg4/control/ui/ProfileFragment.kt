@@ -17,6 +17,9 @@ import com.google.android.material.button.MaterialButton
 import com.mg4.control.R
 import com.mg4.control.hardware.MG4Hardware
 import com.mg4.control.hardware.MG4Hardware.AebMode
+import com.mg4.control.hardware.MG4Hardware.AebSensitivity
+import com.mg4.control.hardware.MG4Hardware.ElkMode
+import com.mg4.control.hardware.MG4Hardware.ElkSensitivity
 import com.mg4.control.hardware.MG4Hardware.Swi68Mode
 import com.mg4.control.model.DriveMode
 import com.mg4.control.model.DrivingProfile
@@ -112,7 +115,9 @@ class ProfileFragment : Fragment() {
         CoroutineScope(Dispatchers.IO).launch {
             val hasHeat = FirmwareInfo.hasHeatFeatures()
             val prefill = if (FirmwareInfo.isVsmBased()) {
-                // SWI68/SWI69/SWI131 : ADAS ACC/TJA — sièges/volant uniquement sur SWI68
+                // SWI68/SWI69/SWI131/SWI165 : ADAS ACC/TJA — sièges/volant uniquement sur SWI68/SWI165
+                val elkMode = MG4Hardware.getElkMode().let { if (it < 1) ElkMode.EMERGENCY else it }
+                val elkSen  = MG4Hardware.getElkSensitivity().let { if (it < 1) ElkSensitivity.STANDARD else it }
                 DrivingProfile(
                     name          = "",
                     driveMode     = MG4Hardware.getDriveMode()  ?: DriveMode.NORMAL,
@@ -122,11 +127,17 @@ class ProfileFragment : Fragment() {
                     seatHeatRight = if (hasHeat) MG4Hardware.getSeatHeatRight().coerceAtLeast(0) else 0,
                     soundWarning  = MG4Hardware.isSoundWarningOn(),
                     swi68AdasMode = MG4Hardware.getAccTjaMode().let { if (it < 0) Swi68Mode.OFF else it },
-                    aebEnabled    = MG4Hardware.isAebEnabled(),
-                    aebMode       = MG4Hardware.getAebMode().let { if (it < 1) AebMode.ALARM else it }
+                    aebEnabled     = MG4Hardware.isAebEnabled(),
+                    aebMode        = MG4Hardware.getAebMode().let { if (it < 1) AebMode.ALARM else it },
+                    aebSensitivity = MG4Hardware.getAebSensitivity().let { if (it < 1) AebSensitivity.STANDARD else it },
+                    elkMode        = elkMode,
+                    elkSensitivity = elkSen
                 )
             } else {
                 // SWI133/UNKNOWN : ADAS mixte, sièges et volant chauffants
+                val elkMode = MG4Hardware.getElkMode().let { if (it < 1) ElkMode.EMERGENCY else it }
+                val elkSen  = MG4Hardware.getElkSensitivity().let { if (it < 1) ElkSensitivity.STANDARD else it }
+                val aebSen  = MG4Hardware.getAebSensitivity().let { if (it < 1) AebSensitivity.STANDARD else it }
                 DrivingProfile(
                     name           = "",
                     driveMode      = MG4Hardware.getDriveMode()  ?: DriveMode.NORMAL,
@@ -138,7 +149,10 @@ class ProfileFragment : Fragment() {
                     speedLimitTone = MG4Hardware.isSpeedLimitToneOn(),
                     adasMode       = MG4Hardware.getMixedIntelligentDrive().coerceAtLeast(0),
                     aebEnabled     = MG4Hardware.isAebEnabled(),
-                    aebMode        = MG4Hardware.getAebMode().let { if (it < 1) AebMode.ALARM else it }
+                    aebMode        = MG4Hardware.getAebMode().let { if (it < 1) AebMode.ALARM else it },
+                    aebSensitivity = aebSen,
+                    elkMode        = elkMode,
+                    elkSensitivity = elkSen
                 )
             }
             withContext(Dispatchers.Main) {
@@ -187,6 +201,12 @@ class ProfileFragment : Fragment() {
         var swi68Mode       = data.swi68AdasMode
         var aebEnabledSel   = data.aebEnabled
         var aebModeSel      = data.aebMode
+        var aebSenSel       = data.aebSensitivity.let { if (it == 0) AebSensitivity.STANDARD else it }
+        var elkModeSel      = data.elkMode.let { if (it == 0) ElkMode.EMERGENCY else it }
+        var elkSenSel       = data.elkSensitivity.let { if (it == 0) ElkSensitivity.STANDARD else it }
+        var elkEnabledSel   = elkModeSel != ElkMode.OFF
+        /** Dernier mode ELK actif pour restauration après toggle ON */
+        var lastActiveElkModeD = if (elkModeSel != ElkMode.OFF) elkModeSel else ElkMode.EMERGENCY
 
         // ── Mode de conduite ─────────────────────────────────────────────────
         val drivePairs = listOf(
@@ -270,10 +290,25 @@ class ProfileFragment : Fragment() {
             val btnAebAlarmD  = dialogView.findViewById<MaterialButton>(R.id.btn_aeb_alarm_d)
             val btnAebBrakeD  = dialogView.findViewById<MaterialButton>(R.id.btn_aeb_alarm_brake_d)
 
+            // Sensibilité AEB — SWI133 uniquement
+            val aebSenSectionD = dialogView.findViewById<View>(R.id.aeb_sen_section_d)
+            val btnAebSenLowD  = dialogView.findViewById<MaterialButton>(R.id.btn_aeb_sen_low_d)
+            val btnAebSenStdD  = dialogView.findViewById<MaterialButton>(R.id.btn_aeb_sen_standard_d)
+            val btnAebSenHighD = dialogView.findViewById<MaterialButton>(R.id.btn_aeb_sen_high_d)
+
+            val showSensitivity = gen != FirmwareInfo.Gen.UNKNOWN
+            aebSenSectionD.visibility = if (showSensitivity) View.VISIBLE else View.GONE
+
             fun setAebModeButtonsEnabled(enabled: Boolean) {
                 listOf(btnAebAlarmD, btnAebBrakeD).forEach { btn ->
                     btn.isEnabled = enabled
                     btn.alpha     = if (enabled) 1f else 0.35f
+                }
+                if (showSensitivity) {
+                    listOf(btnAebSenLowD, btnAebSenStdD, btnAebSenHighD).forEach { btn ->
+                        btn.isEnabled = enabled
+                        btn.alpha     = if (enabled) 1f else 0.35f
+                    }
                 }
             }
 
@@ -286,6 +321,64 @@ class ProfileFragment : Fragment() {
 
             val aebModePairs = listOf(btnAebAlarmD to AebMode.ALARM, btnAebBrakeD to AebMode.ALARM_BRAKE)
             bindGroup(aebModePairs, aebModeSel) { aebModeSel = it }
+
+            if (showSensitivity) {
+                val aebSenPairs = listOf(
+                    btnAebSenLowD  to AebSensitivity.LOW,
+                    btnAebSenStdD  to AebSensitivity.STANDARD,
+                    btnAebSenHighD to AebSensitivity.HIGH
+                )
+                bindGroup(aebSenPairs, aebSenSel) { aebSenSel = it }
+            }
+        }
+
+        // ── Section ELK (tous firmwares connus) ─────────────────────────────
+        val sectionElk = dialogView.findViewById<View>(R.id.elk_section_dialog)
+        if (gen != FirmwareInfo.Gen.UNKNOWN) {
+            sectionElk.visibility = View.VISIBLE
+
+            val swElk           = dialogView.findViewById<Switch>(R.id.sw_elk_enabled)
+            val btnElkAlertD    = dialogView.findViewById<MaterialButton>(R.id.btn_elk_alert_d)
+            val btnElkAssistD   = dialogView.findViewById<MaterialButton>(R.id.btn_elk_assist_d)
+            val btnElkEmergD    = dialogView.findViewById<MaterialButton>(R.id.btn_elk_emergency_d)
+            val btnElkSenLowD   = dialogView.findViewById<MaterialButton>(R.id.btn_elk_sen_low_d)
+            val btnElkSenStdD   = dialogView.findViewById<MaterialButton>(R.id.btn_elk_sen_standard_d)
+            val btnElkSenHighD  = dialogView.findViewById<MaterialButton>(R.id.btn_elk_sen_high_d)
+
+            val elkModeBtns = listOf(btnElkAlertD, btnElkAssistD, btnElkEmergD)
+            val elkSenBtns  = listOf(btnElkSenLowD, btnElkSenStdD, btnElkSenHighD)
+
+            fun setElkButtonsEnabled(enabled: Boolean) {
+                (elkModeBtns + elkSenBtns).forEach { btn ->
+                    btn.isEnabled = enabled
+                    btn.alpha     = if (enabled) 1f else 0.35f
+                }
+            }
+
+            swElk.isChecked = elkEnabledSel
+            setElkButtonsEnabled(elkEnabledSel)
+            swElk.setOnCheckedChangeListener { _, checked ->
+                elkEnabledSel = checked
+                elkModeSel = if (checked) lastActiveElkModeD else ElkMode.OFF
+                setElkButtonsEnabled(checked)
+            }
+
+            val elkModePairs = listOf(
+                btnElkAlertD  to ElkMode.ALERT,
+                btnElkAssistD to ElkMode.ASSIST,
+                btnElkEmergD  to ElkMode.EMERGENCY
+            )
+            bindGroup(elkModePairs, if (elkEnabledSel) elkModeSel else ElkMode.EMERGENCY) { mode ->
+                elkModeSel = mode
+                lastActiveElkModeD = mode
+            }
+
+            val elkSenPairs = listOf(
+                btnElkSenLowD  to ElkSensitivity.LOW,
+                btnElkSenStdD  to ElkSensitivity.STANDARD,
+                btnElkSenHighD to ElkSensitivity.HIGH
+            )
+            bindGroup(elkSenPairs, elkSenSel) { elkSenSel = it }
         }
 
         // ── Sections ADAS ────────────────────────────────────────────────────
@@ -381,7 +474,10 @@ class ProfileFragment : Fragment() {
                 soundWarning   = soundWarning,
                 swi68AdasMode  = swi68Mode,
                 aebEnabled     = aebEnabledSel,
-                aebMode        = aebModeSel
+                aebMode        = aebModeSel,
+                aebSensitivity = aebSenSel,
+                elkMode        = elkModeSel,
+                elkSensitivity = elkSenSel
             )
             manager.save(profile)
             if (swDefault.isChecked) manager.setDefault(profile.id)

@@ -1,50 +1,51 @@
-com.mg4.control.app-jetified-fragment-ktx-1.8.4-0 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\08f5664d7c34b5cddfc1e9867dc7739e\transformed\jetified-fragment-ktx-1.8.4\res
-com.mg4.control.app-lifecycle-livedata-core-2.8.6-1 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\0f5e636302be1ca805b97c9f7e789780\transformed\lifecycle-livedata-core-2.8.6\res
-com.mg4.control.app-navigation-common-ktx-2.8.3-2 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\16c81ea7c920eec898436b999f826275\transformed\navigation-common-ktx-2.8.3\res
-com.mg4.control.app-jetified-activity-1.8.1-3 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\264ada788f03306d77cbaa1150a5abea\transformed\jetified-activity-1.8.1\res
-com.mg4.control.app-jetified-startup-runtime-1.1.1-4 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\2b67a1d7791253118b266cb273073bf8\transformed\jetified-startup-runtime-1.1.1\res
-com.mg4.control.app-navigation-runtime-ktx-2.8.3-5 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\2fe1e2a63e609c8f70bb8f80d937e128\transformed\navigation-runtime-ktx-2.8.3\res
-com.mg4.control.app-constraintlayout-2.1.4-6 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\3873ea5c8a1381293a2b2d7598e93e03\transformed\constraintlayout-2.1.4\res
-com.mg4.control.app-jetified-savedstate-1.2.1-7 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\3bade27ec074674e964ccd2203d1fd6a\transformed\jetified-savedstate-1.2.1\res
-com.mg4.control.app-jetified-appcompat-resources-1.7.0-8 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\406d3d3fda73b7921f2b1f9126b4a8da\transformed\jetified-appcompat-resources-1.7.0\res
-com.mg4.control.app-fragment-1.8.4-9 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\462b6f809354111e665210813e982180\transformed\fragment-1.8.4\res
-com.mg4.control.app-cardview-1.0.0-10 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\474010312e228eccaa70294cca6f1ec7\transformed\cardview-1.0.0\res
-com.mg4.control.app-slidingpanelayout-1.2.0-11 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\4f45c46b81e6f0f8e926608607691511\transformed\slidingpanelayout-1.2.0\res
-com.mg4.control.app-jetified-lifecycle-viewmodel-release-12 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\4f9cc79940c76dab4870249cd3f71eb8\transformed\jetified-lifecycle-viewmodel-release\res
-com.mg4.control.app-jetified-lifecycle-viewmodel-savedstate-2.8.6-13 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\52b780b1c580f6b55dc17f15351f2989\transformed\jetified-lifecycle-viewmodel-savedstate-2.8.6\res
-com.mg4.control.app-jetified-lifecycle-runtime-ktx-release-14 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\53f0e80d7f055b3fd637b4e3cf6654da\transformed\jetified-lifecycle-runtime-ktx-release\res
-com.mg4.control.app-jetified-emoji2-1.3.0-15 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\63a6eedb66d7ff1c4b3724f3900e16a6\transformed\jetified-emoji2-1.3.0\res
-com.mg4.control.app-jetified-lifecycle-viewmodel-ktx-2.8.6-16 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\694b1c0bca6e5eea565f5cb6eb45a279\transformed\jetified-lifecycle-viewmodel-ktx-2.8.6\res
-com.mg4.control.app-appcompat-1.7.0-17 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\79fed9fce8441414c626264bba4b61fa\transformed\appcompat-1.7.0\res
-com.mg4.control.app-jetified-core-ktx-1.13.1-18 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\8a3193e7824b6ba23c3858a5f53e1aad\transformed\jetified-core-ktx-1.13.1\res
-com.mg4.control.app-jetified-lifecycle-livedata-core-ktx-2.8.6-19 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\8a9933ebe80921692495fde4fd7f2ae7\transformed\jetified-lifecycle-livedata-core-ktx-2.8.6\res
-com.mg4.control.app-jetified-emoji2-views-helper-1.3.0-20 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\8b0df88ac7deaa6e4f4166242f31160a\transformed\jetified-emoji2-views-helper-1.3.0\res
-com.mg4.control.app-navigation-fragment-2.8.3-21 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\8d3e1945ff75c96684054ce45a99200e\transformed\navigation-fragment-2.8.3\res
-com.mg4.control.app-transition-1.5.0-22 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\8da3c81a2bfbf852fddf0c510617fa01\transformed\transition-1.5.0\res
-com.mg4.control.app-core-runtime-2.2.0-23 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\91936e731ef8559c0800d3914b286ae5\transformed\core-runtime-2.2.0\res
-com.mg4.control.app-drawerlayout-1.1.1-24 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\9443a69b12d6e65d0e89c652f32350cf\transformed\drawerlayout-1.1.1\res
-com.mg4.control.app-recyclerview-1.1.0-25 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\969aa4c645467307e964b7986fdf3079\transformed\recyclerview-1.1.0\res
-com.mg4.control.app-jetified-lifecycle-process-2.8.6-26 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\9849d88ccdd3dafe579120eb110141bd\transformed\jetified-lifecycle-process-2.8.6\res
-com.mg4.control.app-lifecycle-livedata-2.8.6-27 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\9b15dc0129c82a78c9a86843b0c8d66a\transformed\lifecycle-livedata-2.8.6\res
-com.mg4.control.app-jetified-activity-ktx-1.8.1-28 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\9c2373e996bb52841502ee9451bdfb4a\transformed\jetified-activity-ktx-1.8.1\res
-com.mg4.control.app-navigation-common-2.8.3-29 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\a0a0c4c8f5fa4023017542b49befee65\transformed\navigation-common-2.8.3\res
-com.mg4.control.app-jetified-savedstate-ktx-1.2.1-30 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\a560e7cbe6cc1e907ca328c65ae4c8fd\transformed\jetified-savedstate-ktx-1.2.1\res
-com.mg4.control.app-jetified-viewpager2-1.0.0-31 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\abcc2da205eaaeee0a0f5b78f53f8360\transformed\jetified-viewpager2-1.0.0\res
-com.mg4.control.app-navigation-runtime-2.8.3-32 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\ace0738792e8c083b676d4cdf94b6cb7\transformed\navigation-runtime-2.8.3\res
-com.mg4.control.app-jetified-profileinstaller-1.3.1-33 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\b51002fd6f50ff556cfdfc2e5d2ec314\transformed\jetified-profileinstaller-1.3.1\res
-com.mg4.control.app-material-1.12.0-34 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\c19ddecd72a1286746a358f26ff4fc1d\transformed\material-1.12.0\res
-com.mg4.control.app-jetified-lifecycle-runtime-release-35 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\d04d3fbf0517bfa35302f9a8a38ebdbe\transformed\jetified-lifecycle-runtime-release\res
-com.mg4.control.app-core-1.13.1-36 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\d2a235b584ccc70e1ca98b4bb82a4758\transformed\core-1.13.1\res
-com.mg4.control.app-navigation-fragment-ktx-2.8.3-37 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\d6cc22ceb022c7656c51cb2e1f16de4a\transformed\navigation-fragment-ktx-2.8.3\res
-com.mg4.control.app-coordinatorlayout-1.1.0-38 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\db4d661cc50d0aa929da5462567204aa\transformed\coordinatorlayout-1.1.0\res
-com.mg4.control.app-jetified-annotation-experimental-1.4.1-39 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\e1dfdaadef4b158776a15691e5d657ad\transformed\jetified-annotation-experimental-1.4.1\res
-com.mg4.control.app-jetified-window-1.0.0-40 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\e6d1227519907b37c82e1e05f863c281\transformed\jetified-window-1.0.0\res
-com.mg4.control.app-navigation-ui-ktx-2.8.3-41 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\f26b9e52a7b93b39011674f86d32437a\transformed\navigation-ui-ktx-2.8.3\res
-com.mg4.control.app-navigation-ui-2.8.3-42 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\fa7193d9ea9357186faeb05f8ab7d380\transformed\navigation-ui-2.8.3\res
-com.mg4.control.app-pngs-43 C:\Users\SliDS\Documents\MG4 Project\MG4Control\app\build\generated\res\pngs\debug
-com.mg4.control.app-resValues-44 C:\Users\SliDS\Documents\MG4 Project\MG4Control\app\build\generated\res\resValues\debug
-com.mg4.control.app-packageDebugResources-45 C:\Users\SliDS\Documents\MG4 Project\MG4Control\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
-com.mg4.control.app-packageDebugResources-46 C:\Users\SliDS\Documents\MG4 Project\MG4Control\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
-com.mg4.control.app-debug-47 C:\Users\SliDS\Documents\MG4 Project\MG4Control\app\build\intermediates\merged_res\debug\mergeDebugResources
-com.mg4.control.app-debug-48 C:\Users\SliDS\Documents\MG4 Project\MG4Control\app\src\debug\res
-com.mg4.control.app-main-49 C:\Users\SliDS\Documents\MG4 Project\MG4Control\app\src\main\res
+com.mg4.control.app-jetified-window-1.0.0-0 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\0089ec66a86229ea9039792f27c8d141\transformed\jetified-window-1.0.0\res
+com.mg4.control.app-jetified-emoji2-views-helper-1.3.0-1 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\03bdbce137baeca1d3e454060d0c0379\transformed\jetified-emoji2-views-helper-1.3.0\res
+com.mg4.control.app-core-1.13.1-2 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\0ce487e8221e59d02f8b86b39a222437\transformed\core-1.13.1\res
+com.mg4.control.app-jetified-startup-runtime-1.1.1-3 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\0f6ea483daf3509c5ef8b64d7356f7fe\transformed\jetified-startup-runtime-1.1.1\res
+com.mg4.control.app-jetified-activity-1.8.1-4 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\159ad72de4c79dae852b0d2ce06cad7b\transformed\jetified-activity-1.8.1\res
+com.mg4.control.app-lifecycle-livedata-core-2.8.6-5 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\1e941ffa157c5571e474e6ec733305de\transformed\lifecycle-livedata-core-2.8.6\res
+com.mg4.control.app-navigation-common-2.8.3-6 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\1f3618ad0af60f8e8c295db74947c42f\transformed\navigation-common-2.8.3\res
+com.mg4.control.app-jetified-lifecycle-viewmodel-ktx-2.8.6-7 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\264033940dfaacbcfefdef02f27278a1\transformed\jetified-lifecycle-viewmodel-ktx-2.8.6\res
+com.mg4.control.app-jetified-lifecycle-process-2.8.6-8 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\2d8c78b46d8d1e1ea0cee04ae55150b4\transformed\jetified-lifecycle-process-2.8.6\res
+com.mg4.control.app-jetified-customview-poolingcontainer-1.0.0-9 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\34ab5f5a45b3b3dc2cbe2a00dccad210\transformed\jetified-customview-poolingcontainer-1.0.0\res
+com.mg4.control.app-transition-1.5.0-10 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\3967e3e1c0075321e5dac0e4dd751562\transformed\transition-1.5.0\res
+com.mg4.control.app-slidingpanelayout-1.2.0-11 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\3a38e81c04a7bc8a0b16207258f0c474\transformed\slidingpanelayout-1.2.0\res
+com.mg4.control.app-recyclerview-1.3.1-12 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\43b98171f976f59505707f4b4bde8fe8\transformed\recyclerview-1.3.1\res
+com.mg4.control.app-jetified-lifecycle-viewmodel-release-13 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\4aa04fde803e2965f41f4651046326b7\transformed\jetified-lifecycle-viewmodel-release\res
+com.mg4.control.app-jetified-core-ktx-1.13.1-14 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\4d0a2f139ecd1ed8e7b12090d4708768\transformed\jetified-core-ktx-1.13.1\res
+com.mg4.control.app-coordinatorlayout-1.1.0-15 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\520ef4acc8e15b4226f5def440f693f4\transformed\coordinatorlayout-1.1.0\res
+com.mg4.control.app-appcompat-1.7.0-16 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\527bdc61a26d1aef15abf4dd4febdfc7\transformed\appcompat-1.7.0\res
+com.mg4.control.app-jetified-activity-ktx-1.8.1-17 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\60471f50d77dd720b0e8ca88aab6353d\transformed\jetified-activity-ktx-1.8.1\res
+com.mg4.control.app-core-runtime-2.2.0-18 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\67ae4cc6b3f4aaee068edb65b6d7fd04\transformed\core-runtime-2.2.0\res
+com.mg4.control.app-navigation-runtime-ktx-2.8.3-19 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\72be10602de6c002a000c193aae24f79\transformed\navigation-runtime-ktx-2.8.3\res
+com.mg4.control.app-lifecycle-livedata-2.8.6-20 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\75e6c47c73acd38cd17010ee7620b29a\transformed\lifecycle-livedata-2.8.6\res
+com.mg4.control.app-jetified-lifecycle-livedata-core-ktx-2.8.6-21 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\7603cdb1ab594943cf0bbe3be17b38b3\transformed\jetified-lifecycle-livedata-core-ktx-2.8.6\res
+com.mg4.control.app-cardview-1.0.0-22 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\772d65cf481ef767ebb3f0a3e32fe9fd\transformed\cardview-1.0.0\res
+com.mg4.control.app-navigation-ui-2.8.3-23 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\774de4bb28060fd8a6b2ef255ae46e90\transformed\navigation-ui-2.8.3\res
+com.mg4.control.app-jetified-appcompat-resources-1.7.0-24 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\8548e206aeb799037c2811639b7881ee\transformed\jetified-appcompat-resources-1.7.0\res
+com.mg4.control.app-jetified-emoji2-1.3.0-25 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\9b293c9c73f2291df0392b92edcde5c4\transformed\jetified-emoji2-1.3.0\res
+com.mg4.control.app-jetified-viewpager2-1.1.0-26 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\9d19ea4842984c1185f6ac4ea94398d2\transformed\jetified-viewpager2-1.1.0\res
+com.mg4.control.app-material-1.12.0-27 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\a16b75db111dca5aa57f9b4c03d671f1\transformed\material-1.12.0\res
+com.mg4.control.app-jetified-savedstate-1.2.1-28 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\a47a3be3fb6d8a1661914669a5f7d699\transformed\jetified-savedstate-1.2.1\res
+com.mg4.control.app-navigation-fragment-2.8.3-29 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\aef3291ca6a38a1acf12feee16ab357f\transformed\navigation-fragment-2.8.3\res
+com.mg4.control.app-navigation-ui-ktx-2.8.3-30 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\c200d63afbc813c24bebbe1fd1a5dbf0\transformed\navigation-ui-ktx-2.8.3\res
+com.mg4.control.app-jetified-savedstate-ktx-1.2.1-31 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\c4f69997393c26b4a2f94ab143f008a6\transformed\jetified-savedstate-ktx-1.2.1\res
+com.mg4.control.app-jetified-annotation-experimental-1.4.1-32 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\c8b1cb852908c65825944b700cee8c3b\transformed\jetified-annotation-experimental-1.4.1\res
+com.mg4.control.app-jetified-fragment-ktx-1.8.4-33 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\c91e7812255a0e5ccba84bed873323bf\transformed\jetified-fragment-ktx-1.8.4\res
+com.mg4.control.app-navigation-fragment-ktx-2.8.3-34 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\d3f47564849d0bc9a0aad68b20fe1c04\transformed\navigation-fragment-ktx-2.8.3\res
+com.mg4.control.app-jetified-lifecycle-viewmodel-savedstate-2.8.6-35 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\d792638b46049418ad181ca22d100206\transformed\jetified-lifecycle-viewmodel-savedstate-2.8.6\res
+com.mg4.control.app-jetified-profileinstaller-1.3.1-36 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\dd567882e728e1ae6c1fff5964f876c7\transformed\jetified-profileinstaller-1.3.1\res
+com.mg4.control.app-jetified-lifecycle-runtime-ktx-release-37 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\df4ce757048378b33926ba850a7cbbc8\transformed\jetified-lifecycle-runtime-ktx-release\res
+com.mg4.control.app-drawerlayout-1.1.1-38 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\e067a720cad57a569d7e5de7e67e24ec\transformed\drawerlayout-1.1.1\res
+com.mg4.control.app-fragment-1.8.4-39 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\e1b5c563047844dc5429a3d294b943aa\transformed\fragment-1.8.4\res
+com.mg4.control.app-navigation-common-ktx-2.8.3-40 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\e9443d2b2b687b6ca3e73d9dff1d73ff\transformed\navigation-common-ktx-2.8.3\res
+com.mg4.control.app-navigation-runtime-2.8.3-41 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\eaf212f2fdc098d59ca4040a01497ba7\transformed\navigation-runtime-2.8.3\res
+com.mg4.control.app-jetified-lifecycle-runtime-release-42 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\f34c8d8972d6c42c0a1660062c7ff9a0\transformed\jetified-lifecycle-runtime-release\res
+com.mg4.control.app-constraintlayout-2.1.4-43 C:\Users\SliDS\.gradle\caches\9.0.0\transforms\fba0d2fe2a2771f2065eccd80f525069\transformed\constraintlayout-2.1.4\res
+com.mg4.control.app-pngs-44 C:\Users\SliDS\Documents\MG4 Project\MG4Control\app\build\generated\res\pngs\debug
+com.mg4.control.app-resValues-45 C:\Users\SliDS\Documents\MG4 Project\MG4Control\app\build\generated\res\resValues\debug
+com.mg4.control.app-packageDebugResources-46 C:\Users\SliDS\Documents\MG4 Project\MG4Control\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
+com.mg4.control.app-packageDebugResources-47 C:\Users\SliDS\Documents\MG4 Project\MG4Control\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
+com.mg4.control.app-debug-48 C:\Users\SliDS\Documents\MG4 Project\MG4Control\app\build\intermediates\merged_res\debug\mergeDebugResources
+com.mg4.control.app-debug-49 C:\Users\SliDS\Documents\MG4 Project\MG4Control\app\src\debug\res
+com.mg4.control.app-main-50 C:\Users\SliDS\Documents\MG4 Project\MG4Control\app\src\main\res

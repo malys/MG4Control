@@ -20,5 +20,9 @@ data class DrivingProfile(
     // AEB — Système anti-collision avant (commun SWI133 + SWI68)
     val aebEnabled: Boolean = false,   // false=OFF, true=ON
     val aebMode: Int = 1,              // 1=Alerte seule, 2=Alerte+Freinage auto
+    val aebSensitivity: Int = 0,       // 0=non configuré, 1=Faible, 2=Standard, 3=Élevé (SWI133)
+    // ELK — Assistant de sortie de voie (SWI133 uniquement)
+    val elkMode: Int = 0,              // 0=non configuré, 1=OFF, 2=Alerte(LDW), 3=Aider(LDP), 5=ELK
+    val elkSensitivity: Int = 0,       // 0=non configuré, 1=Faible, 2=Standard, 3=Élevé
     val isDefault: Boolean = false
 )

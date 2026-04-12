@@ -52,14 +52,44 @@ object MG4Hardware {
     private const val PROP_SPEED_LIMIT_TONE      = 0x503004f
     private const val PROP_MIX_INTELLIGENT_DRIVE = 0x32
 
+    // ELK — Assistant de sortie de voie (SWI133)
+    // Accès via IVehicleSettingService binder (sVehicleBinder) — smali IVehicleSettingService$Stub$Proxy
+    // getLaneKeepingAsstMode()   → TX 0x53 (synchrone, reply: readException + readInt)
+    // setLaneKeepingAsstMode(I)  → TX 0x54 (ONEWAY, data: writeInt(value))
+    // getLaneKeepingAsstSen()    → TX 0x55 (synchrone)
+    // setLaneKeepingAsstSen(I)   → TX 0x56 (ONEWAY)
+    // Mode  : 1=OFF, 2=Alerte(LDW), 3=Aider(LDP), 5=Maintien d'urgence(ELK)
+    // Sen   : 1=Faible, 2=Standard, 3=Élevé
+    private const val TX_ELK_GET_MODE = 0x53
+    private const val TX_ELK_SET_MODE = 0x54
+    private const val TX_ELK_GET_SEN  = 0x55
+    private const val TX_ELK_SET_SEN  = 0x56
+
+    /** Valeurs du mode ELK (LaneKeepingAsstMode). */
+    object ElkMode {
+        const val OFF       = 1   // Désactivé
+        const val ALERT     = 2   // Alerte (LDW)
+        const val ASSIST    = 3   // Aider (LDP)
+        const val EMERGENCY = 5   // Maintien d'urgence (ELK)
+    }
+
+    /** Valeurs de sensibilité ELK. */
+    object ElkSensitivity {
+        const val LOW      = 1   // Faible
+        const val STANDARD = 2   // Standard
+        const val HIGH     = 3   // Élevé
+    }
+
     // AEB — Système anti-collision avant (SWI133)
     // PROP_AEB_SWITCH    : CarPropertyManager, AREA_GLOBAL, 1=OFF / 2=ON
     private const val PROP_AEB_SWITCH    = 0x2140a108  // AAD_FRONT_COLLISION_ASST_SYS (CPM)
     // PROP_AEB_SYS_MODE  : VPM, ID_AAD_FRONT_COLLISION_ASST_SYS, 1=Alerte / 2=Alerte+Freinage
     // PROP_AEB_MODE      : VPM, ID_AAD_AUTO_EME_BREAK,            1=Alerte / 2=Alerte+Freinage
     // Le smali vehiclesettings écrit toujours les deux simultanément via setIntPropertyRecovery
-    private const val PROP_AEB_SYS_MODE  = 0x302000a  // ID_AAD_FRONT_COLLISION_ASST_SYS (VPM)
-    private const val PROP_AEB_MODE      = 0x302000b  // ID_AAD_AUTO_EME_BREAK (VPM)
+    private const val PROP_AEB_SYS_MODE    = 0x302000a  // ID_AAD_FRONT_COLLISION_ASST_SYS (VPM)
+    private const val PROP_AEB_MODE        = 0x302000b  // ID_AAD_AUTO_EME_BREAK (VPM)
+    // PROP_AEB_SENSITIVITY : VPM, ForwardCollisionAsstSentItem, 1=Faible / 2=Standard / 3=Élevé
+    private const val PROP_AEB_SENSITIVITY = 0x302000e  // ID_AAD_FRONT_COLLISION_ASST_SEN (VPM)
 
     // SWI68 : VehicleSettingManager class name (loaded via launcher context)
     private const val VSM_CLASS      = "com.saicmotor.sdk.vehiclesettings.manager.VehicleSettingManager"
@@ -87,6 +117,13 @@ object MG4Hardware {
         const val ALARM_BRAKE = 2   // Alerte + Freinage automatique d'urgence
     }
 
+    /** Valeurs de sensibilité AEB — SWI133 uniquement (PROP_AEB_SENSITIVITY = 0x302000e). */
+    object AebSensitivity {
+        const val LOW      = 1   // Faible
+        const val STANDARD = 2   // Standard
+        const val HIGH     = 3   // Élevé
+    }
+
     @Volatile private var sAppContext: Context? = null
     @Volatile private var sCar: Any? = null
     @Volatile private var sCarPropertyManager: Any? = null
@@ -96,6 +133,7 @@ object MG4Hardware {
     @Volatile private var sVpmService: Any? = null   // mIVehiclePropertyService field value (SWI133)
     @Volatile private var sVsm: Any? = null          // VehicleSettingManager instance (SWI68, Katman4)
     @Volatile private var sVsmService: Any? = null   // mVehicleSettingService field value (SWI68)
+    @Volatile private var sVsm133: Any? = null       // VehicleSettingManager instance (SWI133, pour ELK)
     @Volatile private var sInitialized = false
     @Volatile private var sCarBindAttempted = false
     @Volatile var logEnabled = true
@@ -148,9 +186,10 @@ object MG4Hardware {
         bindCarService(context)
         sVehicleBinder = getBinderService("vehiclesetting")
         when {
-            FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI68 -> initKatman4Swi68(context)
-            FirmwareInfo.isNewGenVsm()                             -> initKatman4Swi69(context)  // SWI69 + SWI131
-            else                                                   -> initKatman4(context)
+            FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI68  -> initKatman4Swi68(context)
+            FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI165 -> initKatman4Swi68(context)  // même SDK que SWI68
+            FirmwareInfo.isNewGenVsm()                              -> initKatman4Swi69(context)   // SWI69 + SWI131
+            else                                                    -> initKatman4(context)
         }
         if (sVehicleBinder != null)
             AppLogger.i(TAG, "  ✓ Katman2: vehiclesetting binder OK")
@@ -378,10 +417,16 @@ object MG4Hardware {
         // 2) init(Context, IVehicleServiceListener) via dynamic proxy — reçoit onServiceConnected
         initWithServiceListener(vpm!!, context, launcherCtx)
 
-        // 3) Retries pour récupérer mIVehiclePropertyService une fois le service connecté
+        // 3) VehicleSettingManager pour SWI133 (ELK) — même singleton que SWI68
+        tryInitVsm133(launcherCtx, context)
+
+        // 4) Retries pour récupérer mIVehiclePropertyService et VSM133 une fois le service connecté
         val h = Handler(Looper.getMainLooper())
         listOf(2_000L, 5_000L, 10_000L, 15_000L, 20_000L, 30_000L, 45_000L, 60_000L).forEach { delay ->
-            h.postDelayed({ if (sVpmService == null) tryGetVpmService(sVpm ?: return@postDelayed) }, delay)
+            h.postDelayed({
+                if (sVpmService == null) tryGetVpmService(sVpm ?: return@postDelayed)
+                if (sVsm133 == null) tryInitVsm133(launcherCtx, context)
+            }, delay)
         }
 
         tryGetVpmService(vpm!!)
@@ -498,6 +543,71 @@ object MG4Hardware {
     }
 
     // -------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+    // SWI133 — VehicleSettingManager (ELK : getLaneKeepingAsstMode / setLaneKeepingAsstMode)
+    // Même singleton que SWI68 mais initialisé dans le chemin SWI133.
+    // -------------------------------------------------------------------------
+
+    private fun tryInitVsm133(launcherCtx: Context, appCtx: Context) {
+        if (sVsm133 != null) return
+        try {
+            val vsmClass = launcherCtx.classLoader.loadClass(VSM_CLASS)
+
+            // Tentative 1 : lire le singleton déjà initialisé par le launcher
+            val f = vsmClass.getDeclaredField("sVehicleSettingManager")
+            f.isAccessible = true
+            val singleton = f.get(null)
+            if (singleton != null) {
+                sVsm133 = singleton
+                AppLogger.i(TAG, "  SWI133: VehicleSettingManager singleton ✓")
+                return
+            }
+
+            // Tentative 2 : appeler init() nous-mêmes (comme SWI68)
+            val initMethod = vsmClass.methods.firstOrNull { m ->
+                m.name == "init" && m.parameterCount == 2 &&
+                Context::class.java.isAssignableFrom(m.parameterTypes[0])
+            } ?: run {
+                AppLogger.w(TAG, "  SWI133: VSM init() non trouvé, singleton sera null")
+                return
+            }
+            val listenerType = initMethod.parameterTypes[1]
+            val listener = if (listenerType.isInterface) {
+                java.lang.reflect.Proxy.newProxyInstance(listenerType.classLoader, arrayOf(listenerType)) { _, method, _ ->
+                    if (method.name == "onServiceConnected") {
+                        AppLogger.i(TAG, "  SWI133: VSM onServiceConnected ✓")
+                        try {
+                            val f2 = vsmClass.getDeclaredField("sVehicleSettingManager")
+                            f2.isAccessible = true
+                            sVsm133 = f2.get(null)
+                            AppLogger.i(TAG, "  SWI133: sVsm133 = ${if (sVsm133 != null) "OK ✓" else "null"}")
+                        } catch (_: Exception) {}
+                    }
+                    null
+                }
+            } else null
+            initMethod.invoke(null, appCtx, listener)
+            AppLogger.i(TAG, "  SWI133: VehicleSettingManager.init() called")
+        } catch (e: Exception) {
+            AppLogger.d(TAG, "  SWI133: tryInitVsm133 exc: ${e.message}")
+        }
+    }
+
+    /**
+     * Appelle une méthode sur sVsm133 par réflexion.
+     * Retourne la valeur (Int pour getters, null pour setters void) ou null si erreur.
+     */
+    private fun callVsm133(methodName: String, vararg args: Any?): Any? {
+        val vsm = sVsm133 ?: return null
+        return try {
+            val types = args.map { if (it is Int) Int::class.javaPrimitiveType!! else it!!.javaClass }.toTypedArray()
+            vsm.javaClass.getMethod(methodName, *types).invoke(vsm, *args)
+        } catch (e: Exception) {
+            AppLogger.w(TAG, "  SWI133/VSM: $methodName() exc: ${e.message}")
+            null
+        }
+    }
+
     // Katman4 SWI68 — VehicleSettingManager via saicmotor.hmi.launcher context
     // -------------------------------------------------------------------------
 
@@ -1050,21 +1160,20 @@ object MG4Hardware {
         return true
     }
 
-    // ── AEB — Système anti-collision avant (SWI133 + SWI68) ─────────────────
+    // ── AEB — Système anti-collision avant ──────────────────────────────────
 
     /**
      * Retourne true si le système anti-collision avant est activé.
-     * SWI133      : lit PROP_AEB_SWITCH (2=ON, 1=OFF) via CarPropertyManager.
-     * SWI68       : getFcwAlarmMode() == 2  (2=ON, 1=OFF)
-     * SWI69/SWI131: getFcwState() — vérifié empiriquement sur véhicule réel :
-     *               1 = DÉSACTIVÉ, 2 = ACTIVÉ
-     *               (attention : 1 ≠ ON — contrairement à l'hypothèse précédente)
+     * SWI133          : lit PROP_AEB_SWITCH (2=ON, 1=OFF) via CarPropertyManager.
+     * SWI68 / SWI165  : getFcwAlarmMode() == 2  (FCW_ALARM_ON=2, FCW_ALARM_OFF=1)
+     *                   Vérifié dans SafeSettingsRepository SWI165 — même API que SWI68.
+     * SWI69 / SWI131  : getFcwState() — 1=DÉSACTIVÉ, 2=ACTIVÉ
      */
     fun isAebEnabled(): Boolean {
         return when {
-            FirmwareInfo.isNewGenVsm()                             -> (callVsm("getFcwState") as? Int) == 2
-            FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI68 -> (callVsm("getFcwAlarmMode") as? Int) == 2
-            else                                                   -> getIntPropertyCPM(PROP_AEB_SWITCH, AREA_GLOBAL) == 0x2
+            FirmwareInfo.isNewGenVsm() -> (callVsm("getFcwState") as? Int) == 2
+            FirmwareInfo.isVsmBased()  -> (callVsm("getFcwAlarmMode") as? Int) == 2
+            else                       -> getIntPropertyCPM(PROP_AEB_SWITCH, AREA_GLOBAL) == 0x2
         }
     }
 
@@ -1088,8 +1197,11 @@ object MG4Hardware {
                     callVsm("setFcwSensitivity", 0) != null
                 }
             }
-            FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI68 -> {
-                // SWI68 : setFcwAlarmMode(2=ON / 1=OFF) + setFcwAutoBrakeMode(1) si OFF
+            FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI68 ||
+            FirmwareInfo.isSWI165() -> {
+                // SWI68 / SWI165 : setFcwAlarmMode(2=ON / 1=OFF) + setFcwAutoBrakeMode(1) si OFF
+                // Vérifié dans SafeSettingsRepository SWI165 — même API que SWI68,
+                // setAutoEmergencyBraking() n'est jamais utilisé par l'app officielle.
                 if (on) callVsm("setFcwAlarmMode", 2) != null
                 else { (callVsm("setFcwAlarmMode", 1) != null) or (callVsm("setFcwAutoBrakeMode", 1) != null) }
             }
@@ -1124,8 +1236,9 @@ object MG4Hardware {
                 val sOk = callVsm("setFcwState", 2) != null
                 mOk || sOk
             }
-            FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI68 -> {
-                // SWI68 : setFcwAutoBrakeMode uniquement, sans toucher l'état AEB
+            FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI68 ||
+            FirmwareInfo.isSWI165() -> {
+                // SWI68 / SWI165 : setFcwAutoBrakeMode uniquement (1=Alerte, 2=Alerte+Freinage)
                 callVsm("setFcwAutoBrakeMode", if (mode == AebMode.ALARM_BRAKE) 2 else 1) != null
             }
             else -> {
@@ -1138,6 +1251,211 @@ object MG4Hardware {
                     setIntPropertyVpmRecovery(PROP_AEB_MODE, AebMode.ALARM)
                 }
             }
+        }
+    }
+
+    /**
+     * Retourne la sensibilité AEB courante (1=Faible, 2=Standard, 3=Élevé), ou -1 si pas prêt.
+     * SWI133         : PROP_AEB_SENSITIVITY (0x302000e, VPM)
+     * SWI68/SWI165   : VehicleSettingManager.getFcwSensitivity()
+     * SWI69/SWI131   : CarVehicleSettingClient.getFcwSensitivity()
+     */
+    fun getAebSensitivity(): Int {
+        return if (FirmwareInfo.isVsmBased()) {
+            (callVsm("getFcwSensitivity") as? Int)?.takeIf { it > 0 }?.also {
+                AppLogger.d(TAG, "  AEB GET sensitivity=$it via VSM ✓")
+            } ?: -1
+        } else {
+            val raw = getIntPropertyVpm(PROP_AEB_SENSITIVITY)
+            if (raw < 1) -1 else raw
+        }
+    }
+
+    /**
+     * Définit la sensibilité AEB (1=Faible, 2=Standard, 3=Élevé).
+     * SWI133         : PROP_AEB_SENSITIVITY (0x302000e, VPM)
+     * SWI68/SWI165   : VehicleSettingManager.setFcwSensitivity(I)
+     * SWI69/SWI131   : CarVehicleSettingClient.setFcwSensitivity(I)
+     */
+    fun setAebSensitivity(level: Int): Boolean {
+        return if (FirmwareInfo.isVsmBased()) {
+            AppLogger.i(TAG, "  AEB SET sensitivity=$level via VSM")
+            callVsm("setFcwSensitivity", level) != null
+        } else {
+            AppLogger.i(TAG, "  AEB SET sensitivity=$level via VPM")
+            setIntPropertyVpmRecovery(PROP_AEB_SENSITIVITY, level)
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // ELK — Assistant de sortie de voie (SWI133 uniquement pour l'instant)
+    // Utilise IVehicleSettingService via sVehicleBinder (TX 0x53–0x56)
+    // -------------------------------------------------------------------------
+
+    /**
+     * Retourne le mode ELK courant (1=OFF, 2=Alerte, 3=Aider, 5=Maintien d'urgence).
+     * Routage par firmware :
+     *   SWI133         → VSM133 (getLaneKeepingAsstMode) → binder TX 0x53
+     *   SWI68/SWI165   → VSM    (getLaneKeepingAsstMode)
+     *   SWI69/SWI131   → VSM    (getLasMode)
+     */
+    fun getElkMode(): Int = when {
+        !FirmwareInfo.isVsmBased() -> {
+            val vsm = callVsm133("getLaneKeepingAsstMode")
+            if (vsm is Int && vsm > 0) {
+                AppLogger.d(TAG, "  ELK GET mode=$vsm via VSM133 ✓")
+                vsm
+            } else elkBinderGet(TX_ELK_GET_MODE)
+        }
+        FirmwareInfo.isNewGenVsm() -> {
+            // SWI69/SWI131 — CarVehicleSettingClient
+            (callVsm("getLasMode") as? Int)?.takeIf { it > 0 }?.also {
+                AppLogger.d(TAG, "  ELK GET mode=$it via VSM (Las) ✓")
+            } ?: -1
+        }
+        else -> {
+            // SWI68/SWI165 — VehicleSettingManager
+            (callVsm("getLaneKeepingAsstMode") as? Int)?.takeIf { it > 0 }?.also {
+                AppLogger.d(TAG, "  ELK GET mode=$it via VSM ✓")
+            } ?: -1
+        }
+    }
+
+    /**
+     * Définit le mode ELK.
+     * Routage identique à getElkMode().
+     */
+    fun setElkMode(mode: Int): Boolean = when {
+        !FirmwareInfo.isVsmBased() -> {
+            if (sVsm133 != null) {
+                AppLogger.i(TAG, "  ELK SET mode=$mode via VSM133")
+                callVsm133("setLaneKeepingAsstMode", mode)
+                true
+            } else elkBinderSet(TX_ELK_SET_MODE, mode)
+        }
+        FirmwareInfo.isNewGenVsm() -> {
+            AppLogger.i(TAG, "  ELK SET mode=$mode via VSM (Las)")
+            callVsm("setLasMode", mode)
+            true
+        }
+        else -> {
+            AppLogger.i(TAG, "  ELK SET mode=$mode via VSM")
+            callVsm("setLaneKeepingAsstMode", mode)
+            true
+        }
+    }
+
+    /**
+     * Retourne la sensibilité ELK courante (1=Faible, 2=Standard, 3=Élevé).
+     * Routage par firmware — identique à getElkMode().
+     */
+    fun getElkSensitivity(): Int = when {
+        !FirmwareInfo.isVsmBased() -> {
+            val vsm = callVsm133("getLaneKeepingAsstSen")
+            if (vsm is Int && vsm > 0) {
+                AppLogger.d(TAG, "  ELK GET sen=$vsm via VSM133 ✓")
+                vsm
+            } else elkBinderGet(TX_ELK_GET_SEN)
+        }
+        FirmwareInfo.isNewGenVsm() -> {
+            // SWI69/SWI131 — CarVehicleSettingClient
+            (callVsm("getLasSensitivity") as? Int)?.takeIf { it > 0 }?.also {
+                AppLogger.d(TAG, "  ELK GET sen=$it via VSM (Las) ✓")
+            } ?: -1
+        }
+        else -> {
+            // SWI68/SWI165 — VehicleSettingManager
+            (callVsm("getLaneKeepingAsstSen") as? Int)?.takeIf { it > 0 }?.also {
+                AppLogger.d(TAG, "  ELK GET sen=$it via VSM ✓")
+            } ?: -1
+        }
+    }
+
+    /**
+     * Définit la sensibilité ELK.
+     * Routage identique à getElkMode().
+     */
+    fun setElkSensitivity(level: Int): Boolean = when {
+        !FirmwareInfo.isVsmBased() -> {
+            if (sVsm133 != null) {
+                AppLogger.i(TAG, "  ELK SET sensitivity=$level via VSM133")
+                callVsm133("setLaneKeepingAsstSen", level)
+                true
+            } else elkBinderSet(TX_ELK_SET_SEN, level)
+        }
+        FirmwareInfo.isNewGenVsm() -> {
+            AppLogger.i(TAG, "  ELK SET sensitivity=$level via VSM (Las)")
+            callVsm("setLasSensitivity", level)
+            true
+        }
+        else -> {
+            AppLogger.i(TAG, "  ELK SET sensitivity=$level via VSM")
+            callVsm("setLaneKeepingAsstSen", level)
+            true
+        }
+    }
+
+    /** Retourne true si l'ELK est activé (mode ≠ OFF). */
+    fun isElkEnabled(): Boolean {
+        val mode = getElkMode()
+        return mode > 0 && mode != ElkMode.OFF
+    }
+
+    /**
+     * GET via IVehicleSettingService binder — layout smali :
+     *   data : [writeInterfaceToken]
+     *   transact(code, data, reply, 0)
+     *   reply: readException() + readInt()
+     */
+    private fun elkBinderGet(txCode: Int): Int {
+        val binder = sVehicleBinder ?: run {
+            AppLogger.d(TAG, "  ELK GET TX=0x${txCode.toString(16)} — sVehicleBinder null")
+            return -1
+        }
+        val data  = Parcel.obtain()
+        val reply = Parcel.obtain()
+        return try {
+            data.writeInterfaceToken(DESCRIPTOR_VEHICLE)
+            val ok = binder.transact(txCode, data, reply, 0)
+            if (!ok) {
+                AppLogger.d(TAG, "  ELK GET TX=0x${txCode.toString(16)} — transact returned false")
+                return -1
+            }
+            reply.readException()
+            val result = reply.readInt()
+            AppLogger.d(TAG, "  ELK GET TX=0x${txCode.toString(16)} = $result")
+            result
+        } catch (e: Exception) {
+            AppLogger.d(TAG, "  ELK GET TX=0x${txCode.toString(16)} exc: ${e.message}")
+            -1
+        } finally {
+            data.recycle()
+            reply.recycle()
+        }
+    }
+
+    /**
+     * SET via IVehicleSettingService binder — layout smali :
+     *   data : [writeInterfaceToken, writeInt(value)]
+     *   transact(code, data, null, FLAG_ONEWAY=1)
+     */
+    private fun elkBinderSet(txCode: Int, value: Int): Boolean {
+        val binder = sVehicleBinder ?: run {
+            AppLogger.d(TAG, "  ELK SET TX=0x${txCode.toString(16)} — sVehicleBinder null")
+            return false
+        }
+        val data = Parcel.obtain()
+        return try {
+            data.writeInterfaceToken(DESCRIPTOR_VEHICLE)
+            data.writeInt(value)
+            binder.transact(txCode, data, null, IBinder.FLAG_ONEWAY)
+            AppLogger.i(TAG, "  ELK SET TX=0x${txCode.toString(16)} value=$value ✓")
+            true
+        } catch (e: Exception) {
+            AppLogger.d(TAG, "  ELK SET TX=0x${txCode.toString(16)} exc: ${e.message}")
+            false
+        } finally {
+            data.recycle()
         }
     }
 

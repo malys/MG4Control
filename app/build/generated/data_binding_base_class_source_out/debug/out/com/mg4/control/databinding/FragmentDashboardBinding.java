@@ -4,13 +4,13 @@ package com.mg4.control.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.Switch;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
+import androidx.viewpager2.widget.ViewPager2;
 import com.mg4.control.R;
 import java.lang.NullPointerException;
 import java.lang.Override;
@@ -18,191 +18,24 @@ import java.lang.String;
 
 public final class FragmentDashboardBinding implements ViewBinding {
   @NonNull
-  private final LinearLayout rootView;
+  private final FrameLayout rootView;
 
   @NonNull
-  public final LinearLayout adasGroupSwi133;
+  public final ViewPager2 dashboardPager;
 
   @NonNull
-  public final LinearLayout adasGroupSwi68;
+  public final LinearLayout pagerDots;
 
-  @NonNull
-  public final LinearLayout aebGroup;
-
-  @NonNull
-  public final LinearLayout alertsGroupSwi133;
-
-  @NonNull
-  public final LinearLayout alertsGroupSwi68;
-
-  @NonNull
-  public final Button btnAdasAcc;
-
-  @NonNull
-  public final Button btnAdasIca;
-
-  @NonNull
-  public final Button btnAdasLimiteur;
-
-  @NonNull
-  public final Button btnAdasOff;
-
-  @NonNull
-  public final Button btnAebAlarm;
-
-  @NonNull
-  public final Button btnAebAlarmBrake;
-
-  @NonNull
-  public final Button btnCustom;
-
-  @NonNull
-  public final Button btnEco;
-
-  @NonNull
-  public final Button btnNormal;
-
-  @NonNull
-  public final Button btnRegenAdaptive;
-
-  @NonNull
-  public final Button btnRegenHigh;
-
-  @NonNull
-  public final Button btnRegenLow;
-
-  @NonNull
-  public final Button btnRegenMedium;
-
-  @NonNull
-  public final Button btnRegenOff;
-
-  @NonNull
-  public final Button btnRegenOnePedal;
-
-  @NonNull
-  public final Button btnSeatLeft0;
-
-  @NonNull
-  public final Button btnSeatLeft1;
-
-  @NonNull
-  public final Button btnSeatLeft2;
-
-  @NonNull
-  public final Button btnSeatLeft3;
-
-  @NonNull
-  public final Button btnSeatRight0;
-
-  @NonNull
-  public final Button btnSeatRight1;
-
-  @NonNull
-  public final Button btnSeatRight2;
-
-  @NonNull
-  public final Button btnSeatRight3;
-
-  @NonNull
-  public final Button btnSnow;
-
-  @NonNull
-  public final Button btnSport;
-
-  @NonNull
-  public final Button btnSwi68Acc;
-
-  @NonNull
-  public final Button btnSwi68Off;
-
-  @NonNull
-  public final Button btnSwi68Tja;
-
-  @NonNull
-  public final LinearLayout climateCard;
-
-  @NonNull
-  public final LinearLayout sectionRegen;
-
-  @NonNull
-  public final Switch switchAeb;
-
-  @NonNull
-  public final Switch switchOverspeed;
-
-  @NonNull
-  public final Switch switchSoundWarning;
-
-  @NonNull
-  public final Switch switchSpeedTone;
-
-  @NonNull
-  public final Switch switchSteeringHeat;
-
-  private FragmentDashboardBinding(@NonNull LinearLayout rootView,
-      @NonNull LinearLayout adasGroupSwi133, @NonNull LinearLayout adasGroupSwi68,
-      @NonNull LinearLayout aebGroup, @NonNull LinearLayout alertsGroupSwi133,
-      @NonNull LinearLayout alertsGroupSwi68, @NonNull Button btnAdasAcc,
-      @NonNull Button btnAdasIca, @NonNull Button btnAdasLimiteur, @NonNull Button btnAdasOff,
-      @NonNull Button btnAebAlarm, @NonNull Button btnAebAlarmBrake, @NonNull Button btnCustom,
-      @NonNull Button btnEco, @NonNull Button btnNormal, @NonNull Button btnRegenAdaptive,
-      @NonNull Button btnRegenHigh, @NonNull Button btnRegenLow, @NonNull Button btnRegenMedium,
-      @NonNull Button btnRegenOff, @NonNull Button btnRegenOnePedal, @NonNull Button btnSeatLeft0,
-      @NonNull Button btnSeatLeft1, @NonNull Button btnSeatLeft2, @NonNull Button btnSeatLeft3,
-      @NonNull Button btnSeatRight0, @NonNull Button btnSeatRight1, @NonNull Button btnSeatRight2,
-      @NonNull Button btnSeatRight3, @NonNull Button btnSnow, @NonNull Button btnSport,
-      @NonNull Button btnSwi68Acc, @NonNull Button btnSwi68Off, @NonNull Button btnSwi68Tja,
-      @NonNull LinearLayout climateCard, @NonNull LinearLayout sectionRegen,
-      @NonNull Switch switchAeb, @NonNull Switch switchOverspeed,
-      @NonNull Switch switchSoundWarning, @NonNull Switch switchSpeedTone,
-      @NonNull Switch switchSteeringHeat) {
+  private FragmentDashboardBinding(@NonNull FrameLayout rootView,
+      @NonNull ViewPager2 dashboardPager, @NonNull LinearLayout pagerDots) {
     this.rootView = rootView;
-    this.adasGroupSwi133 = adasGroupSwi133;
-    this.adasGroupSwi68 = adasGroupSwi68;
-    this.aebGroup = aebGroup;
-    this.alertsGroupSwi133 = alertsGroupSwi133;
-    this.alertsGroupSwi68 = alertsGroupSwi68;
-    this.btnAdasAcc = btnAdasAcc;
-    this.btnAdasIca = btnAdasIca;
-    this.btnAdasLimiteur = btnAdasLimiteur;
-    this.btnAdasOff = btnAdasOff;
-    this.btnAebAlarm = btnAebAlarm;
-    this.btnAebAlarmBrake = btnAebAlarmBrake;
-    this.btnCustom = btnCustom;
-    this.btnEco = btnEco;
-    this.btnNormal = btnNormal;
-    this.btnRegenAdaptive = btnRegenAdaptive;
-    this.btnRegenHigh = btnRegenHigh;
-    this.btnRegenLow = btnRegenLow;
-    this.btnRegenMedium = btnRegenMedium;
-    this.btnRegenOff = btnRegenOff;
-    this.btnRegenOnePedal = btnRegenOnePedal;
-    this.btnSeatLeft0 = btnSeatLeft0;
-    this.btnSeatLeft1 = btnSeatLeft1;
-    this.btnSeatLeft2 = btnSeatLeft2;
-    this.btnSeatLeft3 = btnSeatLeft3;
-    this.btnSeatRight0 = btnSeatRight0;
-    this.btnSeatRight1 = btnSeatRight1;
-    this.btnSeatRight2 = btnSeatRight2;
-    this.btnSeatRight3 = btnSeatRight3;
-    this.btnSnow = btnSnow;
-    this.btnSport = btnSport;
-    this.btnSwi68Acc = btnSwi68Acc;
-    this.btnSwi68Off = btnSwi68Off;
-    this.btnSwi68Tja = btnSwi68Tja;
-    this.climateCard = climateCard;
-    this.sectionRegen = sectionRegen;
-    this.switchAeb = switchAeb;
-    this.switchOverspeed = switchOverspeed;
-    this.switchSoundWarning = switchSoundWarning;
-    this.switchSpeedTone = switchSpeedTone;
-    this.switchSteeringHeat = switchSteeringHeat;
+    this.dashboardPager = dashboardPager;
+    this.pagerDots = pagerDots;
   }
 
   @Override
   @NonNull
-  public LinearLayout getRoot() {
+  public FrameLayout getRoot() {
     return rootView;
   }
 
@@ -227,254 +60,19 @@ public final class FragmentDashboardBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
-      id = R.id.adas_group_swi133;
-      LinearLayout adasGroupSwi133 = ViewBindings.findChildViewById(rootView, id);
-      if (adasGroupSwi133 == null) {
+      id = R.id.dashboard_pager;
+      ViewPager2 dashboardPager = ViewBindings.findChildViewById(rootView, id);
+      if (dashboardPager == null) {
         break missingId;
       }
 
-      id = R.id.adas_group_swi68;
-      LinearLayout adasGroupSwi68 = ViewBindings.findChildViewById(rootView, id);
-      if (adasGroupSwi68 == null) {
+      id = R.id.pager_dots;
+      LinearLayout pagerDots = ViewBindings.findChildViewById(rootView, id);
+      if (pagerDots == null) {
         break missingId;
       }
 
-      id = R.id.aeb_group;
-      LinearLayout aebGroup = ViewBindings.findChildViewById(rootView, id);
-      if (aebGroup == null) {
-        break missingId;
-      }
-
-      id = R.id.alerts_group_swi133;
-      LinearLayout alertsGroupSwi133 = ViewBindings.findChildViewById(rootView, id);
-      if (alertsGroupSwi133 == null) {
-        break missingId;
-      }
-
-      id = R.id.alerts_group_swi68;
-      LinearLayout alertsGroupSwi68 = ViewBindings.findChildViewById(rootView, id);
-      if (alertsGroupSwi68 == null) {
-        break missingId;
-      }
-
-      id = R.id.btn_adas_acc;
-      Button btnAdasAcc = ViewBindings.findChildViewById(rootView, id);
-      if (btnAdasAcc == null) {
-        break missingId;
-      }
-
-      id = R.id.btn_adas_ica;
-      Button btnAdasIca = ViewBindings.findChildViewById(rootView, id);
-      if (btnAdasIca == null) {
-        break missingId;
-      }
-
-      id = R.id.btn_adas_limiteur;
-      Button btnAdasLimiteur = ViewBindings.findChildViewById(rootView, id);
-      if (btnAdasLimiteur == null) {
-        break missingId;
-      }
-
-      id = R.id.btn_adas_off;
-      Button btnAdasOff = ViewBindings.findChildViewById(rootView, id);
-      if (btnAdasOff == null) {
-        break missingId;
-      }
-
-      id = R.id.btn_aeb_alarm;
-      Button btnAebAlarm = ViewBindings.findChildViewById(rootView, id);
-      if (btnAebAlarm == null) {
-        break missingId;
-      }
-
-      id = R.id.btn_aeb_alarm_brake;
-      Button btnAebAlarmBrake = ViewBindings.findChildViewById(rootView, id);
-      if (btnAebAlarmBrake == null) {
-        break missingId;
-      }
-
-      id = R.id.btn_custom;
-      Button btnCustom = ViewBindings.findChildViewById(rootView, id);
-      if (btnCustom == null) {
-        break missingId;
-      }
-
-      id = R.id.btn_eco;
-      Button btnEco = ViewBindings.findChildViewById(rootView, id);
-      if (btnEco == null) {
-        break missingId;
-      }
-
-      id = R.id.btn_normal;
-      Button btnNormal = ViewBindings.findChildViewById(rootView, id);
-      if (btnNormal == null) {
-        break missingId;
-      }
-
-      id = R.id.btn_regen_adaptive;
-      Button btnRegenAdaptive = ViewBindings.findChildViewById(rootView, id);
-      if (btnRegenAdaptive == null) {
-        break missingId;
-      }
-
-      id = R.id.btn_regen_high;
-      Button btnRegenHigh = ViewBindings.findChildViewById(rootView, id);
-      if (btnRegenHigh == null) {
-        break missingId;
-      }
-
-      id = R.id.btn_regen_low;
-      Button btnRegenLow = ViewBindings.findChildViewById(rootView, id);
-      if (btnRegenLow == null) {
-        break missingId;
-      }
-
-      id = R.id.btn_regen_medium;
-      Button btnRegenMedium = ViewBindings.findChildViewById(rootView, id);
-      if (btnRegenMedium == null) {
-        break missingId;
-      }
-
-      id = R.id.btn_regen_off;
-      Button btnRegenOff = ViewBindings.findChildViewById(rootView, id);
-      if (btnRegenOff == null) {
-        break missingId;
-      }
-
-      id = R.id.btn_regen_one_pedal;
-      Button btnRegenOnePedal = ViewBindings.findChildViewById(rootView, id);
-      if (btnRegenOnePedal == null) {
-        break missingId;
-      }
-
-      id = R.id.btn_seat_left_0;
-      Button btnSeatLeft0 = ViewBindings.findChildViewById(rootView, id);
-      if (btnSeatLeft0 == null) {
-        break missingId;
-      }
-
-      id = R.id.btn_seat_left_1;
-      Button btnSeatLeft1 = ViewBindings.findChildViewById(rootView, id);
-      if (btnSeatLeft1 == null) {
-        break missingId;
-      }
-
-      id = R.id.btn_seat_left_2;
-      Button btnSeatLeft2 = ViewBindings.findChildViewById(rootView, id);
-      if (btnSeatLeft2 == null) {
-        break missingId;
-      }
-
-      id = R.id.btn_seat_left_3;
-      Button btnSeatLeft3 = ViewBindings.findChildViewById(rootView, id);
-      if (btnSeatLeft3 == null) {
-        break missingId;
-      }
-
-      id = R.id.btn_seat_right_0;
-      Button btnSeatRight0 = ViewBindings.findChildViewById(rootView, id);
-      if (btnSeatRight0 == null) {
-        break missingId;
-      }
-
-      id = R.id.btn_seat_right_1;
-      Button btnSeatRight1 = ViewBindings.findChildViewById(rootView, id);
-      if (btnSeatRight1 == null) {
-        break missingId;
-      }
-
-      id = R.id.btn_seat_right_2;
-      Button btnSeatRight2 = ViewBindings.findChildViewById(rootView, id);
-      if (btnSeatRight2 == null) {
-        break missingId;
-      }
-
-      id = R.id.btn_seat_right_3;
-      Button btnSeatRight3 = ViewBindings.findChildViewById(rootView, id);
-      if (btnSeatRight3 == null) {
-        break missingId;
-      }
-
-      id = R.id.btn_snow;
-      Button btnSnow = ViewBindings.findChildViewById(rootView, id);
-      if (btnSnow == null) {
-        break missingId;
-      }
-
-      id = R.id.btn_sport;
-      Button btnSport = ViewBindings.findChildViewById(rootView, id);
-      if (btnSport == null) {
-        break missingId;
-      }
-
-      id = R.id.btn_swi68_acc;
-      Button btnSwi68Acc = ViewBindings.findChildViewById(rootView, id);
-      if (btnSwi68Acc == null) {
-        break missingId;
-      }
-
-      id = R.id.btn_swi68_off;
-      Button btnSwi68Off = ViewBindings.findChildViewById(rootView, id);
-      if (btnSwi68Off == null) {
-        break missingId;
-      }
-
-      id = R.id.btn_swi68_tja;
-      Button btnSwi68Tja = ViewBindings.findChildViewById(rootView, id);
-      if (btnSwi68Tja == null) {
-        break missingId;
-      }
-
-      id = R.id.climate_card;
-      LinearLayout climateCard = ViewBindings.findChildViewById(rootView, id);
-      if (climateCard == null) {
-        break missingId;
-      }
-
-      id = R.id.section_regen;
-      LinearLayout sectionRegen = ViewBindings.findChildViewById(rootView, id);
-      if (sectionRegen == null) {
-        break missingId;
-      }
-
-      id = R.id.switch_aeb;
-      Switch switchAeb = ViewBindings.findChildViewById(rootView, id);
-      if (switchAeb == null) {
-        break missingId;
-      }
-
-      id = R.id.switch_overspeed;
-      Switch switchOverspeed = ViewBindings.findChildViewById(rootView, id);
-      if (switchOverspeed == null) {
-        break missingId;
-      }
-
-      id = R.id.switch_sound_warning;
-      Switch switchSoundWarning = ViewBindings.findChildViewById(rootView, id);
-      if (switchSoundWarning == null) {
-        break missingId;
-      }
-
-      id = R.id.switch_speed_tone;
-      Switch switchSpeedTone = ViewBindings.findChildViewById(rootView, id);
-      if (switchSpeedTone == null) {
-        break missingId;
-      }
-
-      id = R.id.switch_steering_heat;
-      Switch switchSteeringHeat = ViewBindings.findChildViewById(rootView, id);
-      if (switchSteeringHeat == null) {
-        break missingId;
-      }
-
-      return new FragmentDashboardBinding((LinearLayout) rootView, adasGroupSwi133, adasGroupSwi68,
-          aebGroup, alertsGroupSwi133, alertsGroupSwi68, btnAdasAcc, btnAdasIca, btnAdasLimiteur,
-          btnAdasOff, btnAebAlarm, btnAebAlarmBrake, btnCustom, btnEco, btnNormal, btnRegenAdaptive,
-          btnRegenHigh, btnRegenLow, btnRegenMedium, btnRegenOff, btnRegenOnePedal, btnSeatLeft0,
-          btnSeatLeft1, btnSeatLeft2, btnSeatLeft3, btnSeatRight0, btnSeatRight1, btnSeatRight2,
-          btnSeatRight3, btnSnow, btnSport, btnSwi68Acc, btnSwi68Off, btnSwi68Tja, climateCard,
-          sectionRegen, switchAeb, switchOverspeed, switchSoundWarning, switchSpeedTone,
-          switchSteeringHeat);
+      return new FragmentDashboardBinding((FrameLayout) rootView, dashboardPager, pagerDots);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

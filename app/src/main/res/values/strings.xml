@@ -115,11 +115,28 @@
     <string name="adas_sound_warning">Avertissement sonore</string>
     <string name="adas_desactiver">Désactiver</string>
     <string name="adas_tja">TJA</string>
+    <!-- ELK — Assistant de sortie de voie -->
+    <string name="elk_card_title">Assistant de sortie de voie</string>
+    <string name="elk_section_toggle">Activation</string>
+    <string name="elk_section_mode">Mode d\'assistance</string>
+    <string name="elk_mode_alert">Alerte</string>
+    <string name="elk_mode_assist">Aider</string>
+    <string name="elk_mode_emergency">Maintien d\'urgence</string>
+    <string name="elk_section_sensitivity">Sensibilité</string>
+    <string name="elk_sensitivity_low">Faible</string>
+    <string name="elk_sensitivity_standard">Standard</string>
+    <string name="elk_sensitivity_high">Élevé</string>
+    <string name="elk_profile_label">Sortie de voie</string>
     <!-- AEB — Système anti-collision avant (commun SWI133 + SWI68) -->
+    <string name="aeb_card_title">Anticollision avant</string>
     <string name="adas_section_aeb">Sécurité active</string>
-    <string name="adas_aeb_switch">Système anti-collision avant</string>
+    <string name="adas_aeb_switch">Anticollision avant</string>
     <string name="adas_aeb_alarm">Alerte</string>
-    <string name="adas_aeb_alarm_brake">Alerte + Freinage auto</string>
+    <string name="adas_aeb_alarm_brake">Al. + Freinage auto</string>
+    <string name="aeb_section_sensitivity">Sensibilité</string>
+    <string name="aeb_sensitivity_low">Faible</string>
+    <string name="aeb_sensitivity_standard">Standard</string>
+    <string name="aeb_sensitivity_high">Élevé</string>
 
     <!-- Infos / À propos -->
     <string name="btn_check_update">Vérifier les mises à jour</string>
@@ -139,7 +156,7 @@
     <!-- Dashboard — en-têtes de cartes -->
     <string name="card_drive">Paramètres de conduite</string>
     <string name="card_climate">Paramètres de climatisation</string>
-    <string name="card_alerts">Sécurité &amp; Alertes</string>
+    <string name="card_alerts">Alertes</string>
 
     <!-- Mise à jour automatique -->
     <string name="update_available_title">Mise à jour disponible</string>

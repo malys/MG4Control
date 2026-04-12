@@ -57,7 +57,7 @@ object ProfileApplier {
                     AppLogger.i(TAG, "  SoundWarning=${profile.soundWarning} → $swOk")
                     val adOk = MG4Hardware.setAccTjaMode(profile.swi68AdasMode)
                     AppLogger.i(TAG, "  AdasMode=0x${profile.swi68AdasMode.toString(16)} → $adOk")
-                    applyAeb(profile.aebEnabled, profile.aebMode)
+                    applyAeb(profile.aebEnabled, profile.aebMode, profile.aebSensitivity)
                 } else {
                     // SWI133/UNKNOWN : ADAS mixte
                     val oaOk = MG4Hardware.setOverspeedAlarm(profile.overspeedAlarm)
@@ -66,19 +66,39 @@ object ProfileApplier {
                     AppLogger.i(TAG, "  SpeedLimitTone=${profile.speedLimitTone} → $stOk")
                     val adOk = MG4Hardware.setMixedIntelligentDrive(profile.adasMode)
                     AppLogger.i(TAG, "  AdasMode=${profile.adasMode} → $adOk")
-                    applyAeb(profile.aebEnabled, profile.aebMode)
+                    applyAeb(profile.aebEnabled, profile.aebMode, profile.aebSensitivity)
                 }
+                // ELK — commun à tous les firmwares connus
+                applyElk(profile.elkMode, profile.elkSensitivity)
             }
         }
     }
 
     /**
+     * Applique les réglages ELK (assistant de sortie de voie) du profil — tous firmwares.
+     * Si elkMode=0 (valeur par défaut — profil créé avant l'ajout de l'ELK),
+     * on ne touche pas aux réglages ELK pour éviter une modification involontaire.
+     */
+    private fun applyElk(elkMode: Int, elkSensitivity: Int) {
+        if (elkMode == 0) {
+            AppLogger.i(TAG, "  ELK — valeurs par défaut, skip (évite modification involontaire)")
+            return
+        }
+        val modeOk = MG4Hardware.setElkMode(elkMode)
+        AppLogger.i(TAG, "  ElkMode=$elkMode → $modeOk")
+        if (elkMode != MG4Hardware.ElkMode.OFF && elkSensitivity > 0) {
+            val senOk = MG4Hardware.setElkSensitivity(elkSensitivity)
+            AppLogger.i(TAG, "  ElkSensitivity=$elkSensitivity → $senOk")
+        }
+    }
+
+    /**
      * Applique les réglages AEB du profil.
-     * Si aebEnabled=false ET aebMode=1 (valeurs par défaut — profil créé avant l'ajout de l'AEB),
+     * Si aebEnabled=false ET aebMode=1 ET aebSensitivity=0 (valeurs par défaut),
      * on ne touche pas à l'état AEB de la voiture pour éviter une désactivation involontaire.
      */
-    private fun applyAeb(aebEnabled: Boolean, aebMode: Int) {
-        val isDefault = !aebEnabled && aebMode == 1
+    private fun applyAeb(aebEnabled: Boolean, aebMode: Int, aebSensitivity: Int = 0) {
+        val isDefault = !aebEnabled && aebMode == 1 && aebSensitivity == 0
         if (isDefault) {
             AppLogger.i(TAG, "  AEB — valeurs par défaut, skip (évite désactivation involontaire)")
             return
@@ -88,6 +108,10 @@ object ProfileApplier {
         if (aebEnabled) {
             val aebModeOk = MG4Hardware.setAebMode(aebMode)
             AppLogger.i(TAG, "  AebMode=$aebMode → $aebModeOk")
+            if (aebSensitivity > 0) {
+                val senOk = MG4Hardware.setAebSensitivity(aebSensitivity)
+                AppLogger.i(TAG, "  AebSensitivity=$aebSensitivity → $senOk")
+            }
         }
     }
 }

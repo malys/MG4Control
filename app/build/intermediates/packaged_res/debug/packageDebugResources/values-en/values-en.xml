@@ -2,8 +2,8 @@
 <resources>
     <string name="adas_acc">ACC</string>
     <string name="adas_aeb_alarm">Alert</string>
-    <string name="adas_aeb_alarm_brake">Alert + Auto brake</string>
-    <string name="adas_aeb_switch">Forward collision assist system</string>
+    <string name="adas_aeb_alarm_brake">Al. + Auto brake</string>
+    <string name="adas_aeb_switch">Forward collision assist</string>
     <string name="adas_auto">Auto</string>
     <string name="adas_desactiver">Disable</string>
     <string name="adas_ica">ICA</string>
@@ -17,11 +17,16 @@
     <string name="adas_sound_warning">Sound warning</string>
     <string name="adas_speed_limit_tone">Speed limit change tone</string>
     <string name="adas_tja">TJA</string>
+    <string name="aeb_card_title">Forward collision assist</string>
+    <string name="aeb_section_sensitivity">Sensitivity</string>
+    <string name="aeb_sensitivity_high">High</string>
+    <string name="aeb_sensitivity_low">Low</string>
+    <string name="aeb_sensitivity_standard">Standard</string>
     <string name="app_name">MG4 Control</string>
     <string name="btn_check_update">Check for updates</string>
     <string name="btn_clean_apk">Clean APK</string>
     <string name="btn_infos">Info</string>
-    <string name="card_alerts">Security &amp; Alerts</string>
+    <string name="card_alerts">Alerts</string>
     <string name="card_climate">Climate settings</string>
     <string name="card_drive">Drive settings</string>
     <string name="clean_apk_done">✓ %1$d file(s) deleted</string>
@@ -44,6 +49,17 @@
     <string name="drive_section_regen">Regeneration</string>
     <string name="drive_snow">SNOW</string>
     <string name="drive_sport">SPORT</string>
+    <string name="elk_card_title">Lane departure assistant</string>
+    <string name="elk_mode_alert">Alert</string>
+    <string name="elk_mode_assist">Assist</string>
+    <string name="elk_mode_emergency">Emergency keep</string>
+    <string name="elk_profile_label">Lane departure</string>
+    <string name="elk_section_mode">Assist mode</string>
+    <string name="elk_section_sensitivity">Sensitivity</string>
+    <string name="elk_section_toggle">Activation</string>
+    <string name="elk_sensitivity_high">High</string>
+    <string name="elk_sensitivity_low">Low</string>
+    <string name="elk_sensitivity_standard">Standard</string>
     <string name="fw_unknown_body">This firmware is not yet natively supported by MG4 Control.\n\nYou can continue by manually selecting a compatibility mode, but some features may not work correctly.</string>
     <string name="fw_unknown_btn_close">Close app</string>
     <string name="fw_unknown_btn_continue">Continue</string>

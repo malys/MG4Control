@@ -50,6 +50,7 @@ L'application communique avec le véhicule via le SDK propriétaire SAIC, en acc
 - **SWI133** : Off / Limiteur / Auto / ACC / ICA + alertes excès de vitesse / changement de limite
 - **SWI68** : Désactiver / ACC / TJA + avertissement sonore On / Off
 - **SWI69 / SWI131** : Anti-collision avant (AEB) — On / Off + mode Alerte uniquement / Alerte + Freinage
+- **SWI165** : Désactiver / ACC / TJA + Anti-collision avant (AEB) On/Off + mode Alerte / Alerte+Freinage + avertissement sonore
 
 ### Raccourcis volant
 - Configuration des **4 boutons du volant** (boutons latéraux gauche/droit)
@@ -82,9 +83,15 @@ L'application communique avec le véhicule via le SDK propriétaire SAIC, en acc
 
 ## Changelog
 
+### v2.5.0
+- **Ajout** : Support complet du firmware **SWI165** (MG4 XPOWER) — détection automatique
+- **Ajout** : **ELK / LKA** (Assistant de sortie de voie) — On/Off, mode (Alerte / Assistance / Maintien d'urgence) et sensibilité (Faible / Standard / Élevé) pour tous les firmwares
+- **Ajout** : **Sensibilité AEB** (Anticollision avant) — Faible / Standard / Élevé pour tous les firmwares
+- **Ajout** : Interface principale redessinée en **deux pages** — glisser gauche/droite pour accéder à l'anticollision avant et l'assistant de sortie de voie
+
 ### v2.4.0
-- **Nouveau** : Support pour **SWI69 et SWI131**
-- **Nouveau** : Action raccourci **"Ouvrir... "** dans l'onglet raccourcis et laisse le choix de l'application a l'utilisateur
+- **Ajout** : Support pour **SWI69 et SWI131**
+- **Ajout** : Action raccourci **"Ouvrir... "** dans l'onglet raccourcis et laisse le choix de l'application a l'utilisateur
 
 
 ### v2.3.0
@@ -124,8 +131,9 @@ L'application communique avec le véhicule via le SDK propriétaire SAIC, en acc
 | Résolution d'écran | 1280 × 480 (orientation paysage forcée) |
 | Firmware SWI133 | Compatible ✅ |
 | Firmware SWI68 | Compatible ✅ |
-| Firmware SWI69 / SWI131 | Compatible ✅ |
-| Firmware UNKNOWN | Mode forcé SWI133/SWI68/SWI69/SWI131 disponible ⚠️ |
+| Firmware SWI69 / SWI131 | Compatible ✅ (AEB uniquement) |
+| Firmware SWI165 | Compatible ✅ (ADAS ACC/TJA + AEB + sièges/volant chauffants) |
+| Firmware UNKNOWN | Mode forcé SWI133/SWI68/SWI69/SWI131/SWI165 disponible ⚠️ |
 
 ---
 
@@ -278,6 +286,7 @@ Couche dédiée aux fonctions ADAS, chargée dynamiquement selon la génération
 | **SWI133** | `VehiclePropertyManager` | Chargé depuis l'APK launcher via `ClassLoader` + réflexion sur `mIVehiclePropertyService`. Utilise `getMixProperty()` / `setMixProperty()` |
 | **SWI68** | `VehicleSettingManager` | Singleton statique chargé via réflexion. Utilise `setAccTjaMode()` / `setLaneKeepingWarningSound()` |
 | **SWI69 / SWI131** | `VehicleSettingManager` | Même singleton que SWI68. Utilise `setFcwState()` / `getFcwState()` / `setFcwAutoBrakeMode()` / `setFcwSensitivity()` pour l'AEB. Valeurs confirmées empiriquement sur véhicule réel : `setFcwState(1)` = DÉSACTIVER, `setFcwState(2)` = ACTIVER. |
+| **SWI165** | `VehicleSettingManager` | Même SDK que SWI68 (`com.saicmotor.sdk.vehiclesettings`). ADAS via `setAccTjaMode()`. AEB via `setAutoEmergencyBraking(1/2)` comme toggle principal + `setFcwAlarmMode(1/2)` + `setFcwAutoBrakeMode(1/2)`. Modes : 1=OFF, 2=ON. |
 
 ### Détection du firmware
 
@@ -487,6 +496,12 @@ The app communicates with the vehicle through the proprietary SAIC SDK, accessin
 
 ## Changelog
 
+### v2.5.0
+- **New**: Full support for **SWI165** (MG4 XPOWER) firmware — auto-detection
+- **New**: **ELK / LKA** (Lane Keeping Assist) — On/Off, mode (Alert / Assist / Emergency Keep) and sensitivity (Low / Standard / High) for all firmwares
+- **New**: **AEB sensitivity** (Forward Collision Assist) — Low / Standard / High for all firmwares
+- **New**: Redesigned main interface with **two pages** — swipe left/right to access forward collision assist and lane keeping assist
+
 ### v2.4.0
 - **New**: Support for **SWI69 and SWI131**
 - **New**: The **"Open..."** shortcut in the Shortcuts tab lets the user choose the application
@@ -528,8 +543,9 @@ The app communicates with the vehicle through the proprietary SAIC SDK, accessin
 | Screen resolution | 1280 × 480 (forced landscape) |
 | SWI133 firmware | Supported ✅ |
 | SWI68 firmware | Supported ✅ |
-| SWI69 / SWI131 firmware | Supported ✅|
-| UNKNOWN firmware | Forced SWI133/SWI68/SWI69/SWI131 mode available ⚠️ |
+| SWI69 / SWI131 firmware | Supported ✅ (AEB only) |
+| SWI165 firmware | Supported ✅ (ADAS ACC/TJA + AEB + heated seats/steering) |
+| UNKNOWN firmware | Forced SWI133/SWI68/SWI69/SWI131/SWI165 mode available ⚠️ |
 
 ---
 
@@ -675,6 +691,7 @@ Dedicated layer for ADAS functions, dynamically loaded according to the detected
 | **SWI133** | `VehiclePropertyManager` | Loaded from the launcher APK via `ClassLoader` + reflection on `mIVehiclePropertyService`. Uses `getMixProperty()` / `setMixProperty()` |
 | **SWI68** | `VehicleSettingManager` | Static singleton loaded via reflection. Uses `setAccTjaMode()` / `setLaneKeepingWarningSound()` |
 | **SWI69 / SWI131** | `VehicleSettingManager` | Same singleton as SWI68. Uses `setFcwState()` / `getFcwState()` / `setFcwAutoBrakeMode()` / `setFcwSensitivity()` for AEB. Values confirmed empirically on real hardware: `setFcwState(1)` = DISABLE, `setFcwState(2)` = ENABLE. |
+| **SWI165** | `VehicleSettingManager` | Same SDK as SWI68 (`com.saicmotor.sdk.vehiclesettings`). ADAS via `setAccTjaMode()`. AEB via `setAutoEmergencyBraking(1/2)` as the main toggle + `setFcwAlarmMode(1/2)` + `setFcwAutoBrakeMode(1/2)`. Values: 1=OFF, 2=ON. |
 
 ### Firmware Detection
 
