@@ -2,8 +2,8 @@
 name: Feature request
 about: Suggest an idea for this project
 title: "[IMPROVEMENT]"
-labels: ''
-assignees: ''
+labels: enhancement
+assignees: SliDeeN
 
 ---
 
