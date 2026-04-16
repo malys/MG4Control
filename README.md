@@ -380,6 +380,12 @@ Disposition en **2 rangées** (ratio 2:1) optimisée pour 1280×480 :
 
 ## Compilation et installation
 
+Vous pouvez directement télécharger la dernière version de MG4Control via les releases : https://github.com/SliDeeN/MG4Control/releases
+Il ne vous faut qu'une clé USB et l'accès aux paramètres AAOS afin d'installer l'APK.
+
+
+Vous pouvez aussi compiler vous même le projet :
+
 ### Prérequis
 - Android Studio Hedgehog (2023.1) ou supérieur
 - JDK 17+
@@ -778,6 +784,12 @@ A second press on PROFILS or RÉGLAGES closes the view and returns to the dashbo
 ---
 
 ## Build & Installation
+
+You can download the latest version of MG4Control directly from the releases page: https://github.com/SliDeeN/MG4Control/releases
+All you need is a USB drive and access to the AAOS settings to install the APK.
+
+
+You can also compile the project yourself:
 
 ### Prerequisites
 - Android Studio Hedgehog (2023.1) or later
