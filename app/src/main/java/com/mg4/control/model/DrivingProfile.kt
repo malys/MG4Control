@@ -24,5 +24,8 @@ data class DrivingProfile(
     // ELK — Assistant de sortie de voie (SWI133 uniquement)
     val elkMode: Int = 0,              // 0=non configuré, 1=OFF, 2=Alerte(LDW), 3=Aider(LDP), 5=ELK
     val elkSensitivity: Int = 0,       // 0=non configuré, 1=Faible, 2=Standard, 3=Élevé
+    // Économie d'énergie + TSR
+    val energySaving: Boolean = false,
+    val tsrEnabled: Boolean = false,
     val isDefault: Boolean = false
 )

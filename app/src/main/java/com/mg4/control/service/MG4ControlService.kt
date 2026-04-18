@@ -53,6 +53,11 @@ class MG4ControlService : Service() {
     // État par slot pour la détection d'appui long
     private val slotLongTriggered = mutableMapOf<String, Boolean>()
 
+    // États des toggles en mémoire — réinitialisés à chaque démarrage du service (= redémarrage voiture)
+    // Évite le bug du 1er appui : si on utilise SharedPrefs, l'état persisté peut ne pas correspondre
+    // à l'état réel de la voiture après un redémarrage, causant un toggle dans le mauvais sens.
+    private val toggleStates = mutableMapOf<String, Boolean>()
+
     override fun onCreate() {
         super.onCreate()
         AppLogger.i(TAG, "onCreate")
@@ -140,10 +145,28 @@ class MG4ControlService : Service() {
     // ── Exécution du toggle ──────────────────────────────────────────────────
 
     private fun executeToggle(action: ShortcutAction, pressKey: String = "") {
-        val prefs    = getSharedPreferences(PREFS_SHORTCUTS, MODE_PRIVATE)
-        val stateKey = "shortcut_state_${action.name.lowercase()}"
-        val newState = !prefs.getBoolean(stateKey, false)
-        prefs.edit().putBoolean(stateKey, newState).apply()
+        val prefs = getSharedPreferences(PREFS_SHORTCUTS, MODE_PRIVATE)
+
+        // APPLY_PROFILE : action directe — pas de toggle d'état, chaque pression applique le profil
+        if (action == ShortcutAction.APPLY_PROFILE) {
+            val profileId = prefs.getString("shortcut_${pressKey}_profile_id", null) ?: return
+            CoroutineScope(Dispatchers.IO).launch {
+                val profile = ProfileManager(applicationContext).getById(profileId)
+                if (profile == null) {
+                    prefs.edit().putInt("shortcut_$pressKey", ShortcutAction.NONE.id).apply()
+                    AppLogger.i(TAG, "SHORTCUT APPLY_PROFILE — profil $profileId introuvable, reset NONE")
+                } else {
+                    AppLogger.i(TAG, "SHORTCUT APPLY_PROFILE — application de '${profile.name}'")
+                    ProfileApplier.apply(profile)
+                }
+            }
+            return
+        }
+
+        // Pour tous les autres toggles : état en mémoire (réinitialisé au démarrage du service)
+        // Évite le bug du 1er appui causé par un état SharedPrefs désynchronisé après redémarrage.
+        val newState = !(toggleStates[action.name] ?: false)
+        toggleStates[action.name] = newState
 
         AppLogger.i(TAG, "SHORTCUT ${action.name} → ${if (newState) "ON/A" else "OFF/B"}")
 
@@ -179,6 +202,8 @@ class MG4ControlService : Service() {
                     if (isVsmBased) MG4Hardware.setAccTjaMode(mode)
                     else            MG4Hardware.setMixedIntelligentDrive(mode)
                 }
+                ShortcutAction.ENERGY_SAVING_TOGGLE -> MG4Hardware.setEnergySavingMode(newState)
+                ShortcutAction.TSR_TOGGLE           -> MG4Hardware.setTsrMode(newState)
                 ShortcutAction.OPEN_APP -> {
                     val intent = Intent(this@MG4ControlService, MainActivity::class.java).apply {
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP

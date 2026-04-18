@@ -33,6 +33,12 @@
     <string name="shortcuts_action_overspeed">Overspeed alert</string>
     <string name="shortcuts_action_speed_limit">Speed limit alert</string>
     <string name="shortcuts_action_adas">ADAS</string>
+    <string name="shortcuts_action_energy_saving">Energy saving</string>
+    <string name="shortcuts_action_tsr">Signs (TSR)</string>
+    <string name="shortcuts_action_apply_profile">Apply profile…</string>
+    <string name="shortcuts_pick_profile_title">Choose a profile</string>
+    <string name="shortcuts_profile_not_found">Profile not found</string>
+    <string name="shortcuts_no_profiles">No profiles created</string>
     <string name="shortcuts_action_open_app">Open MG4Control</string>
     <string name="shortcuts_action_open_custom_app">Open…</string>
     <string name="shortcuts_pick_app_title">Choose an app</string>
@@ -56,6 +62,7 @@
     <string name="drive_sport">SPORT</string>
     <string name="drive_snow">SNOW</string>
     <string name="drive_custom">CUSTOM</string>
+    <string name="drive_energy_saving">Energy saving</string>
 
     <!-- Drive tab section headers -->
     <string name="drive_section_mode">Drive mode</string>
@@ -111,6 +118,7 @@
     <string name="adas_acc">ACC</string>
     <string name="adas_ica">ICA</string>
     <!-- ADAS SWI68 -->
+    <string name="adas_tsr">Sign recognition</string>
     <string name="adas_sound_warning">Sound warning</string>
     <string name="adas_desactiver">Disable</string>
     <string name="adas_tja">TJA</string>
@@ -183,6 +191,11 @@
     <string name="update_downloaded_title">APK downloaded ✓</string>
     <string name="update_downloaded_instructions">The Downloads folder should have opened automatically.\n\nTap MG4Control-*.apk to install.\n\nIf the folder did not open, go to the File Manager and navigate to Downloads.</string>
     <string name="update_gh_releases_link">github.com/SliDeeN/MG4Control/releases</string>
+    <string name="update_skip_btn">Don\'t remind me again</string>
+    <plurals name="update_skipped_hint">
+        <item quantity="one">%d update not installed since your version</item>
+        <item quantity="other">%d updates not installed since your version</item>
+    </plurals>
 
     <!-- Console (debug) -->
     <string name="console_title">⬛  MG4 Console</string>
@@ -203,6 +216,7 @@
     <string name="settings_language">Language</string>
     <string name="settings_language_fr">Français</string>
     <string name="settings_language_en">English</string>
+    <string name="settings_language_de">Deutsch</string>
     <string name="settings_language_pick_title">Choose your language</string>
     <string name="settings_language_pick_msg">This can be changed later in Settings.</string>
     <string name="settings_firmware_version">Firmware version</string>

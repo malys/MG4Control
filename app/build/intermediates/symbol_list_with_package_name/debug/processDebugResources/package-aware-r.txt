@@ -3346,6 +3346,8 @@ id btn_elk_sen_low
 id btn_elk_sen_low_d
 id btn_elk_sen_standard
 id btn_elk_sen_standard_d
+id btn_energy_saving
+id btn_energy_saving_d
 id btn_fw_close_app
 id btn_fw_continue
 id btn_info_close
@@ -3396,6 +3398,7 @@ id btn_swi68_tja
 id btn_update_auto
 id btn_update_later
 id btn_update_manual
+id btn_update_skip
 id buttonPanel
 id cache_measures
 id callMeasure
@@ -3749,6 +3752,8 @@ id section_seats_dialog
 id section_steering_dialog
 id section_swi133
 id section_swi68
+id section_tsr
+id section_tsr_dialog
 id select_dialog_listview
 id selected
 id selection_type
@@ -3805,6 +3810,7 @@ id sw_overspeed_alarm
 id sw_set_default
 id sw_sound_warning
 id sw_speed_limit_tone
+id sw_tsr_d
 id switch_aeb
 id switch_aeb_p2
 id switch_auto_apply
@@ -3814,6 +3820,7 @@ id switch_shortcuts_enabled
 id switch_sound_warning
 id switch_speed_tone
 id switch_steering_heat
+id switch_tsr
 id tabMode
 id tag_accessibility_actions
 id tag_accessibility_clickable_spans
@@ -3877,6 +3884,7 @@ id tv_profile_name
 id tv_profile_summary
 id tv_progress_status
 id tv_release_notes
+id tv_skip_hint
 id tv_update_gh_link
 id tv_version_from
 id tv_version_to
@@ -4116,6 +4124,7 @@ layout support_simple_spinner_dropdown_item
 menu bottom_nav_menu
 navigation nav_graph
 plurals mtrl_badge_content_description
+plurals update_skipped_hint
 string abc_action_bar_home_description
 string abc_action_bar_up_description
 string abc_action_menu_overflow_description
@@ -4160,6 +4169,7 @@ string adas_section_sounds
 string adas_sound_warning
 string adas_speed_limit_tone
 string adas_tja
+string adas_tsr
 string aeb_card_title
 string aeb_section_sensitivity
 string aeb_sensitivity_high
@@ -4207,6 +4217,7 @@ string console_title
 string dest_title
 string drive_custom
 string drive_eco
+string drive_energy_saving
 string drive_normal
 string drive_section_mode
 string drive_section_regen
@@ -4393,12 +4404,15 @@ string settings_default_screen_dashboard
 string settings_firmware_loading
 string settings_firmware_version
 string settings_language
+string settings_language_de
 string settings_language_en
 string settings_language_fr
 string settings_language_pick_msg
 string settings_language_pick_title
 string shortcuts_action_adas
 string shortcuts_action_aeb
+string shortcuts_action_apply_profile
+string shortcuts_action_energy_saving
 string shortcuts_action_none
 string shortcuts_action_one_pedal
 string shortcuts_action_open_app
@@ -4406,6 +4420,7 @@ string shortcuts_action_open_custom_app
 string shortcuts_action_overspeed
 string shortcuts_action_sound
 string shortcuts_action_speed_limit
+string shortcuts_action_tsr
 string shortcuts_btn1_label
 string shortcuts_btn2_label
 string shortcuts_cfg_adas
@@ -4416,11 +4431,14 @@ string shortcuts_cfg_mode2
 string shortcuts_cfg_one_pedal
 string shortcuts_cfg_retour
 string shortcuts_enabled_label
+string shortcuts_no_profiles
 string shortcuts_open_custom_prefix
 string shortcuts_pick_app_title
+string shortcuts_pick_profile_title
 string shortcuts_press_double
 string shortcuts_press_long
 string shortcuts_press_single
+string shortcuts_profile_not_found
 string shortcuts_warning_message
 string shortcuts_warning_ok
 string shortcuts_warning_title
@@ -4453,6 +4471,7 @@ string update_manual_title
 string update_network_error
 string update_new_label
 string update_release_notes_label
+string update_skip_btn
 string update_up_to_date
 style AlertDialog_AppCompat
 style AlertDialog_AppCompat_Light

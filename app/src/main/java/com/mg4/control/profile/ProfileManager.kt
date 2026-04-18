@@ -72,6 +72,8 @@ class ProfileManager(private val context: Context) {
 
     fun getDefaultId(): String? = prefs.getString(KEY_DEFAULT_ID, null)
 
+    fun getById(id: String): DrivingProfile? = getAll().firstOrNull { it.id == id }
+
     // -------------------------------------------------------------------------
     // Persistence
     // -------------------------------------------------------------------------

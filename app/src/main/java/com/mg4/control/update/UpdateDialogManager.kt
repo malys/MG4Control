@@ -56,10 +56,12 @@ object UpdateDialogManager {
         val tvFrom       = view.findViewById<TextView>(R.id.tv_version_from)
         val tvTo         = view.findViewById<TextView>(R.id.tv_version_to)
         val tvNotes      = view.findViewById<TextView>(R.id.tv_release_notes)
+        val tvSkipHint   = view.findViewById<TextView>(R.id.tv_skip_hint)
         val rowDataWarn  = view.findViewById<View>(R.id.row_data_warning)
         val btnAuto      = view.findViewById<MaterialButton>(R.id.btn_update_auto)
         val btnManual    = view.findViewById<MaterialButton>(R.id.btn_update_manual)
         val btnLater     = view.findViewById<MaterialButton>(R.id.btn_update_later)
+        val btnSkip      = view.findViewById<MaterialButton>(R.id.btn_update_skip)
 
         // Phase 2 — Progress
         val tvStatus     = view.findViewById<TextView>(R.id.tv_progress_status)
@@ -84,6 +86,19 @@ object UpdateDialogManager {
 
         val onWifi = isOnWifi(activity)
         rowDataWarn.visibility = if (onWifi) View.GONE else View.VISIBLE
+
+        // ── Hint : N mises à jour non installées ─────────────────────────────
+        if (info.skippedCount > 0) {
+            tvSkipHint.text = activity.resources.getQuantityString(
+                R.plurals.update_skipped_hint, info.skippedCount, info.skippedCount)
+            tvSkipHint.visibility = View.VISIBLE
+        }
+
+        // ── Bouton NE PLUS ME RAPPELER ───────────────────────────────────────
+        btnSkip.setOnClickListener {
+            UpdateChecker.skipVersion(activity, info.versionName)
+            dialog.dismiss()
+        }
 
         // ── Bouton PLUS TARD ─────────────────────────────────────────────────
         btnLater.setOnClickListener { dialog.dismiss() }
@@ -194,6 +209,8 @@ object UpdateDialogManager {
                 when (status) {
                     DownloadManager.STATUS_SUCCESSFUL -> {
                         progressBar.progress = 100
+                        // Nettoie les anciens APK dans Téléchargements (garde les 5 plus récents)
+                        ApkCleanup.cleanIfNeeded()
                         // Ouvre le dossier Téléchargements dans le gestionnaire AAOS
                         openDownloadsFolder(activity)
                         onDownloaded()

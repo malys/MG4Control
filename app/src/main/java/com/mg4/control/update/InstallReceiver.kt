@@ -40,7 +40,11 @@ class InstallReceiver : BroadcastReceiver() {
             PackageInstaller.STATUS_PENDING_USER_ACTION -> {
                 // Ne devrait pas arriver avec INSTALL_PACKAGES système,
                 // mais on ouvre quand même la confirmation si nécessaire.
-                val confirmIntent = intent.getParcelableExtra<Intent>(Intent.EXTRA_INTENT)
+                @Suppress("DEPRECATION")
+                val confirmIntent = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU)
+                    intent.getParcelableExtra(Intent.EXTRA_INTENT, Intent::class.java)
+                else
+                    intent.getParcelableExtra<Intent>(Intent.EXTRA_INTENT)
                 confirmIntent?.let {
                     it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     context.startActivity(it)

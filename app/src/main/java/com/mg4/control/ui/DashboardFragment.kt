@@ -68,6 +68,13 @@ class DashboardFragment : Fragment() {
     private var switchSpeedTone: Switch? = null
     private var switchSoundWarning: Switch? = null
 
+    // ── Page 0 — TSR + Économie d'énergie ───────────────────────────────────
+    private var switchTsr: Switch? = null
+    private var btnEnergySaving: Button? = null
+    private var energySavingOn = false
+    /** Dernier mode de conduite connu — nécessaire pour arbitrer les exclusions SNOW / Éco énergie. */
+    private var currentDriveMode: DriveMode? = null
+
     // ── AEB : page 0 pour VSM-based, page 1 (SWI133) pour les autres ───────────
     private var switchAeb: Switch? = null
     private var btnAebAlarm: Button? = null
@@ -252,6 +259,10 @@ class DashboardFragment : Fragment() {
         switchSpeedTone    = view.findViewById(R.id.switch_speed_tone)
         switchSoundWarning = view.findViewById(R.id.switch_sound_warning)
 
+        // TSR + Économie d'énergie
+        switchTsr       = view.findViewById(R.id.switch_tsr)
+        btnEnergySaving = view.findViewById(R.id.btn_energy_saving)
+
         // AEB déplacé sur page 1 pour tous les firmwares — pas de binding ici
     }
 
@@ -268,6 +279,9 @@ class DashboardFragment : Fragment() {
         // AEB déplacé sur page 1 pour tous les firmwares
         view.findViewById<View>(R.id.aeb_group).visibility           = View.GONE
         view.findViewById<View>(R.id.climate_card).visibility        = if (hasClimate) View.VISIBLE else View.GONE
+        // TSR + Économie d'énergie — tous firmwares connus
+        view.findViewById<View>(R.id.section_tsr).visibility    = if (isKnown) View.VISIBLE else View.GONE
+        view.findViewById<View>(R.id.btn_energy_saving).visibility = if (isKnown) View.VISIBLE else View.GONE
     }
 
     private fun setupMainListeners() {
@@ -344,6 +358,27 @@ class DashboardFragment : Fragment() {
             switchSoundWarning?.setOnCheckedChangeListener { _, checked ->
                 if (!isRefreshing)
                     MG4Hardware.whenKatman4Ready { MG4Hardware.setSoundWarning(checked) }
+            }
+        }
+
+        // TSR — tous firmwares connus
+        if (isKnown) {
+            switchTsr?.setOnCheckedChangeListener { _, checked ->
+                if (!isRefreshing)
+                    MG4Hardware.whenKatman4Ready {
+                        CoroutineScope(Dispatchers.IO).launch { MG4Hardware.setTsrMode(checked) }
+                    }
+            }
+        }
+
+        // Économie d'énergie — tous firmwares connus
+        if (isKnown) {
+            btnEnergySaving?.setOnClickListener {
+                energySavingOn = !energySavingOn
+                applyEnergySavingUI(energySavingOn)
+                MG4Hardware.whenKatman4Ready {
+                    CoroutineScope(Dispatchers.IO).launch { MG4Hardware.setEnergySavingMode(energySavingOn) }
+                }
             }
         }
 
@@ -524,11 +559,13 @@ class DashboardFragment : Fragment() {
     }
 
     private suspend fun refreshSwi133Adas() {
-        val adasMode  = MG4Hardware.getMixedIntelligentDrive()
-        val overspeed = MG4Hardware.isOverspeedAlarmOn()
-        val speedTone = MG4Hardware.isSpeedLimitToneOn()
-        val aebOn     = MG4Hardware.isAebEnabled()
-        val aebMode   = MG4Hardware.getAebMode()
+        val adasMode     = MG4Hardware.getMixedIntelligentDrive()
+        val overspeed    = MG4Hardware.isOverspeedAlarmOn()
+        val speedTone    = MG4Hardware.isSpeedLimitToneOn()
+        val aebOn        = MG4Hardware.isAebEnabled()
+        val aebMode      = MG4Hardware.getAebMode()
+        val tsrOn        = MG4Hardware.isTsrOn()
+        val energySaving = MG4Hardware.isEnergySavingOn()
         withContext(Dispatchers.Main) {
             if (!isAdded) return@withContext
             if (adasMode < 0) {
@@ -536,9 +573,11 @@ class DashboardFragment : Fragment() {
                 return@withContext
             }
             isRefreshing = true
-            switchOverspeed?.isChecked = overspeed
-            switchSpeedTone?.isChecked = speedTone
-            switchAeb?.isChecked = aebOn
+            switchOverspeed?.isChecked    = overspeed
+            switchSpeedTone?.isChecked    = speedTone
+            switchAeb?.isChecked          = aebOn
+            switchTsr?.isChecked          = tsrOn
+            applyEnergySavingUI(energySaving)
             isRefreshing = false
             applySwi133AdasUI(adasMode)
             applyAebModeButtonsEnabled(aebOn)
@@ -547,10 +586,12 @@ class DashboardFragment : Fragment() {
     }
 
     private suspend fun refreshSwi68Adas() {
-        val mode    = MG4Hardware.getAccTjaMode()
-        val sound   = MG4Hardware.isSoundWarningOn()
-        val aebOn   = MG4Hardware.isAebEnabled()
-        val aebMode = MG4Hardware.getAebMode()
+        val mode         = MG4Hardware.getAccTjaMode()
+        val sound        = MG4Hardware.isSoundWarningOn()
+        val aebOn        = MG4Hardware.isAebEnabled()
+        val aebMode      = MG4Hardware.getAebMode()
+        val tsrOn        = MG4Hardware.isTsrOn()
+        val energySaving = MG4Hardware.isEnergySavingOn()
         withContext(Dispatchers.Main) {
             if (!isAdded) return@withContext
             if (mode < 0) {
@@ -559,7 +600,9 @@ class DashboardFragment : Fragment() {
             }
             isRefreshing = true
             switchSoundWarning?.isChecked = sound
-            switchAeb?.isChecked = aebOn
+            switchAeb?.isChecked          = aebOn
+            switchTsr?.isChecked          = tsrOn
+            applyEnergySavingUI(energySaving)
             isRefreshing = false
             applySwi68AdasUI(mode)
             applyAebModeButtonsEnabled(aebOn)
@@ -590,7 +633,16 @@ class DashboardFragment : Fragment() {
     //  Helpers UI — Page 0
     // ═════════════════════════════════════════════════════════════════════════
 
+    private fun applyEnergySavingUI(active: Boolean) {
+        energySavingOn = active
+        btnEnergySaving?.backgroundTintList = ColorStateList.valueOf(if (active) colorActive else colorInactive)
+        btnEnergySaving?.setTextColor(if (active) colorTextActive else colorTextInactive)
+        // Regen : indisponible si Éco actif OU si SNOW sélectionné
+        setRegenEnabled(!active && currentDriveMode != DriveMode.SNOW)
+    }
+
     private fun applyDriveModeUI(mode: DriveMode) {
+        currentDriveMode = mode
         driveModeButtons.forEach { (m, btn) ->
             val (bg, text) = when {
                 m != mode            -> colorInactive to colorTextInactive
@@ -601,7 +653,12 @@ class DashboardFragment : Fragment() {
             btn.backgroundTintList = ColorStateList.valueOf(bg)
             btn.setTextColor(text)
         }
-        setRegenEnabled(mode != DriveMode.SNOW)
+        // Regen : indisponible si SNOW OU si Éco énergie actif
+        setRegenEnabled(mode != DriveMode.SNOW && !energySavingOn)
+        // Bouton Éco énergie : indisponible en mode SNOW (modes exclusifs)
+        val isSnow = mode == DriveMode.SNOW
+        btnEnergySaving?.isEnabled = !isSnow
+        btnEnergySaving?.alpha = if (isSnow) 0.35f else 1f
     }
 
     private fun applyRegenUI(level: RegenLevel) {

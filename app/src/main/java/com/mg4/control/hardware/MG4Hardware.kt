@@ -91,6 +91,14 @@ object MG4Hardware {
     // PROP_AEB_SENSITIVITY : VPM, ForwardCollisionAsstSentItem, 1=Faible / 2=Standard / 3=Élevé
     private const val PROP_AEB_SENSITIVITY = 0x302000e  // ID_AAD_FRONT_COLLISION_ASST_SEN (VPM)
 
+    // TSR — Reconnaissance des panneaux de vitesse (SLIF Warning)
+    // SWI133 : VPM toggle 0/1 ; SWI68/SWI165 : VSM setSpeedAsstSlifWarning ; SWI69/SWI131 : VSM setSLIFWarningState (inversé)
+    private const val PROP_TSR_MODE = 0x5030049  // ID_AAD_SLIF_WARNING
+
+    // Économie d'énergie (Endurance Mode / Longer Endurance)
+    // SWI133 : VPM PROP_ENERGY_SAVING ; SWI69/SWI131 : VSM setEnduranceMode ; SWI68/SWI165 : VSM setLongerEndurance
+    private const val PROP_ENERGY_SAVING = 0x5030007  // ID_LONGER_ENDURANCE_MODE
+
     // SWI68 : VehicleSettingManager class name (loaded via launcher context)
     private const val VSM_CLASS      = "com.saicmotor.sdk.vehiclesettings.manager.VehicleSettingManager"
     private const val LAUNCHER68_PKG = "com.saicmotor.hmi.launcher"
@@ -1456,6 +1464,104 @@ object MG4Hardware {
             false
         } finally {
             data.recycle()
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // TSR — Reconnaissance des panneaux de vitesse
+    // -------------------------------------------------------------------------
+
+    fun isTsrOn(): Boolean = when {
+        FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI133 ->
+            getIntPropertyVpm(PROP_TSR_MODE) > 0
+        FirmwareInfo.isNewGenVsm() ->   // SWI69 + SWI131 — convention inversée : 0=ON, 1=OFF
+            (callVsm("getSLIFWarningState") as? Int) == 0
+        FirmwareInfo.isVsmBased() ->    // SWI68 + SWI165
+            (callVsm("getSpeedAsstSlifWarning") as? Int) == 1
+        else -> false
+    }
+
+    fun setTsrMode(enabled: Boolean): Boolean {
+        AppLogger.i(TAG, "setTsrMode → $enabled")
+        return when {
+            FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI133 -> {
+                // SWI133 : le firmware remet OVERSPEED et SPEED_TONE à ON quand le SLIF est réactivé
+                // → on sauvegarde avant et on restaure après.
+                val prefs = sAppContext?.getSharedPreferences("mg4_settings", 0)
+                if (!enabled) {
+                    val overspeedOn = isOverspeedAlarmOn()
+                    val speedToneOn = isSpeedLimitToneOn()
+                    prefs?.edit()
+                        ?.putBoolean("tsr_saved_overspeed", overspeedOn)
+                        ?.putBoolean("tsr_saved_speed_tone", speedToneOn)
+                        ?.apply()
+                    AppLogger.i(TAG, "  TSR OFF — sauvegarde overspeed=$overspeedOn speedTone=$speedToneOn")
+                }
+                val ok = setIntPropertyVpmRecovery(PROP_TSR_MODE, if (enabled) 1 else 0)
+                if (enabled && ok) {
+                    Thread.sleep(400)
+                    val savedOverspeed = prefs?.getBoolean("tsr_saved_overspeed", true) ?: true
+                    val savedSpeedTone = prefs?.getBoolean("tsr_saved_speed_tone", true) ?: true
+                    AppLogger.i(TAG, "  TSR ON — restauration overspeed=$savedOverspeed speedTone=$savedSpeedTone")
+                    setOverspeedAlarm(savedOverspeed)
+                    setSpeedLimitTone(savedSpeedTone)
+                }
+                ok
+            }
+            FirmwareInfo.isNewGenVsm() -> {   // SWI69 + SWI131 — convention inversée : 0=activer, 1=désactiver
+                callVsm("setSLIFWarningState", if (enabled) 0 else 1) ?: return false
+                true
+            }
+            FirmwareInfo.isVsmBased() -> {    // SWI68 + SWI165
+                // L'avertissement sonore pourrait être remis à ON lors de la réactivation du TSR
+                // → on sauvegarde avant et on restaure après.
+                val prefs = sAppContext?.getSharedPreferences("mg4_settings", 0)
+                if (!enabled) {
+                    val soundOn = isSoundWarningOn()
+                    prefs?.edit()?.putBoolean("tsr_saved_sound_warning", soundOn)?.apply()
+                    AppLogger.i(TAG, "  TSR OFF — sauvegarde soundWarning=$soundOn")
+                }
+                callVsm("setSpeedAsstSlifWarning", if (enabled) 1 else 0) ?: return false
+                if (enabled) {
+                    Thread.sleep(400)
+                    val savedSound = prefs?.getBoolean("tsr_saved_sound_warning", true) ?: true
+                    AppLogger.i(TAG, "  TSR ON — restauration soundWarning=$savedSound")
+                    setSoundWarning(savedSound)
+                }
+                true
+            }
+            else -> false
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Économie d'énergie (Endurance Mode)
+    // -------------------------------------------------------------------------
+
+    fun isEnergySavingOn(): Boolean = when {
+        FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI133 ->
+            getIntPropertyVpm(PROP_ENERGY_SAVING) == 1
+        FirmwareInfo.isNewGenVsm() ->       // SWI69 + SWI131
+            (callVsm("getEnduranceMode") as? Int) == 1
+        FirmwareInfo.isVsmBased() ->        // SWI68 + SWI165
+            (callVsm("getLongerEndurance") as? Int) == 1
+        else -> false
+    }
+
+    fun setEnergySavingMode(enabled: Boolean): Boolean {
+        AppLogger.i(TAG, "setEnergySavingMode → $enabled")
+        return when {
+            FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI133 ->
+                setIntPropertyVpmRecovery(PROP_ENERGY_SAVING, if (enabled) 1 else 0)
+            FirmwareInfo.isNewGenVsm() -> {  // SWI69 + SWI131
+                callVsm("setEnduranceMode", if (enabled) 1 else 0) ?: return false
+                true
+            }
+            FirmwareInfo.isVsmBased() -> {   // SWI68 + SWI165
+                callVsm("setLongerEndurance", if (enabled) 1 else 0) ?: return false
+                true
+            }
+            else -> false
         }
     }
 

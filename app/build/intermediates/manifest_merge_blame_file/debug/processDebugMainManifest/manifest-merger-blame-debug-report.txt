@@ -2,8 +2,8 @@
 2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
 3    package="com.mg4.control"
 4    android:sharedUserId="android.uid.system"
-5    android:versionCode="9"
-6    android:versionName="2.5.0" >
+5    android:versionCode="10"
+6    android:versionName="2.5.1" >
 7
 8    <uses-sdk
 9        android:minSdkVersion="28"

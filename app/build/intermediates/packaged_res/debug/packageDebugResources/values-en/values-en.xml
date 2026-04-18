@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <plurals name="update_skipped_hint">
+        <item quantity="one">%d update not installed since your version</item>
+        <item quantity="other">%d updates not installed since your version</item>
+    </plurals>
     <string name="adas_acc">ACC</string>
     <string name="adas_aeb_alarm">Alert</string>
     <string name="adas_aeb_alarm_brake">Al. + Auto brake</string>
@@ -17,6 +21,7 @@
     <string name="adas_sound_warning">Sound warning</string>
     <string name="adas_speed_limit_tone">Speed limit change tone</string>
     <string name="adas_tja">TJA</string>
+    <string name="adas_tsr">Sign recognition</string>
     <string name="aeb_card_title">Forward collision assist</string>
     <string name="aeb_section_sensitivity">Sensitivity</string>
     <string name="aeb_sensitivity_high">High</string>
@@ -44,6 +49,7 @@
     <string name="console_title">⬛  MG4 Console</string>
     <string name="drive_custom">CUSTOM</string>
     <string name="drive_eco">ECO</string>
+    <string name="drive_energy_saving">Energy saving</string>
     <string name="drive_normal">NORMAL</string>
     <string name="drive_section_mode">Drive mode</string>
     <string name="drive_section_regen">Regeneration</string>
@@ -111,12 +117,15 @@
     <string name="settings_firmware_loading">Reading…</string>
     <string name="settings_firmware_version">Firmware version</string>
     <string name="settings_language">Language</string>
+    <string name="settings_language_de">Deutsch</string>
     <string name="settings_language_en">English</string>
     <string name="settings_language_fr">Français</string>
     <string name="settings_language_pick_msg">This can be changed later in Settings.</string>
     <string name="settings_language_pick_title">Choose your language</string>
     <string name="shortcuts_action_adas">ADAS</string>
     <string name="shortcuts_action_aeb">Anticollision system</string>
+    <string name="shortcuts_action_apply_profile">Apply profile…</string>
+    <string name="shortcuts_action_energy_saving">Energy saving</string>
     <string name="shortcuts_action_none">None</string>
     <string name="shortcuts_action_one_pedal">1 Pedal</string>
     <string name="shortcuts_action_open_app">Open MG4Control</string>
@@ -124,6 +133,7 @@
     <string name="shortcuts_action_overspeed">Overspeed alert</string>
     <string name="shortcuts_action_sound">Sound</string>
     <string name="shortcuts_action_speed_limit">Speed limit alert</string>
+    <string name="shortcuts_action_tsr">Signs (TSR)</string>
     <string name="shortcuts_btn1_label">★ Left Button</string>
     <string name="shortcuts_btn2_label">★ Right Button</string>
     <string name="shortcuts_cfg_adas">ADAS — Cycle</string>
@@ -134,11 +144,14 @@
     <string name="shortcuts_cfg_one_pedal">1 Pedal — Return regen</string>
     <string name="shortcuts_cfg_retour">Return</string>
     <string name="shortcuts_enabled_label">Enable steering wheel shortcuts</string>
+    <string name="shortcuts_no_profiles">No profiles created</string>
     <string name="shortcuts_open_custom_prefix">Open</string>
     <string name="shortcuts_pick_app_title">Choose an app</string>
+    <string name="shortcuts_pick_profile_title">Choose a profile</string>
     <string name="shortcuts_press_double">Double</string>
     <string name="shortcuts_press_long">Long</string>
     <string name="shortcuts_press_single">Single</string>
+    <string name="shortcuts_profile_not_found">Profile not found</string>
     <string name="shortcuts_warning_message">⚠ If the official launcher is configured on a button, it will take priority over MG4Control.\n\nExample: if the 360° camera is assigned to a single press in the launcher, MG4Control will not be able to intercept that button and the camera will activate instead.\n\nIt is recommended to disable the official launcher\'s shortcuts to avoid conflicts.</string>
     <string name="shortcuts_warning_ok">Got it</string>
     <string name="shortcuts_warning_title">Steering wheel shortcuts</string>
@@ -168,5 +181,6 @@
     <string name="update_network_error">✕  Network error</string>
     <string name="update_new_label">New version</string>
     <string name="update_release_notes_label">Release notes</string>
+    <string name="update_skip_btn">Don\'t remind me again</string>
     <string name="update_up_to_date">✓  Up to date</string>
 </resources>

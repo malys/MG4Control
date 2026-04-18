@@ -131,7 +131,9 @@ class ProfileFragment : Fragment() {
                     aebMode        = MG4Hardware.getAebMode().let { if (it < 1) AebMode.ALARM else it },
                     aebSensitivity = MG4Hardware.getAebSensitivity().let { if (it < 1) AebSensitivity.STANDARD else it },
                     elkMode        = elkMode,
-                    elkSensitivity = elkSen
+                    elkSensitivity = elkSen,
+                    energySaving   = MG4Hardware.isEnergySavingOn(),
+                    tsrEnabled     = MG4Hardware.isTsrOn()
                 )
             } else {
                 // SWI133/UNKNOWN : ADAS mixte, sièges et volant chauffants
@@ -152,7 +154,9 @@ class ProfileFragment : Fragment() {
                     aebMode        = MG4Hardware.getAebMode().let { if (it < 1) AebMode.ALARM else it },
                     aebSensitivity = aebSen,
                     elkMode        = elkMode,
-                    elkSensitivity = elkSen
+                    elkSensitivity = elkSen,
+                    energySaving   = if (FirmwareInfo.getGeneration() != FirmwareInfo.Gen.UNKNOWN) MG4Hardware.isEnergySavingOn() else false,
+                    tsrEnabled     = if (FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI133) MG4Hardware.isTsrOn() else false
                 )
             }
             withContext(Dispatchers.Main) {
@@ -207,6 +211,11 @@ class ProfileFragment : Fragment() {
         var elkEnabledSel   = elkModeSel != ElkMode.OFF
         /** Dernier mode ELK actif pour restauration après toggle ON */
         var lastActiveElkModeD = if (elkModeSel != ElkMode.OFF) elkModeSel else ElkMode.EMERGENCY
+        var energySavingSel = data.energySaving
+        var tsrEnabledSel   = data.tsrEnabled
+
+        // ── Bouton Éco énergie — déclaré tôt pour être accessible dans le binding drive mode ─
+        val btnEnergy = dialogView.findViewById<MaterialButton>(R.id.btn_energy_saving_d)
 
         // ── Mode de conduite ─────────────────────────────────────────────────
         val drivePairs = listOf(
@@ -235,9 +244,17 @@ class ProfileFragment : Fragment() {
 
         bindGroup(drivePairs, selectedDrive) { mode ->
             selectedDrive = mode
-            setRegenEnabled(mode != DriveMode.SNOW)
+            val isSnow = mode == DriveMode.SNOW
+            // Regen : indisponible si SNOW ou Éco énergie actif
+            setRegenEnabled(!isSnow && !energySavingSel)
+            // Bouton Éco énergie : indisponible en mode SNOW (modes exclusifs)
+            if (gen != FirmwareInfo.Gen.UNKNOWN) {
+                btnEnergy.isEnabled = !isSnow
+                btnEnergy.alpha = if (isSnow) 0.35f else 1f
+            }
         }
-        setRegenEnabled(data.driveMode != DriveMode.SNOW)
+        // État initial : regen indisponible si SNOW ou Éco énergie déjà actif
+        setRegenEnabled(data.driveMode != DriveMode.SNOW && !energySavingSel)
 
         // ── Régénération ─────────────────────────────────────────────────────
         val regenPairs = listOf(
@@ -423,6 +440,30 @@ class ProfileFragment : Fragment() {
             bindGroup(adasSwi133Pairs, adasMode) { adasMode = it }
         }
 
+        // ── Économie d'énergie + TSR (tous firmwares connus) ───────────────
+        // btn_energy_saving_d est en Col 1 (drive section), section_tsr_dialog en Col 2
+        val sectionTsr = dialogView.findViewById<View>(R.id.section_tsr_dialog)
+        if (gen != FirmwareInfo.Gen.UNKNOWN) {
+            btnEnergy.visibility = View.VISIBLE
+            // Grisé si SNOW est déjà sélectionné à l'ouverture du dialog
+            val initSnow = data.driveMode == DriveMode.SNOW
+            btnEnergy.isEnabled = !initSnow
+            btnEnergy.alpha = if (initSnow) 0.35f else 1f
+            activateBtn(btnEnergy, energySavingSel)
+            btnEnergy.setOnClickListener {
+                energySavingSel = !energySavingSel
+                activateBtn(btnEnergy, energySavingSel)
+                // Regen : indisponible si Éco actif ou si SNOW sélectionné
+                setRegenEnabled(!energySavingSel && selectedDrive != DriveMode.SNOW)
+            }
+            // Note : l'état initial de la regen est déjà géré après le bindGroup des modes
+
+            sectionTsr.visibility = View.VISIBLE
+            val swTsr = dialogView.findViewById<Switch>(R.id.sw_tsr_d)
+            swTsr.isChecked = tsrEnabledSel
+            swTsr.setOnCheckedChangeListener { _, checked -> tsrEnabledSel = checked }
+        }
+
         // ── Profil par défaut ────────────────────────────────────────────────
         val swDefault = dialogView.findViewById<Switch>(R.id.sw_set_default)
         swDefault.isChecked = existing?.id == manager.getDefaultId()
@@ -477,7 +518,9 @@ class ProfileFragment : Fragment() {
                 aebMode        = aebModeSel,
                 aebSensitivity = aebSenSel,
                 elkMode        = elkModeSel,
-                elkSensitivity = elkSenSel
+                elkSensitivity = elkSenSel,
+                energySaving   = energySavingSel,
+                tsrEnabled     = tsrEnabledSel
             )
             manager.save(profile)
             if (swDefault.isChecked) manager.setDefault(profile.id)
@@ -487,11 +530,11 @@ class ProfileFragment : Fragment() {
 
         dialog.show()
 
-        // Borner la hauteur du dialog : footer toujours visible même sur petit écran
-        val maxH = (requireActivity().resources.displayMetrics.heightPixels * 0.88).toInt()
+        // Borner la taille du dialog : footer toujours visible + largeur adaptée à 3 colonnes
+        val dm = requireActivity().resources.displayMetrics
         dialog.window?.setLayout(
-            android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
-            maxH
+            (dm.widthPixels * 0.94).toInt(),
+            (dm.heightPixels * 0.88).toInt()
         )
     }
 }

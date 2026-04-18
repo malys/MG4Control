@@ -33,6 +33,12 @@
     <string name="shortcuts_action_overspeed">Alerte survitesse</string>
     <string name="shortcuts_action_speed_limit">Alerte chgt vitesse</string>
     <string name="shortcuts_action_adas">ADAS</string>
+    <string name="shortcuts_action_energy_saving">Éco. énergie</string>
+    <string name="shortcuts_action_tsr">Panneaux (TSR)</string>
+    <string name="shortcuts_action_apply_profile">Appliquer le profil…</string>
+    <string name="shortcuts_pick_profile_title">Choisir un profil</string>
+    <string name="shortcuts_profile_not_found">Profil introuvable</string>
+    <string name="shortcuts_no_profiles">Aucun profil créé</string>
     <string name="shortcuts_action_open_app">Ouvrir MG4Control</string>
     <string name="shortcuts_action_open_custom_app">Ouvrir…</string>
     <string name="shortcuts_pick_app_title">Choisir une application</string>
@@ -56,6 +62,7 @@
     <string name="drive_sport">SPORT</string>
     <string name="drive_snow">SNOW</string>
     <string name="drive_custom">CUSTOM</string>
+    <string name="drive_energy_saving">Éco. énergie</string>
 
     <!-- Drive tab section headers -->
     <string name="drive_section_mode">Mode de conduite</string>
@@ -112,6 +119,7 @@
     <string name="adas_acc">ACC</string>
     <string name="adas_ica">ICA</string>
     <!-- ADAS SWI68 -->
+    <string name="adas_tsr">Reco. panneaux</string>
     <string name="adas_sound_warning">Avertissement sonore</string>
     <string name="adas_desactiver">Désactiver</string>
     <string name="adas_tja">TJA</string>
@@ -184,6 +192,11 @@
     <string name="update_downloaded_title">APK téléchargé ✓</string>
     <string name="update_downloaded_instructions">Le dossier Téléchargements vient de s\'ouvrir.\n\nAppuyez sur MG4Control-*.apk pour lancer l\'installation.\n\nSi le dossier ne s\'est pas ouvert, ouvrez le gestionnaire de fichiers et allez dans Téléchargements.</string>
     <string name="update_gh_releases_link">github.com/SliDeeN/MG4Control/releases</string>
+    <string name="update_skip_btn">Ne plus me rappeler</string>
+    <plurals name="update_skipped_hint">
+        <item quantity="one">%d mise à jour non installée depuis votre version</item>
+        <item quantity="other">%d mises à jour non installées depuis votre version</item>
+    </plurals>
 
     <!-- Console (debug) -->
     <string name="console_title">⬛  Console MG4</string>
@@ -204,6 +217,7 @@
     <string name="settings_language">Langue</string>
     <string name="settings_language_fr">Français</string>
     <string name="settings_language_en">English</string>
+    <string name="settings_language_de">Deutsch</string>
     <string name="settings_language_pick_title">Choisissez votre langue</string>
     <string name="settings_language_pick_msg">Vous pourrez la modifier dans Réglages.</string>
     <string name="settings_firmware_version">Version firmware</string>

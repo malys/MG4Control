@@ -183,12 +183,43 @@
 
         </LinearLayout>
 
+        <!-- Hint : N mises à jour non installées (visible si skippedCount > 0) -->
+        <TextView
+            android:id="@+id/tv_skip_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/dash_warn"
+            android:textSize="10sp"
+            android:gravity="start"
+            android:layout_marginBottom="6dp"
+            android:visibility="gone" />
+
         <!-- Boutons d'action -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="end">
+
+            <!-- Ne plus me rappeler — poussé à gauche via spacer -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_update_skip"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:text="@string/update_skip_btn"
+                android:textColor="@color/dash_warn"
+                android:textSize="11sp"
+                android:textAllCaps="true"
+                android:backgroundTint="@color/dash_btn"
+                app:strokeColor="@color/dash_warn"
+                app:strokeWidth="1dp"
+                app:cornerRadius="8dp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_update_later"

@@ -44,12 +44,12 @@
         "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-50:\\layout\\fragment_climate.xml"
     },
     {
-        "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-48:\\xml_file_provider_paths.xml.flat",
-        "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-50:\\xml\\file_provider_paths.xml"
+        "merged": "com.mg4.control.app-debug-48:/layout_page_dashboard_main.xml.flat",
+        "source": "com.mg4.control.app-main-50:/layout/page_dashboard_main.xml"
     },
     {
-        "merged": "com.mg4.control.app-debug-48:/layout_page_dashboard_elk.xml.flat",
-        "source": "com.mg4.control.app-main-50:/layout/page_dashboard_elk.xml"
+        "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-48:\\xml_file_provider_paths.xml.flat",
+        "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-50:\\xml\\file_provider_paths.xml"
     },
     {
         "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-48:\\layout_dialog_update.xml.flat",

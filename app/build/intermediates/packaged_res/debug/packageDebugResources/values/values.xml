@@ -30,6 +30,10 @@
     <color name="text_active">#FFFFFFFF</color>
     <color name="text_primary">#FFFFFFFF</color>
     <color name="text_secondary">#FFB0B0B0</color>
+    <plurals name="update_skipped_hint">
+        <item quantity="one">%d mise à jour non installée depuis votre version</item>
+        <item quantity="other">%d mises à jour non installées depuis votre version</item>
+    </plurals>
     <string name="adas_acc">ACC</string>
     <string name="adas_aeb_alarm">Alerte</string>
     <string name="adas_aeb_alarm_brake">Al. + Freinage auto</string>
@@ -47,6 +51,7 @@
     <string name="adas_sound_warning">Avertissement sonore</string>
     <string name="adas_speed_limit_tone">Alerte changement de limite</string>
     <string name="adas_tja">TJA</string>
+    <string name="adas_tsr">Reco. panneaux</string>
     <string name="aeb_card_title">Anticollision avant</string>
     <string name="aeb_section_sensitivity">Sensibilité</string>
     <string name="aeb_sensitivity_high">Élevé</string>
@@ -74,6 +79,7 @@
     <string name="console_title">⬛  Console MG4</string>
     <string name="drive_custom">CUSTOM</string>
     <string name="drive_eco">ECO</string>
+    <string name="drive_energy_saving">Éco. énergie</string>
     <string name="drive_normal">NORMAL</string>
     <string name="drive_section_mode">Mode de conduite</string>
     <string name="drive_section_regen">Régénération</string>
@@ -141,12 +147,15 @@
     <string name="settings_firmware_loading">Lecture…</string>
     <string name="settings_firmware_version">Version firmware</string>
     <string name="settings_language">Langue</string>
+    <string name="settings_language_de">Deutsch</string>
     <string name="settings_language_en">English</string>
     <string name="settings_language_fr">Français</string>
     <string name="settings_language_pick_msg">Vous pourrez la modifier dans Réglages.</string>
     <string name="settings_language_pick_title">Choisissez votre langue</string>
     <string name="shortcuts_action_adas">ADAS</string>
     <string name="shortcuts_action_aeb">Système Anticollision</string>
+    <string name="shortcuts_action_apply_profile">Appliquer le profil…</string>
+    <string name="shortcuts_action_energy_saving">Éco. énergie</string>
     <string name="shortcuts_action_none">Aucune</string>
     <string name="shortcuts_action_one_pedal">1 Pédale</string>
     <string name="shortcuts_action_open_app">Ouvrir MG4Control</string>
@@ -154,6 +163,7 @@
     <string name="shortcuts_action_overspeed">Alerte survitesse</string>
     <string name="shortcuts_action_sound">Son</string>
     <string name="shortcuts_action_speed_limit">Alerte chgt vitesse</string>
+    <string name="shortcuts_action_tsr">Panneaux (TSR)</string>
     <string name="shortcuts_btn1_label">★ Bouton Gauche</string>
     <string name="shortcuts_btn2_label">★ Bouton Droite</string>
     <string name="shortcuts_cfg_adas">ADAS — Alternance</string>
@@ -164,11 +174,14 @@
     <string name="shortcuts_cfg_one_pedal">1 Pédale — Regen retour</string>
     <string name="shortcuts_cfg_retour">Retour</string>
     <string name="shortcuts_enabled_label">Activer les raccourcis au volant</string>
+    <string name="shortcuts_no_profiles">Aucun profil créé</string>
     <string name="shortcuts_open_custom_prefix">Ouvrir</string>
     <string name="shortcuts_pick_app_title">Choisir une application</string>
+    <string name="shortcuts_pick_profile_title">Choisir un profil</string>
     <string name="shortcuts_press_double">Double</string>
     <string name="shortcuts_press_long">Long</string>
     <string name="shortcuts_press_single">Simple</string>
+    <string name="shortcuts_profile_not_found">Profil introuvable</string>
     <string name="shortcuts_warning_message">⚠ Si le launcher officiel est configuré sur un bouton, il sera prioritaire sur MG4Control.\n\nExemple : si la caméra 360° est assignée en appui simple sur le launcher, MG4Control ne pourra pas intercepter ce bouton et la caméra s\'activera à la place.\n\nIl est recommandé de désactiver les raccourcis du launcher officiel pour éviter les conflits.</string>
     <string name="shortcuts_warning_ok">Compris</string>
     <string name="shortcuts_warning_title">Raccourcis au volant</string>
@@ -198,6 +211,7 @@
     <string name="update_network_error">✕  Erreur réseau</string>
     <string name="update_new_label">Nouvelle version</string>
     <string name="update_release_notes_label">Notes de version</string>
+    <string name="update_skip_btn">Ne plus me rappeler</string>
     <string name="update_up_to_date">✓  Application à jour</string>
     <style name="Theme.MG4Control" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/accent_normal</item>

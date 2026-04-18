@@ -51,22 +51,51 @@ object ProfileApplier {
             MG4Hardware.whenKatman4Ready {
                 AppLogger.i(TAG, "  Application ADAS pour profil '${profile.name}'")
                 if (FirmwareInfo.isVsmBased()) {
-                    // SWI68/SWI69/SWI131 : même interface ADAS (ACC/TJA/Off + alerte sonore)
-                    // Les méthodes MG4Hardware.setAccTjaMode / setSoundWarning sont déjà adaptées
+                    // ── SWI68/SWI69/SWI131/SWI165 ──────────────────────────────────────
+                    //
+                    // Le TSR est appliqué EN PREMIER : setTsrMode() bloque 400 ms en interne
+                    // et restaure soundWarning depuis les préférences. On l'appelle en premier
+                    // pour pouvoir ensuite écraser l'alerte sonore avec la valeur du profil.
+                    val tsrOk = MG4Hardware.setTsrMode(profile.tsrEnabled)
+                    AppLogger.i(TAG, "  TsrEnabled=${profile.tsrEnabled} → $tsrOk")
+
+                    // Alerte sonore — appliquée APRÈS le TSR pour écraser sa restauration interne
                     val swOk = MG4Hardware.setSoundWarning(profile.soundWarning)
                     AppLogger.i(TAG, "  SoundWarning=${profile.soundWarning} → $swOk")
+
                     val adOk = MG4Hardware.setAccTjaMode(profile.swi68AdasMode)
                     AppLogger.i(TAG, "  AdasMode=0x${profile.swi68AdasMode.toString(16)} → $adOk")
                     applyAeb(profile.aebEnabled, profile.aebMode, profile.aebSensitivity)
+
+                    // Économie d'énergie — tous firmwares VSM (SWI68/SWI69/SWI131/SWI165)
+                    val esOk = MG4Hardware.setEnergySavingMode(profile.energySaving)
+                    AppLogger.i(TAG, "  EnergySaving=${profile.energySaving} → $esOk")
                 } else {
-                    // SWI133/UNKNOWN : ADAS mixte
+                    // ── SWI133/UNKNOWN ──────────────────────────────────────────────────
+                    //
+                    // Même logique : activer le TSR ré-active OVERSPEED_ALARM et SPEED_LIMIT_TONE.
+                    // setTsrMode() restaure depuis les préférences — on l'appelle en premier
+                    // puis on écrase avec les valeurs du profil.
+                    if (FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI133) {
+                        val tsrOk = MG4Hardware.setTsrMode(profile.tsrEnabled)
+                        AppLogger.i(TAG, "  TsrEnabled=${profile.tsrEnabled} → $tsrOk")
+                    }
+
+                    // Alertes vitesse — appliquées APRÈS le TSR
                     val oaOk = MG4Hardware.setOverspeedAlarm(profile.overspeedAlarm)
                     AppLogger.i(TAG, "  OverspeedAlarm=${profile.overspeedAlarm} → $oaOk")
                     val stOk = MG4Hardware.setSpeedLimitTone(profile.speedLimitTone)
                     AppLogger.i(TAG, "  SpeedLimitTone=${profile.speedLimitTone} → $stOk")
+
                     val adOk = MG4Hardware.setMixedIntelligentDrive(profile.adasMode)
                     AppLogger.i(TAG, "  AdasMode=${profile.adasMode} → $adOk")
                     applyAeb(profile.aebEnabled, profile.aebMode, profile.aebSensitivity)
+
+                    // Économie d'énergie — SWI133 via VPM
+                    if (FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI133) {
+                        val esOk = MG4Hardware.setEnergySavingMode(profile.energySaving)
+                        AppLogger.i(TAG, "  EnergySaving=${profile.energySaving} → $esOk")
+                    }
                 }
                 // ELK — commun à tous les firmwares connus
                 applyElk(profile.elkMode, profile.elkSensitivity)

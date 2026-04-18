@@ -113,6 +113,9 @@ public final class DialogProfileEditBinding implements ViewBinding {
   public final MaterialButton btnElkSenStandardD;
 
   @NonNull
+  public final MaterialButton btnEnergySavingD;
+
+  @NonNull
   public final MaterialButton btnRegenAdaptiveD;
 
   @NonNull
@@ -176,6 +179,9 @@ public final class DialogProfileEditBinding implements ViewBinding {
   public final LinearLayout sectionSteeringDialog;
 
   @NonNull
+  public final LinearLayout sectionTsrDialog;
+
+  @NonNull
   public final Switch swAebEnabled;
 
   @NonNull
@@ -192,6 +198,9 @@ public final class DialogProfileEditBinding implements ViewBinding {
 
   @NonNull
   public final Switch swSpeedLimitTone;
+
+  @NonNull
+  public final Switch swTsrD;
 
   @NonNull
   public final TextView tvDialogTitle;
@@ -212,19 +221,20 @@ public final class DialogProfileEditBinding implements ViewBinding {
       @NonNull MaterialButton btnElkAlertD, @NonNull MaterialButton btnElkAssistD,
       @NonNull MaterialButton btnElkEmergencyD, @NonNull MaterialButton btnElkSenHighD,
       @NonNull MaterialButton btnElkSenLowD, @NonNull MaterialButton btnElkSenStandardD,
-      @NonNull MaterialButton btnRegenAdaptiveD, @NonNull MaterialButton btnRegenHighD,
-      @NonNull MaterialButton btnRegenLowD, @NonNull MaterialButton btnRegenMediumD,
-      @NonNull MaterialButton btnRegenOffD, @NonNull MaterialButton btnRegenOnePedalD,
-      @NonNull MaterialButton btnSl0D, @NonNull MaterialButton btnSl1D,
-      @NonNull MaterialButton btnSl2D, @NonNull MaterialButton btnSl3D,
-      @NonNull MaterialButton btnSr0D, @NonNull MaterialButton btnSr1D,
-      @NonNull MaterialButton btnSr2D, @NonNull MaterialButton btnSr3D,
-      @NonNull MaterialButton btnSteerOffD, @NonNull MaterialButton btnSteerOnD,
-      @NonNull LinearLayout elkSectionDialog, @NonNull TextInputEditText etProfileName,
-      @NonNull LinearLayout sectionRegenDialog, @NonNull LinearLayout sectionSeatsDialog,
-      @NonNull LinearLayout sectionSteeringDialog, @NonNull Switch swAebEnabled,
+      @NonNull MaterialButton btnEnergySavingD, @NonNull MaterialButton btnRegenAdaptiveD,
+      @NonNull MaterialButton btnRegenHighD, @NonNull MaterialButton btnRegenLowD,
+      @NonNull MaterialButton btnRegenMediumD, @NonNull MaterialButton btnRegenOffD,
+      @NonNull MaterialButton btnRegenOnePedalD, @NonNull MaterialButton btnSl0D,
+      @NonNull MaterialButton btnSl1D, @NonNull MaterialButton btnSl2D,
+      @NonNull MaterialButton btnSl3D, @NonNull MaterialButton btnSr0D,
+      @NonNull MaterialButton btnSr1D, @NonNull MaterialButton btnSr2D,
+      @NonNull MaterialButton btnSr3D, @NonNull MaterialButton btnSteerOffD,
+      @NonNull MaterialButton btnSteerOnD, @NonNull LinearLayout elkSectionDialog,
+      @NonNull TextInputEditText etProfileName, @NonNull LinearLayout sectionRegenDialog,
+      @NonNull LinearLayout sectionSeatsDialog, @NonNull LinearLayout sectionSteeringDialog,
+      @NonNull LinearLayout sectionTsrDialog, @NonNull Switch swAebEnabled,
       @NonNull Switch swElkEnabled, @NonNull Switch swOverspeedAlarm, @NonNull Switch swSetDefault,
-      @NonNull Switch swSoundWarning, @NonNull Switch swSpeedLimitTone,
+      @NonNull Switch swSoundWarning, @NonNull Switch swSpeedLimitTone, @NonNull Switch swTsrD,
       @NonNull TextView tvDialogTitle) {
     this.rootView = rootView;
     this.adasSectionAeb = adasSectionAeb;
@@ -257,6 +267,7 @@ public final class DialogProfileEditBinding implements ViewBinding {
     this.btnElkSenHighD = btnElkSenHighD;
     this.btnElkSenLowD = btnElkSenLowD;
     this.btnElkSenStandardD = btnElkSenStandardD;
+    this.btnEnergySavingD = btnEnergySavingD;
     this.btnRegenAdaptiveD = btnRegenAdaptiveD;
     this.btnRegenHighD = btnRegenHighD;
     this.btnRegenLowD = btnRegenLowD;
@@ -278,12 +289,14 @@ public final class DialogProfileEditBinding implements ViewBinding {
     this.sectionRegenDialog = sectionRegenDialog;
     this.sectionSeatsDialog = sectionSeatsDialog;
     this.sectionSteeringDialog = sectionSteeringDialog;
+    this.sectionTsrDialog = sectionTsrDialog;
     this.swAebEnabled = swAebEnabled;
     this.swElkEnabled = swElkEnabled;
     this.swOverspeedAlarm = swOverspeedAlarm;
     this.swSetDefault = swSetDefault;
     this.swSoundWarning = swSoundWarning;
     this.swSpeedLimitTone = swSpeedLimitTone;
+    this.swTsrD = swTsrD;
     this.tvDialogTitle = tvDialogTitle;
   }
 
@@ -494,6 +507,12 @@ public final class DialogProfileEditBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.btn_energy_saving_d;
+      MaterialButton btnEnergySavingD = ViewBindings.findChildViewById(rootView, id);
+      if (btnEnergySavingD == null) {
+        break missingId;
+      }
+
       id = R.id.btn_regen_adaptive_d;
       MaterialButton btnRegenAdaptiveD = ViewBindings.findChildViewById(rootView, id);
       if (btnRegenAdaptiveD == null) {
@@ -620,6 +639,12 @@ public final class DialogProfileEditBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.section_tsr_dialog;
+      LinearLayout sectionTsrDialog = ViewBindings.findChildViewById(rootView, id);
+      if (sectionTsrDialog == null) {
+        break missingId;
+      }
+
       id = R.id.sw_aeb_enabled;
       Switch swAebEnabled = ViewBindings.findChildViewById(rootView, id);
       if (swAebEnabled == null) {
@@ -656,6 +681,12 @@ public final class DialogProfileEditBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.sw_tsr_d;
+      Switch swTsrD = ViewBindings.findChildViewById(rootView, id);
+      if (swTsrD == null) {
+        break missingId;
+      }
+
       id = R.id.tv_dialog_title;
       TextView tvDialogTitle = ViewBindings.findChildViewById(rootView, id);
       if (tvDialogTitle == null) {
@@ -668,12 +699,12 @@ public final class DialogProfileEditBinding implements ViewBinding {
           btnAdasSwi68TjaD, btnAebAlarmBrakeD, btnAebAlarmD, btnAebSenHighD, btnAebSenLowD,
           btnAebSenStandardD, btnDialogCancel, btnDialogSave, btnDriveCustomD, btnDriveEcoD,
           btnDriveNormalD, btnDriveSnowD, btnDriveSportD, btnElkAlertD, btnElkAssistD,
-          btnElkEmergencyD, btnElkSenHighD, btnElkSenLowD, btnElkSenStandardD, btnRegenAdaptiveD,
-          btnRegenHighD, btnRegenLowD, btnRegenMediumD, btnRegenOffD, btnRegenOnePedalD, btnSl0D,
-          btnSl1D, btnSl2D, btnSl3D, btnSr0D, btnSr1D, btnSr2D, btnSr3D, btnSteerOffD, btnSteerOnD,
-          elkSectionDialog, etProfileName, sectionRegenDialog, sectionSeatsDialog,
-          sectionSteeringDialog, swAebEnabled, swElkEnabled, swOverspeedAlarm, swSetDefault,
-          swSoundWarning, swSpeedLimitTone, tvDialogTitle);
+          btnElkEmergencyD, btnElkSenHighD, btnElkSenLowD, btnElkSenStandardD, btnEnergySavingD,
+          btnRegenAdaptiveD, btnRegenHighD, btnRegenLowD, btnRegenMediumD, btnRegenOffD,
+          btnRegenOnePedalD, btnSl0D, btnSl1D, btnSl2D, btnSl3D, btnSr0D, btnSr1D, btnSr2D, btnSr3D,
+          btnSteerOffD, btnSteerOnD, elkSectionDialog, etProfileName, sectionRegenDialog,
+          sectionSeatsDialog, sectionSteeringDialog, sectionTsrDialog, swAebEnabled, swElkEnabled,
+          swOverspeedAlarm, swSetDefault, swSoundWarning, swSpeedLimitTone, swTsrD, tvDialogTitle);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));
