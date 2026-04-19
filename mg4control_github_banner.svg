@@ -1,0 +1,21 @@
+<svg width="800" height="200" viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="200" rx="16" fill="#2a2a2a"/>
+
+  <!-- Slider -->
+  <rect x="60" y="98" width="140" height="4" rx="2" fill="#444"/>
+  <rect x="60" y="98" width="88" height="4" rx="2" fill="#E53935"/>
+  <circle cx="148" cy="100" r="14" fill="#E53935"/>
+  <circle cx="148" cy="100" r="6" fill="white"/>
+  <rect x="56" y="84" width="3" height="32" rx="1.5" fill="#666"/>
+  <rect x="198" y="84" width="3" height="32" rx="1.5" fill="#666"/>
+
+  <!-- MG bold -->
+  <text x="230" y="122" font-family="Arial, sans-serif" font-size="52" font-weight="700" fill="white" letter-spacing="-1">MG</text>
+  <!-- 4 rouge collé -->
+  <text x="322" y="122" font-family="Arial, sans-serif" font-size="52" font-weight="700" fill="#E53935">4</text>
+  <!-- Control light -->
+  <text x="355" y="122" font-family="Arial, sans-serif" font-size="52" font-weight="300" fill="#aaaaaa">Control</text>
+
+  <!-- Tagline -->
+  <text x="230" y="154" font-family="Arial, sans-serif" font-size="13" font-weight="400" fill="#666" letter-spacing="4">YOUR CAR. YOUR RULES.</text>
+</svg>
