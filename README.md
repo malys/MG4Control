@@ -1,4 +1,4 @@
-# MG4Control
+![Cover](https://raw.githubusercontent.com/SliDeeN/MG4Control/968a965fa7d1d87d816fce28d4f87fe22a665c31/mg4control_github_banner.svg)
 
 > Application Android Automotive pour le contrôle avancé des paramètres de conduite du MG4 électrique.
 > Android Automotive app for advanced driving settings control on the MG4 electric vehicle.
@@ -434,7 +434,7 @@ adb shell pm install -r --system /sdcard/app-debug.apk
 </details>
 
 ---
-
+![Cover](https://raw.githubusercontent.com/SliDeeN/MG4Control/968a965fa7d1d87d816fce28d4f87fe22a665c31/mg4control_github_banner.svg)
 <details open>
 <summary><strong>🇬🇧 English</strong></summary>
 
