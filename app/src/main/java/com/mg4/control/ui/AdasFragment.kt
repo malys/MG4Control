@@ -72,6 +72,9 @@ class AdasFragment : Fragment() {
         val gen        = FirmwareInfo.getGeneration()
         val isKnown    = gen != FirmwareInfo.Gen.UNKNOWN
         val isVsmBased = FirmwareInfo.isVsmBased()
+        val isSWI132   = gen == FirmwareInfo.Gen.SWI132
+        // SWI133 : 5 boutons ADAS (Off/Limiteur/Auto/ACC/ICA)
+        // SWI68/SWI69/SWI131/SWI132/SWI165 : 3 boutons ADAS (Off/ACC/TJA)
         view.findViewById<View>(R.id.section_swi133).visibility =
             if (!isVsmBased) View.VISIBLE else View.GONE
         view.findViewById<View>(R.id.section_swi68).visibility =
@@ -79,11 +82,12 @@ class AdasFragment : Fragment() {
         // Ligne du bas (AEB + alertes) — disponible si firmware connu
         view.findViewById<View>(R.id.section_bottom_row).visibility =
             if (isKnown) View.VISIBLE else View.GONE
-        // Alertes : colonne droite — selon firmware
+        // Alertes : colonne droite — SWI133 et SWI132 ont 2 alertes séparées (survitesse + ton)
+        //                          — SWI68/SWI69/SWI131/SWI165 ont une seule alerte sonore VSM
         view.findViewById<View>(R.id.alerts_swi133).visibility =
-            if (gen == FirmwareInfo.Gen.SWI133) View.VISIBLE else View.GONE
+            if (gen == FirmwareInfo.Gen.SWI133 || isSWI132) View.VISIBLE else View.GONE
         view.findViewById<View>(R.id.alerts_swi68).visibility =
-            if (isVsmBased) View.VISIBLE else View.GONE
+            if (isVsmBased && !isSWI132) View.VISIBLE else View.GONE
 
         // ── Listeners SWI133 ─────────────────────────────────────────────────
         if (!isVsmBased) {
@@ -102,6 +106,18 @@ class AdasFragment : Fragment() {
                         withContext(Dispatchers.Main) { if (isAdded) applySwi133ModeUI(index) }
                     }
                 }
+            }
+        }
+
+        // ── Listeners SWI132 — alertes via binder direct (mêmes switches que SWI133) ──
+        if (isSWI132) {
+            switchOverspeed?.setOnCheckedChangeListener { _, checked ->
+                if (switchOverspeed?.isPressed == true)
+                    CoroutineScope(Dispatchers.IO).launch { MG4Hardware.setOverspeedAlarm(checked) }
+            }
+            switchSpeedTone?.setOnCheckedChangeListener { _, checked ->
+                if (switchSpeedTone?.isPressed == true)
+                    CoroutineScope(Dispatchers.IO).launch { MG4Hardware.setSpeedLimitTone(checked) }
             }
         }
 
@@ -160,7 +176,36 @@ class AdasFragment : Fragment() {
 
     private fun refreshState() {
         CoroutineScope(Dispatchers.IO).launch {
-            if (FirmwareInfo.isVsmBased()) refreshSwi68() else refreshSwi133()
+            when {
+                FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI132 -> refreshSwi132()
+                FirmwareInfo.isVsmBased()                               -> refreshSwi68()
+                else                                                    -> refreshSwi133()
+            }
+        }
+    }
+
+    /**
+     * SWI132 : rafraîchit l'état ADAS (mode ACC/TJA via CarVehicleSettingClient),
+     * les alertes sonores (via binder getter TX 0x129/0x12b) et l'AEB.
+     */
+    private suspend fun refreshSwi132() {
+        val mode      = MG4Hardware.getAccTjaMode()
+        val overspeed = MG4Hardware.isOverspeedAlarmOn()
+        val speedTone = MG4Hardware.isSpeedLimitToneOn()
+        val aebOn     = MG4Hardware.isAebEnabled()
+        val aebMode   = MG4Hardware.getAebMode()
+        withContext(Dispatchers.Main) {
+            if (!isAdded) return@withContext
+            if (mode < 0) {
+                view?.postDelayed({ if (isAdded) refreshState() }, 2_000)
+                return@withContext
+            }
+            applySwi68ModeUI(mode)   // SWI132 utilise les mêmes boutons Off/ACC/TJA que SWI68
+            switchOverspeed?.isChecked = overspeed
+            switchSpeedTone?.isChecked = speedTone
+            switchAeb?.isChecked = aebOn
+            applyAebModeButtonsEnabled(aebOn)
+            if (aebMode > 0) applyAebModeUI(aebMode)
         }
     }
 

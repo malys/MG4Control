@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MG4 Control</string>
+
+    <!-- Botón cerrar (volver al dashboard) -->
+    <string name="nav_close">Cerrar</string>
+    <!-- Limpieza APK -->
+    <string name="btn_clean_apk">Limpiar APK</string>
+    <string name="clean_apk_done">✓ %1$d archivo(s) eliminado(s)</string>
+    <string name="clean_apk_none">✓ Nada que limpiar</string>
+
+    <!-- Navegación inferior -->
+    <string name="nav_drive">Drive</string>
+    <string name="nav_climate">Clima</string>
+    <string name="nav_profiles">Perfiles</string>
+    <string name="nav_adas">ADAS</string>
+    <string name="nav_settings">Ajustes</string>
+    <string name="nav_shortcuts">Atajos</string>
+
+    <!-- Atajos del volante -->
+    <string name="shortcuts_enabled_label">Activar atajos del volante</string>
+    <string name="shortcuts_btn1_label">★ Botón Izquierdo</string>
+    <string name="shortcuts_btn2_label">★ Botón Derecho</string>
+    <string name="shortcuts_action_none">Ninguna</string>
+    <string name="shortcuts_action_one_pedal">1 Pedal</string>
+    <string name="shortcuts_press_single">Simple</string>
+    <string name="shortcuts_press_long">Largo</string>
+    <string name="shortcuts_press_double">Doble</string>
+
+    <!-- Acciones de atajos -->
+    <string name="shortcuts_action_aeb">Sistema Anticolisión</string>
+    <string name="shortcuts_action_sound">Sonido</string>
+    <string name="shortcuts_action_overspeed">Alerta velocidad</string>
+    <string name="shortcuts_action_speed_limit">Alerta límite</string>
+    <string name="shortcuts_action_adas">ADAS</string>
+    <string name="shortcuts_action_energy_saving">Ahorro energía</string>
+    <string name="shortcuts_action_tsr">Señales (TSR)</string>
+    <string name="shortcuts_action_apply_profile">Iniciar un perfil</string>
+    <string name="shortcuts_profile_prefix">Iniciar perfil</string>
+    <string name="shortcuts_pick_profile_title">Elegir un perfil</string>
+    <string name="shortcuts_profile_not_found">Perfil no encontrado</string>
+    <string name="shortcuts_no_profiles">No hay perfiles</string>
+    <string name="shortcuts_action_open_app">Abrir MG4Control</string>
+    <string name="shortcuts_action_open_custom_app">Iniciar una app</string>
+    <string name="shortcuts_pick_app_title">Elegir una app</string>
+    <string name="shortcuts_open_custom_prefix">Iniciar</string>
+    <string name="shortcuts_warning_title">Atajos del volante</string>
+    <string name="shortcuts_warning_message">⚠ Si el launcher oficial está configurado en un botón, tendrá prioridad sobre MG4Control.\n\nEjemplo: si la cámara 360° está asignada a pulsación simple en el launcher, MG4Control no podrá interceptar ese botón y se activará la cámara.\n\nSe recomienda desactivar los atajos del launcher oficial para evitar conflictos.</string>
+    <string name="shortcuts_warning_ok">Entendido</string>
+
+    <!-- Configuración atajos -->
+    <string name="shortcuts_cfg_one_pedal">1 Pedal — Regen vuelta</string>
+    <string name="shortcuts_cfg_aeb">AEB — Ciclo</string>
+    <string name="shortcuts_cfg_adas">ADAS — Ciclo</string>
+    <string name="shortcuts_cfg_retour">Volver</string>
+    <string name="shortcuts_cfg_mode1">Modo 1</string>
+    <string name="shortcuts_cfg_mode2">Modo 2</string>
+    <string name="shortcuts_cfg_aeb_brake">Al.+Fr.</string>
+
+    <!-- Modos de conducción -->
+    <string name="drive_eco">ECO</string>
+    <string name="drive_normal">NORMAL</string>
+    <string name="drive_sport">SPORT</string>
+    <string name="drive_snow">SNOW</string>
+    <string name="drive_custom">CUSTOM</string>
+    <string name="drive_energy_saving">Ahorro energía</string>
+
+    <!-- Encabezados de sección Drive -->
+    <string name="drive_section_mode">Modo de conducción</string>
+    <string name="drive_section_regen">Regeneración</string>
+
+    <!-- Niveles de regeneración -->
+    <string name="regen_off">Off</string>
+    <string name="regen_low">Bajo</string>
+    <string name="regen_medium">Medio</string>
+    <string name="regen_high">Alto</string>
+    <string name="regen_adaptive">Adaptativo</string>
+    <string name="regen_one_pedal">1 Pedal</string>
+    <string name="regen_adaptive_short">Adapt.</string>
+    <string name="regen_one_pedal_short">1 Ped.</string>
+
+    <!-- Clima -->
+    <string name="climate_steering_heat">Volante calefactado</string>
+    <string name="climate_seat_left">Asiento izquierdo</string>
+    <string name="climate_seat_right">Asiento derecho</string>
+    <string name="climate_off">Off</string>
+    <string name="climate_on">On</string>
+    <string name="climate_level">Niv.</string>
+    <string name="climate_level_1">Niv. 1</string>
+    <string name="climate_level_2">Niv. 2</string>
+    <string name="climate_level_3">Niv. 3</string>
+
+    <!-- Perfiles -->
+    <string name="profiles_title">Perfiles de conducción</string>
+    <string name="profile_add">Nuevo perfil</string>
+    <string name="profile_default_badge">PREDETERMINADO</string>
+    <string name="profile_apply_now">Aplicar ahora</string>
+    <string name="profile_set_default">Establecer predeterminado</string>
+    <string name="profile_set_as_default">Establecer como perfil predeterminado</string>
+    <string name="profile_delete">Eliminar</string>
+    <string name="profile_edit">Editar</string>
+    <string name="profile_name_hint">Nombre del perfil</string>
+    <string name="profile_name_required">El nombre es obligatorio</string>
+    <string name="profile_save">Guardar</string>
+    <string name="profile_cancel">Cancelar</string>
+    <string name="profile_applied">Perfil aplicado: %s</string>
+    <string name="profile_max_reached">Máximo %d perfiles alcanzado</string>
+    <string name="profile_auto_applied">Perfil predeterminado aplicado al inicio</string>
+
+    <!-- ADAS -->
+    <string name="adas_section_sounds">Alertas sonoras</string>
+    <string name="adas_overspeed_alarm">Alerta de exceso de velocidad</string>
+    <string name="adas_speed_limit_tone">Tono de cambio de límite</string>
+    <string name="adas_section_drive">Asistencia a la conducción</string>
+    <string name="adas_off">Off</string>
+    <string name="adas_limiteur">Limitador</string>
+    <string name="adas_limiteur_short">Lim.</string>
+    <string name="adas_auto">Auto</string>
+    <string name="adas_acc">ACC</string>
+    <string name="adas_ica">ICA</string>
+    <!-- ADAS SWI68 -->
+    <string name="adas_tsr">Reconoc. señales</string>
+    <string name="adas_sound_warning">Aviso sonoro</string>
+    <string name="adas_desactiver">Desactivar</string>
+    <string name="adas_tja">TJA</string>
+    <!-- ELK — Asistente de cambio de carril -->
+    <string name="elk_card_title">Asistente de cambio de carril</string>
+    <string name="elk_section_toggle">Activación</string>
+    <string name="elk_section_mode">Modo asistencia</string>
+    <string name="elk_mode_alert">Alerta</string>
+    <string name="elk_mode_assist">Asistir</string>
+    <string name="elk_mode_emergency">Mantenimiento emergencia</string>
+    <string name="elk_section_sensitivity">Sensibilidad</string>
+    <string name="elk_sensitivity_low">Baja</string>
+    <string name="elk_sensitivity_standard">Estándar</string>
+    <string name="elk_sensitivity_high">Alta</string>
+    <string name="elk_profile_label">Cambio de carril</string>
+    <!-- AEB — Asistente anticolisión frontal -->
+    <string name="aeb_card_title">Asistente anticolisión frontal</string>
+    <string name="adas_section_aeb">Seguridad activa</string>
+    <string name="adas_aeb_switch">Asistente anticolisión frontal</string>
+    <string name="adas_aeb_alarm">Alerta</string>
+    <string name="adas_aeb_alarm_brake">Al. + Freno auto</string>
+    <string name="aeb_section_sensitivity">Sensibilidad</string>
+    <string name="aeb_sensitivity_low">Baja</string>
+    <string name="aeb_sensitivity_standard">Estándar</string>
+    <string name="aeb_sensitivity_high">Alta</string>
+
+    <!-- Diagnóstico -->
+    <string name="btn_diagnostic">Diagnóstico</string>
+    <string name="diag_title">Diagnóstico</string>
+    <string name="diag_copy">Copiar</string>
+    <string name="diag_copied">¡Copiado!</string>
+    <string name="diag_loading">Analizando…</string>
+
+    <!-- Info / Acerca de -->
+    <string name="btn_check_update">Buscar actualizaciones</string>
+    <string name="update_up_to_date">✓  Actualizado</string>
+    <string name="update_network_error">✕  Error de red</string>
+    <string name="btn_infos">Info</string>
+    <string name="info_title">Acerca de</string>
+    <string name="info_app_label">Aplicación</string>
+    <string name="info_version_label">Versión</string>
+    <string name="info_firmware_label">Firmware</string>
+    <string name="info_github_link">github.com/SliDeeN/MG4Control</string>
+    <string name="info_made_with_love">Made with ❤ by SliDeeN and Claude IA</string>
+    <string name="info_special_thanks">Gracias a confor1max por las pruebas SWI68 🙏</string>
+    <string name="info_based_on">Basado en DriveHub Dort por Merth4n &amp; hotboy_ist</string>
+    <string name="info_close">Cerrar</string>
+
+    <!-- Dashboard — encabezados de tarjetas -->
+    <string name="card_drive">Parámetros de conducción</string>
+    <string name="card_climate">Parámetros de climatización</string>
+    <string name="card_alerts">Alertas</string>
+
+    <!-- Actualización automática -->
+    <string name="update_available_title">Actualización disponible</string>
+    <string name="update_current_label">Versión actual</string>
+    <string name="update_new_label">Nueva versión</string>
+    <string name="update_release_notes_label">Notas de versión</string>
+    <string name="update_data_warning">⚠️ Sin WiFi detectado — esta descarga usará los datos móviles del vehículo.</string>
+    <string name="update_auto_btn">Descargar APK</string>
+    <string name="update_manual_btn">Instalación manual</string>
+    <string name="update_later_btn">Más tarde</string>
+    <string name="update_data_warn_title">Datos móviles</string>
+    <string name="update_data_warn_message">Su vehículo no parece estar conectado al WiFi. La descarga (~10 MB) usará los datos móviles del vehículo. ¿Continuar?</string>
+    <string name="update_continue">Continuar</string>
+    <string name="update_cancel">Cancelar</string>
+    <string name="update_close">Cerrar</string>
+    <string name="update_downloading">Descargando…</string>
+    <string name="update_downloading_pct">Descargando… %d%%</string>
+    <string name="update_installing">Instalando…</string>
+    <string name="update_installed">✅ ¡Actualización instalada correctamente!</string>
+    <string name="update_error_download">Descarga fallida. Compruebe la conexión.</string>
+    <string name="update_error_install">Instalación fallida.</string>
+    <string name="update_install_error">Error de instalación: %s</string>
+    <string name="update_manual_title">Instalación manual</string>
+    <string name="update_manual_instructions">1. Escanee el código QR o abra el enlace\n2. Descargue el archivo MG4Control.apk\n3. Cópielo en un USB FAT32\n4. Conecte el USB a su MG4\n5. Abra el Administrador de archivos\n6. Seleccione el APK e instálelo</string>
+    <string name="update_downloaded_title">APK descargado ✓</string>
+    <string name="update_downloaded_instructions">La carpeta Descargas se abrió automáticamente.\n\nToque MG4Control-*.apk para instalar.\n\nSi la carpeta no se abrió, vaya al Administrador de archivos y navegue a Descargas.</string>
+    <string name="update_gh_releases_link">github.com/SliDeeN/MG4Control/releases</string>
+    <string name="update_skip_btn">No recordarme más</string>
+    <plurals name="update_skipped_hint">
+        <item quantity="one">%d actualización no instalada desde su versión</item>
+        <item quantity="other">%d actualizaciones no instaladas desde su versión</item>
+    </plurals>
+
+    <!-- Consola (debug) -->
+    <string name="console_title">⬛  Consola MG4</string>
+    <string name="console_clear">Limpiar</string>
+
+    <!-- Firmware desconocido -->
+    <string name="fw_unknown_title">⚠ Firmware desconocido</string>
+    <string name="fw_unknown_body">Este firmware aún no es compatible nativamente con MG4 Control.\n\nPuede continuar seleccionando manualmente un modo de compatibilidad, pero algunas funciones pueden no funcionar correctamente.</string>
+    <string name="fw_unknown_hint">Después de cerrar esta ventana, toque SWI133 o SWI68 en la barra superior para elegir su modo de compatibilidad.</string>
+    <string name="fw_unknown_btn_close">Cerrar app</string>
+    <string name="fw_unknown_btn_continue">Continuar</string>
+
+    <!-- Ajustes -->
+    <string name="settings_default_screen">Pantalla predeterminada</string>
+    <string name="settings_default_screen_dashboard">Panel de control</string>
+    <string name="settings_auto_apply">Aplicar perfil al inicio</string>
+    <string name="settings_auto_apply_desc">El perfil predeterminado se aplica automáticamente al iniciar</string>
+    <string name="settings_language">Idioma</string>
+    <string name="settings_language_fr">Français</string>
+    <string name="settings_language_en">English</string>
+    <string name="settings_language_de">Deutsch</string>
+    <string name="settings_language_es">Español</string>
+    <string name="settings_language_pt">Português</string>
+    <string name="settings_language_it">Italiano</string>
+    <string name="settings_language_pick_title">Elige tu idioma</string>
+    <string name="settings_language_pick_msg">Podrás cambiarlo en Ajustes.</string>
+    <string name="settings_firmware_version">Versión de firmware</string>
+    <string name="settings_firmware_loading">Leyendo…</string>
+
+    <!-- [BT-PROFILES] Perfiles Bluetooth -->
+    <string name="bt_section_title">Bluetooth</string>
+    <string name="bt_no_device">Ninguno</string>
+    <string name="bt_pick_device_title">Dispositivo Bluetooth</string>
+    <string name="bt_profile_applied">Perfil aplicado vía Bluetooth: %s</string>
+    <string name="bt_no_paired_devices">No hay dispositivos emparejados</string>
+</resources>

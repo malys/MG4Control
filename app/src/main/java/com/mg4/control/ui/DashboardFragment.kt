@@ -269,13 +269,15 @@ class DashboardFragment : Fragment() {
     private fun applyFirmwareVisibility(view: View) {
         val gen        = FirmwareInfo.getGeneration()
         val isVsmBased = FirmwareInfo.isVsmBased()
+        val isSWI132   = gen == FirmwareInfo.Gen.SWI132
         val isKnown    = gen != FirmwareInfo.Gen.UNKNOWN
         val hasClimate = FirmwareInfo.hasHeatFeatures()
 
         view.findViewById<View>(R.id.adas_group_swi133).visibility   = if (!isVsmBased) View.VISIBLE else View.GONE
         view.findViewById<View>(R.id.adas_group_swi68).visibility    = if (isVsmBased)  View.VISIBLE else View.GONE
-        view.findViewById<View>(R.id.alerts_group_swi133).visibility = if (!isVsmBased) View.VISIBLE else View.GONE
-        view.findViewById<View>(R.id.alerts_group_swi68).visibility  = if (isVsmBased)  View.VISIBLE else View.GONE
+        // SWI132 utilise deux alertes séparées (survitesse + ton) comme SWI133, pas soundWarning
+        view.findViewById<View>(R.id.alerts_group_swi133).visibility = if (!isVsmBased || isSWI132) View.VISIBLE else View.GONE
+        view.findViewById<View>(R.id.alerts_group_swi68).visibility  = if (isVsmBased && !isSWI132) View.VISIBLE else View.GONE
         // AEB déplacé sur page 1 pour tous les firmwares
         view.findViewById<View>(R.id.aeb_group).visibility           = View.GONE
         view.findViewById<View>(R.id.climate_card).visibility        = if (hasClimate) View.VISIBLE else View.GONE
@@ -287,6 +289,7 @@ class DashboardFragment : Fragment() {
     private fun setupMainListeners() {
         val gen        = FirmwareInfo.getGeneration()
         val isVsmBased = FirmwareInfo.isVsmBased()
+        val isSWI132   = gen == FirmwareInfo.Gen.SWI132
         val isKnown    = gen != FirmwareInfo.Gen.UNKNOWN
         val hasClimate = FirmwareInfo.hasHeatFeatures()
 
@@ -341,8 +344,8 @@ class DashboardFragment : Fragment() {
             } }
         }
 
-        // Alertes SWI133
-        if (!isVsmBased) {
+        // Alertes SWI133 + SWI132 (deux toggles indépendants : survitesse + ton limite)
+        if (!isVsmBased || isSWI132) {
             switchOverspeed?.setOnCheckedChangeListener { _, checked ->
                 if (!isRefreshing)
                     CoroutineScope(Dispatchers.IO).launch { MG4Hardware.setOverspeedAlarm(checked) }
@@ -353,8 +356,8 @@ class DashboardFragment : Fragment() {
             }
         }
 
-        // Alerte sonore SWI68
-        if (isVsmBased) {
+        // Alerte sonore SWI68/SWI69/SWI131/SWI165 (un seul toggle)
+        if (isVsmBased && !isSWI132) {
             switchSoundWarning?.setOnCheckedChangeListener { _, checked ->
                 if (!isRefreshing)
                     MG4Hardware.whenKatman4Ready { MG4Hardware.setSoundWarning(checked) }
@@ -554,7 +557,11 @@ class DashboardFragment : Fragment() {
         if (!FirmwareInfo.isVsmBased() && btnAdasOff == null) return
         if (FirmwareInfo.isVsmBased() && btnSwi68Off == null) return
         CoroutineScope(Dispatchers.IO).launch {
-            if (FirmwareInfo.isVsmBased()) refreshSwi68Adas() else refreshSwi133Adas()
+            when {
+                FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI132 -> refreshSwi132Adas()
+                FirmwareInfo.isVsmBased()                               -> refreshSwi68Adas()
+                else                                                    -> refreshSwi133Adas()
+            }
         }
     }
 
@@ -580,6 +587,37 @@ class DashboardFragment : Fragment() {
             applyEnergySavingUI(energySaving)
             isRefreshing = false
             applySwi133AdasUI(adasMode)
+            applyAebModeButtonsEnabled(aebOn)
+            if (aebMode > 0) applyAebModeUI(aebMode)
+        }
+    }
+
+    /**
+     * SWI132 : mode ACC/TJA (CarVehicleSettingClient) + alertes binder direct
+     * (overspeed TX 0x129, speedTone TX 0x12b) + TSR binder direct + AEB + économie.
+     */
+    private suspend fun refreshSwi132Adas() {
+        val mode         = MG4Hardware.getAccTjaMode()
+        val overspeed    = MG4Hardware.isOverspeedAlarmOn()
+        val speedTone    = MG4Hardware.isSpeedLimitToneOn()
+        val aebOn        = MG4Hardware.isAebEnabled()
+        val aebMode      = MG4Hardware.getAebMode()
+        val tsrOn        = MG4Hardware.isTsrOn()
+        val energySaving = MG4Hardware.isEnergySavingOn()
+        withContext(Dispatchers.Main) {
+            if (!isAdded) return@withContext
+            if (mode < 0) {
+                view?.postDelayed({ if (isAdded) refreshAdas() }, 2_000)
+                return@withContext
+            }
+            isRefreshing = true
+            switchOverspeed?.isChecked = overspeed
+            switchSpeedTone?.isChecked = speedTone
+            switchAeb?.isChecked       = aebOn
+            switchTsr?.isChecked       = tsrOn
+            applyEnergySavingUI(energySaving)
+            isRefreshing = false
+            applySwi68AdasUI(mode)  // SWI132 partage les 3 boutons Off/ACC/TJA avec SWI68
             applyAebModeButtonsEnabled(aebOn)
             if (aebMode > 0) applyAebModeUI(aebMode)
         }

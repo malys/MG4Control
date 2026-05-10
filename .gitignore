@@ -12,6 +12,9 @@ mockup/
 # Claude Code (config locale IDE)
 .claude/
 
+# Kotlin build cache
+.kotlin/
+
 # Android Studio
 .idea/
 *.iml
@@ -25,3 +28,6 @@ mockup/
 
 # Fichiers de log
 *.log
+
+# README géré directement sur GitLab
+README.md

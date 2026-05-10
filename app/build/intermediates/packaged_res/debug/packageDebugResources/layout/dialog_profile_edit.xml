@@ -879,7 +879,9 @@
                         android:background="@color/dash_border"
                         android:layout_marginBottom="6dp" />
 
+                    <!-- Alerte SWI68/69/131/165 : un seul toggle sonore -->
                     <LinearLayout
+                        android:id="@+id/row_sound_warning_d"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
@@ -891,6 +893,40 @@
                             android:textColor="@color/text_secondary"
                             android:textSize="11sp" />
                         <Switch android:id="@+id/sw_sound_warning"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <!-- Alertes SWI132 : deux toggles séparés (mêmes que SWI133) -->
+                    <LinearLayout
+                        android:id="@+id/row_overspeed_d"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="4dp"
+                        android:visibility="gone">
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/adas_overspeed_alarm"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="11sp" />
+                        <Switch android:id="@+id/sw_overspeed_alarm_d"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/row_speed_tone_d"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="7dp"
+                        android:visibility="gone">
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/adas_speed_limit_tone"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="11sp" />
+                        <Switch android:id="@+id/sw_speed_limit_tone_d"
                             android:layout_width="wrap_content" android:layout_height="wrap_content" />
                     </LinearLayout>
 

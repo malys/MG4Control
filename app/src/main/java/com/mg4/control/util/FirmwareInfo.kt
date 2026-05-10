@@ -6,6 +6,8 @@ import android.content.Context
  * Détecte la génération de firmware à partir de ro.build.mt2712.version.
  *
  * SWI133 : "SWI133-xxxxx" — ADAS via getMixProperty(0x32), 5 modes, 2 alertes, sièges+volant chauffants
+ * SWI132 : "SWI132-xxxxx" — ADAS via CarVehicleSettingClient (acc/tja getAccTjaState), alertes via binder
+ *                            direct IVehicleSettingService (TX 0x128/0x12a), même section UI que SWI68
  * SWI68  : "SWI68-xxxxx"  — ADAS via VehicleSettingManager (acc/tja), sièges+volant chauffants
  * SWI69  : "SWI69-xxxxx"  — ADAS via VehicleSettingManager "nouvelle gen", sans sièges/volant chauffants
  * SWI131 : "SWI131-xxxxx" — Identique SWI69 (même package, même API), sans sièges/volant chauffants
@@ -15,7 +17,7 @@ import android.content.Context
  */
 object FirmwareInfo {
 
-    enum class Gen { SWI133, SWI68, SWI69, SWI131, SWI165, UNKNOWN }
+    enum class Gen { SWI133, SWI132, SWI68, SWI69, SWI131, SWI165, UNKNOWN }
 
     private const val PREF_NAME       = "mg4_settings"
     private const val PREF_FORCED_GEN = "forced_firmware_gen"
@@ -43,6 +45,7 @@ object FirmwareInfo {
             version == null               -> Gen.UNKNOWN
             version.startsWith("SWI165")  -> Gen.SWI165
             version.startsWith("SWI133")  -> Gen.SWI133
+            version.startsWith("SWI132")  -> Gen.SWI132   // avant SWI131 — startsWith("SWI13") serait ambigu
             version.startsWith("SWI131")  -> Gen.SWI131
             version.startsWith("SWI68")   -> Gen.SWI68
             version.startsWith("SWI69")   -> Gen.SWI69
@@ -99,7 +102,7 @@ object FirmwareInfo {
      */
     fun isVsmBased(): Boolean {
         val gen = getGeneration()
-        return gen == Gen.SWI68 || gen == Gen.SWI69 || gen == Gen.SWI131 || gen == Gen.SWI165
+        return gen == Gen.SWI68 || gen == Gen.SWI69 || gen == Gen.SWI131 || gen == Gen.SWI132 || gen == Gen.SWI165
     }
 
     /**

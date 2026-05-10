@@ -30,6 +30,7 @@
     <string name="app_name">MG4 Control</string>
     <string name="btn_check_update">Check for updates</string>
     <string name="btn_clean_apk">Clean APK</string>
+    <string name="btn_diagnostic">Diagnostic</string>
     <string name="btn_infos">Info</string>
     <string name="card_alerts">Alerts</string>
     <string name="card_climate">Climate settings</string>
@@ -47,6 +48,10 @@
     <string name="climate_steering_heat">Heated steering</string>
     <string name="console_clear">Clear</string>
     <string name="console_title">⬛  MG4 Console</string>
+    <string name="diag_copied">Copied!</string>
+    <string name="diag_copy">Copy</string>
+    <string name="diag_loading">Analysing…</string>
+    <string name="diag_title">Diagnostic</string>
     <string name="drive_custom">CUSTOM</string>
     <string name="drive_eco">ECO</string>
     <string name="drive_energy_saving">Energy saving</string>

@@ -74,6 +74,21 @@
                 android:paddingBottom="3dp"
                 android:layout_marginEnd="4dp" />
 
+            <!-- Chip SWI132 — stylisé depuis MainActivity -->
+            <TextView
+                android:id="@+id/chip_swi132"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SWI132"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.06"
+                android:paddingStart="9dp"
+                android:paddingEnd="9dp"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp"
+                android:layout_marginEnd="4dp" />
+
             <!-- Chip SWI68 — stylisé depuis MainActivity -->
             <TextView
                 android:id="@+id/chip_swi68"

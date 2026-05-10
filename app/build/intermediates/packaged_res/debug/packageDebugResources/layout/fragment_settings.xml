@@ -327,6 +327,25 @@
 
     </LinearLayout>
 
+    <!-- ── Bouton DIAGNOSTIC ─────────────────────────────────────────── -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_diagnostic"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/btn_diagnostic"
+        android:textColor="@color/dash_warn"
+        android:textSize="12sp"
+        android:letterSpacing="0.06"
+        android:textAllCaps="true"
+        app:backgroundTint="@color/dash_warn_dim"
+        app:strokeWidth="1dp"
+        app:strokeColor="@color/dash_warn"
+        app:cornerRadius="10dp"
+        app:icon="@android:drawable/ic_menu_info_details"
+        app:iconTint="@color/dash_warn"
+        app:iconGravity="textStart" />
+
     <!-- ── Bouton INFOS ──────────────────────────────────────────────── -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_infos"

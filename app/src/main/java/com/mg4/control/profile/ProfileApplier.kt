@@ -50,7 +50,34 @@ object ProfileApplier {
             // ADAS (Katman4) — appliqué dès que le service est prêt
             MG4Hardware.whenKatman4Ready {
                 AppLogger.i(TAG, "  Application ADAS pour profil '${profile.name}'")
-                if (FirmwareInfo.isVsmBased()) {
+                if (FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI132) {
+                    // ── SWI132 ──────────────────────────────────────────────────────────
+                    //
+                    // SWI132 utilise CarVehicleSettingClient pour l'ADAS (ACC/TJA)
+                    // mais le binder direct IVehicleSettingService pour les alertes sonores.
+                    // → setOverspeedAlarm() et setSpeedLimitTone() envoient les TX binder corrects
+                    //   (0x128 et 0x12a) sans passer par VehicleSettingManager.
+
+                    // TSR (SLIF) via binder direct (TX 0x057) — appliqué en premier comme SWI133
+                    val tsrOk = MG4Hardware.setTsrMode(profile.tsrEnabled)
+                    AppLogger.i(TAG, "  TsrEnabled=${profile.tsrEnabled} → $tsrOk")
+
+                    // Alertes sonores via binder direct
+                    val oaOk = MG4Hardware.setOverspeedAlarm(profile.overspeedAlarm)
+                    AppLogger.i(TAG, "  OverspeedAlarm=${profile.overspeedAlarm} → $oaOk")
+                    val stOk = MG4Hardware.setSpeedLimitTone(profile.speedLimitTone)
+                    AppLogger.i(TAG, "  SpeedLimitTone=${profile.speedLimitTone} → $stOk")
+
+                    // Mode ADAS via CarVehicleSettingClient (setAccTjaState)
+                    val adOk = MG4Hardware.setAccTjaMode(profile.swi68AdasMode)
+                    AppLogger.i(TAG, "  AdasMode=0x${profile.swi68AdasMode.toString(16)} → $adOk")
+                    applyAeb(profile.aebEnabled, profile.aebMode, profile.aebSensitivity)
+
+                    // Économie d'énergie — via CarVehicleSettingClient (setEnduranceMode), même path que SWI69
+                    val esOk = MG4Hardware.setEnergySavingMode(profile.energySaving)
+                    AppLogger.i(TAG, "  EnergySaving=${profile.energySaving} → $esOk")
+
+                } else if (FirmwareInfo.isVsmBased()) {
                     // ── SWI68/SWI69/SWI131/SWI165 ──────────────────────────────────────
                     //
                     // Le TSR est appliqué EN PREMIER : setTsrMode() bloque 400 ms en interne
@@ -67,7 +94,7 @@ object ProfileApplier {
                     AppLogger.i(TAG, "  AdasMode=0x${profile.swi68AdasMode.toString(16)} → $adOk")
                     applyAeb(profile.aebEnabled, profile.aebMode, profile.aebSensitivity)
 
-                    // Économie d'énergie — tous firmwares VSM (SWI68/SWI69/SWI131/SWI165)
+                    // Économie d'énergie — firmwares VSM hors SWI132 (SWI68/SWI69/SWI131/SWI165)
                     val esOk = MG4Hardware.setEnergySavingMode(profile.energySaving)
                     AppLogger.i(TAG, "  EnergySaving=${profile.energySaving} → $esOk")
                 } else {

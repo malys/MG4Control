@@ -35,6 +35,9 @@ public final class ActivityMainBinding implements ViewBinding {
   public final TextView chipSwi131;
 
   @NonNull
+  public final TextView chipSwi132;
+
+  @NonNull
   public final TextView chipSwi133;
 
   @NonNull
@@ -55,14 +58,15 @@ public final class ActivityMainBinding implements ViewBinding {
   private ActivityMainBinding(@NonNull LinearLayout rootView,
       @NonNull MaterialButton btnNavProfiles, @NonNull MaterialButton btnNavSettings,
       @NonNull MaterialButton btnNavShortcuts, @NonNull TextView chipSwi131,
-      @NonNull TextView chipSwi133, @NonNull TextView chipSwi165, @NonNull TextView chipSwi68,
-      @NonNull TextView chipSwi69, @NonNull FragmentContainerView navHostFragment,
-      @NonNull ImageView topbarLogo) {
+      @NonNull TextView chipSwi132, @NonNull TextView chipSwi133, @NonNull TextView chipSwi165,
+      @NonNull TextView chipSwi68, @NonNull TextView chipSwi69,
+      @NonNull FragmentContainerView navHostFragment, @NonNull ImageView topbarLogo) {
     this.rootView = rootView;
     this.btnNavProfiles = btnNavProfiles;
     this.btnNavSettings = btnNavSettings;
     this.btnNavShortcuts = btnNavShortcuts;
     this.chipSwi131 = chipSwi131;
+    this.chipSwi132 = chipSwi132;
     this.chipSwi133 = chipSwi133;
     this.chipSwi165 = chipSwi165;
     this.chipSwi68 = chipSwi68;
@@ -122,6 +126,12 @@ public final class ActivityMainBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.chip_swi132;
+      TextView chipSwi132 = ViewBindings.findChildViewById(rootView, id);
+      if (chipSwi132 == null) {
+        break missingId;
+      }
+
       id = R.id.chip_swi133;
       TextView chipSwi133 = ViewBindings.findChildViewById(rootView, id);
       if (chipSwi133 == null) {
@@ -159,7 +169,7 @@ public final class ActivityMainBinding implements ViewBinding {
       }
 
       return new ActivityMainBinding((LinearLayout) rootView, btnNavProfiles, btnNavSettings,
-          btnNavShortcuts, chipSwi131, chipSwi133, chipSwi165, chipSwi68, chipSwi69,
+          btnNavShortcuts, chipSwi131, chipSwi132, chipSwi133, chipSwi165, chipSwi68, chipSwi69,
           navHostFragment, topbarLogo);
     }
     String missingId = rootView.getResources().getResourceName(id);

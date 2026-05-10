@@ -3327,6 +3327,7 @@ id btn_default_dashboard
 id btn_default_profiles
 id btn_default_shortcuts
 id btn_delete
+id btn_diagnostic
 id btn_dialog_cancel
 id btn_dialog_save
 id btn_drive_custom_d
@@ -3427,6 +3428,7 @@ id chains
 id checkbox
 id checked
 id chip_swi131
+id chip_swi132
 id chip_swi133
 id chip_swi165
 id chip_swi68
@@ -3716,6 +3718,9 @@ id right_side
 id rounded
 id row_data_warning
 id row_index_key
+id row_overspeed_d
+id row_sound_warning_d
+id row_speed_tone_d
 id rtl
 id save_non_transition_alpha
 id save_overlay_view
@@ -3819,9 +3824,11 @@ id supportScrollUp
 id sw_aeb_enabled
 id sw_elk_enabled
 id sw_overspeed_alarm
+id sw_overspeed_alarm_d
 id sw_set_default
 id sw_sound_warning
 id sw_speed_limit_tone
+id sw_speed_limit_tone_d
 id sw_tsr_d
 id switch_aeb
 id switch_aeb_p2
@@ -4202,6 +4209,7 @@ string bottomsheet_drag_handle_clicked
 string bottomsheet_drag_handle_content_description
 string btn_check_update
 string btn_clean_apk
+string btn_diagnostic
 string btn_infos
 string call_notification_answer_action
 string call_notification_answer_video_action
@@ -4231,6 +4239,10 @@ string climate_steering_heat
 string console_clear
 string console_title
 string dest_title
+string diag_copied
+string diag_copy
+string diag_loading
+string diag_title
 string drive_custom
 string drive_eco
 string drive_energy_saving

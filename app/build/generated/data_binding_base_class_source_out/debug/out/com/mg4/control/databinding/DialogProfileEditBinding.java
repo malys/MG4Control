@@ -170,6 +170,15 @@ public final class DialogProfileEditBinding implements ViewBinding {
   public final TextInputEditText etProfileName;
 
   @NonNull
+  public final LinearLayout rowOverspeedD;
+
+  @NonNull
+  public final LinearLayout rowSoundWarningD;
+
+  @NonNull
+  public final LinearLayout rowSpeedToneD;
+
+  @NonNull
   public final LinearLayout sectionRegenDialog;
 
   @NonNull
@@ -191,6 +200,9 @@ public final class DialogProfileEditBinding implements ViewBinding {
   public final Switch swOverspeedAlarm;
 
   @NonNull
+  public final Switch swOverspeedAlarmD;
+
+  @NonNull
   public final Switch swSetDefault;
 
   @NonNull
@@ -198,6 +210,9 @@ public final class DialogProfileEditBinding implements ViewBinding {
 
   @NonNull
   public final Switch swSpeedLimitTone;
+
+  @NonNull
+  public final Switch swSpeedLimitToneD;
 
   @NonNull
   public final Switch swTsrD;
@@ -230,12 +245,14 @@ public final class DialogProfileEditBinding implements ViewBinding {
       @NonNull MaterialButton btnSr1D, @NonNull MaterialButton btnSr2D,
       @NonNull MaterialButton btnSr3D, @NonNull MaterialButton btnSteerOffD,
       @NonNull MaterialButton btnSteerOnD, @NonNull LinearLayout elkSectionDialog,
-      @NonNull TextInputEditText etProfileName, @NonNull LinearLayout sectionRegenDialog,
-      @NonNull LinearLayout sectionSeatsDialog, @NonNull LinearLayout sectionSteeringDialog,
-      @NonNull LinearLayout sectionTsrDialog, @NonNull Switch swAebEnabled,
-      @NonNull Switch swElkEnabled, @NonNull Switch swOverspeedAlarm, @NonNull Switch swSetDefault,
-      @NonNull Switch swSoundWarning, @NonNull Switch swSpeedLimitTone, @NonNull Switch swTsrD,
-      @NonNull TextView tvDialogTitle) {
+      @NonNull TextInputEditText etProfileName, @NonNull LinearLayout rowOverspeedD,
+      @NonNull LinearLayout rowSoundWarningD, @NonNull LinearLayout rowSpeedToneD,
+      @NonNull LinearLayout sectionRegenDialog, @NonNull LinearLayout sectionSeatsDialog,
+      @NonNull LinearLayout sectionSteeringDialog, @NonNull LinearLayout sectionTsrDialog,
+      @NonNull Switch swAebEnabled, @NonNull Switch swElkEnabled, @NonNull Switch swOverspeedAlarm,
+      @NonNull Switch swOverspeedAlarmD, @NonNull Switch swSetDefault,
+      @NonNull Switch swSoundWarning, @NonNull Switch swSpeedLimitTone,
+      @NonNull Switch swSpeedLimitToneD, @NonNull Switch swTsrD, @NonNull TextView tvDialogTitle) {
     this.rootView = rootView;
     this.adasSectionAeb = adasSectionAeb;
     this.adasSectionSwi133 = adasSectionSwi133;
@@ -286,6 +303,9 @@ public final class DialogProfileEditBinding implements ViewBinding {
     this.btnSteerOnD = btnSteerOnD;
     this.elkSectionDialog = elkSectionDialog;
     this.etProfileName = etProfileName;
+    this.rowOverspeedD = rowOverspeedD;
+    this.rowSoundWarningD = rowSoundWarningD;
+    this.rowSpeedToneD = rowSpeedToneD;
     this.sectionRegenDialog = sectionRegenDialog;
     this.sectionSeatsDialog = sectionSeatsDialog;
     this.sectionSteeringDialog = sectionSteeringDialog;
@@ -293,9 +313,11 @@ public final class DialogProfileEditBinding implements ViewBinding {
     this.swAebEnabled = swAebEnabled;
     this.swElkEnabled = swElkEnabled;
     this.swOverspeedAlarm = swOverspeedAlarm;
+    this.swOverspeedAlarmD = swOverspeedAlarmD;
     this.swSetDefault = swSetDefault;
     this.swSoundWarning = swSoundWarning;
     this.swSpeedLimitTone = swSpeedLimitTone;
+    this.swSpeedLimitToneD = swSpeedLimitToneD;
     this.swTsrD = swTsrD;
     this.tvDialogTitle = tvDialogTitle;
   }
@@ -621,6 +643,24 @@ public final class DialogProfileEditBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.row_overspeed_d;
+      LinearLayout rowOverspeedD = ViewBindings.findChildViewById(rootView, id);
+      if (rowOverspeedD == null) {
+        break missingId;
+      }
+
+      id = R.id.row_sound_warning_d;
+      LinearLayout rowSoundWarningD = ViewBindings.findChildViewById(rootView, id);
+      if (rowSoundWarningD == null) {
+        break missingId;
+      }
+
+      id = R.id.row_speed_tone_d;
+      LinearLayout rowSpeedToneD = ViewBindings.findChildViewById(rootView, id);
+      if (rowSpeedToneD == null) {
+        break missingId;
+      }
+
       id = R.id.section_regen_dialog;
       LinearLayout sectionRegenDialog = ViewBindings.findChildViewById(rootView, id);
       if (sectionRegenDialog == null) {
@@ -663,6 +703,12 @@ public final class DialogProfileEditBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.sw_overspeed_alarm_d;
+      Switch swOverspeedAlarmD = ViewBindings.findChildViewById(rootView, id);
+      if (swOverspeedAlarmD == null) {
+        break missingId;
+      }
+
       id = R.id.sw_set_default;
       Switch swSetDefault = ViewBindings.findChildViewById(rootView, id);
       if (swSetDefault == null) {
@@ -678,6 +724,12 @@ public final class DialogProfileEditBinding implements ViewBinding {
       id = R.id.sw_speed_limit_tone;
       Switch swSpeedLimitTone = ViewBindings.findChildViewById(rootView, id);
       if (swSpeedLimitTone == null) {
+        break missingId;
+      }
+
+      id = R.id.sw_speed_limit_tone_d;
+      Switch swSpeedLimitToneD = ViewBindings.findChildViewById(rootView, id);
+      if (swSpeedLimitToneD == null) {
         break missingId;
       }
 
@@ -702,9 +754,11 @@ public final class DialogProfileEditBinding implements ViewBinding {
           btnElkEmergencyD, btnElkSenHighD, btnElkSenLowD, btnElkSenStandardD, btnEnergySavingD,
           btnRegenAdaptiveD, btnRegenHighD, btnRegenLowD, btnRegenMediumD, btnRegenOffD,
           btnRegenOnePedalD, btnSl0D, btnSl1D, btnSl2D, btnSl3D, btnSr0D, btnSr1D, btnSr2D, btnSr3D,
-          btnSteerOffD, btnSteerOnD, elkSectionDialog, etProfileName, sectionRegenDialog,
-          sectionSeatsDialog, sectionSteeringDialog, sectionTsrDialog, swAebEnabled, swElkEnabled,
-          swOverspeedAlarm, swSetDefault, swSoundWarning, swSpeedLimitTone, swTsrD, tvDialogTitle);
+          btnSteerOffD, btnSteerOnD, elkSectionDialog, etProfileName, rowOverspeedD,
+          rowSoundWarningD, rowSpeedToneD, sectionRegenDialog, sectionSeatsDialog,
+          sectionSteeringDialog, sectionTsrDialog, swAebEnabled, swElkEnabled, swOverspeedAlarm,
+          swOverspeedAlarmD, swSetDefault, swSoundWarning, swSpeedLimitTone, swSpeedLimitToneD,
+          swTsrD, tvDialogTitle);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

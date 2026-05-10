@@ -67,6 +67,7 @@ class ShortcutsFragment : Fragment() {
         val gen        = FirmwareInfo.getGeneration()
         val isKnown    = gen != FirmwareInfo.Gen.UNKNOWN
         val isVsmBased = FirmwareInfo.isVsmBased()
+        val isSWI132   = gen == FirmwareInfo.Gen.SWI132
 
         // ── Construction des items de base selon firmware ─────────────────
         baseActionItems = buildList {
@@ -75,10 +76,12 @@ class ShortcutsFragment : Fragment() {
             if (isKnown) {
                 add(ActionItem(getString(R.string.shortcuts_action_aeb),        ShortcutAction.AEB_CYCLE))
             }
-            if (isVsmBased) {
+            // SWI68/69/131/165 : une seule alerte sonore VSM
+            if (isVsmBased && !isSWI132) {
                 add(ActionItem(getString(R.string.shortcuts_action_sound),      ShortcutAction.SOUND_WARNING))
             }
-            if (!isVsmBased && isKnown) {
+            // SWI133 + SWI132 : deux alertes indépendantes (survitesse + ton limite)
+            if ((!isVsmBased || isSWI132) && isKnown) {
                 add(ActionItem(getString(R.string.shortcuts_action_overspeed),  ShortcutAction.OVERSPEED_ALARM))
                 add(ActionItem(getString(R.string.shortcuts_action_speed_limit),ShortcutAction.SPEED_LIMIT_TONE))
             }

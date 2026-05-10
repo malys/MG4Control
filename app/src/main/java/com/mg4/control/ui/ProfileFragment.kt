@@ -113,9 +113,10 @@ class ProfileFragment : Fragment() {
 
     private fun openNewProfileDialog() {
         CoroutineScope(Dispatchers.IO).launch {
-            val hasHeat = FirmwareInfo.hasHeatFeatures()
+            val hasHeat  = FirmwareInfo.hasHeatFeatures()
+            val isSWI132 = FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI132
             val prefill = if (FirmwareInfo.isVsmBased()) {
-                // SWI68/SWI69/SWI131/SWI165 : ADAS ACC/TJA — sièges/volant uniquement sur SWI68/SWI165
+                // SWI68/SWI69/SWI131/SWI132/SWI165 : ADAS ACC/TJA — sièges/volant uniquement sur SWI68/SWI165
                 val elkMode = MG4Hardware.getElkMode().let { if (it < 1) ElkMode.EMERGENCY else it }
                 val elkSen  = MG4Hardware.getElkSensitivity().let { if (it < 1) ElkSensitivity.STANDARD else it }
                 DrivingProfile(
@@ -125,8 +126,11 @@ class ProfileFragment : Fragment() {
                     steeringHeat  = if (hasHeat) MG4Hardware.isSteeringHeatOn() else false,
                     seatHeatLeft  = if (hasHeat) MG4Hardware.getSeatHeatLeft().coerceAtLeast(0) else 0,
                     seatHeatRight = if (hasHeat) MG4Hardware.getSeatHeatRight().coerceAtLeast(0) else 0,
-                    soundWarning  = MG4Hardware.isSoundWarningOn(),
-                    swi68AdasMode = MG4Hardware.getAccTjaMode().let { if (it < 0) Swi68Mode.OFF else it },
+                    // SWI132 : deux alertes indépendantes comme SWI133 (pas de soundWarning VSM)
+                    overspeedAlarm = if (isSWI132) MG4Hardware.isOverspeedAlarmOn() else false,
+                    speedLimitTone = if (isSWI132) MG4Hardware.isSpeedLimitToneOn() else false,
+                    soundWarning   = if (!isSWI132) MG4Hardware.isSoundWarningOn() else false,
+                    swi68AdasMode  = MG4Hardware.getAccTjaMode().let { if (it < 0) Swi68Mode.OFF else it },
                     aebEnabled     = MG4Hardware.isAebEnabled(),
                     aebMode        = MG4Hardware.getAebMode().let { if (it < 1) AebMode.ALARM else it },
                     aebSensitivity = MG4Hardware.getAebSensitivity().let { if (it < 1) AebSensitivity.STANDARD else it },
@@ -407,43 +411,58 @@ class ProfileFragment : Fragment() {
         // ── Sections ADAS ────────────────────────────────────────────────────
         val sectionSwi133 = dialogView.findViewById<View>(R.id.adas_section_swi133)
         val sectionSwi68  = dialogView.findViewById<View>(R.id.adas_section_swi68)
+        val isSWI132Profile = FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI132
 
-        // SWI68/SWI69/SWI131 : même interface ADAS (ACC / TJA / Off + alerte sonore)
-        if (FirmwareInfo.isVsmBased()) {
-            sectionSwi68.visibility  = View.VISIBLE
-            sectionSwi133.visibility = View.GONE
-
-            // Alerte SWI68
-            val swSoundWarning = dialogView.findViewById<Switch>(R.id.sw_sound_warning)
-            swSoundWarning.isChecked = data.soundWarning
-
-            // Mode ADAS SWI68
-            val adasSwi68Pairs = listOf(
-                dialogView.findViewById<MaterialButton>(R.id.btn_adas_swi68_off_d) to Swi68Mode.OFF,
-                dialogView.findViewById<MaterialButton>(R.id.btn_adas_swi68_acc_d) to Swi68Mode.ACC,
-                dialogView.findViewById<MaterialButton>(R.id.btn_adas_swi68_tja_d) to Swi68Mode.TJA
-            )
-            bindGroup(adasSwi68Pairs, swi68Mode) { swi68Mode = it }
-
-        } else {
-            sectionSwi133.visibility = View.VISIBLE
-            sectionSwi68.visibility  = View.GONE
-
-            // Alertes SWI133
-            val swOverspeed = dialogView.findViewById<Switch>(R.id.sw_overspeed_alarm)
-            val swSpeedTone = dialogView.findViewById<Switch>(R.id.sw_speed_limit_tone)
-            swOverspeed.isChecked = data.overspeedAlarm
-            swSpeedTone.isChecked = data.speedLimitTone
-
-            // Mode ADAS SWI133 : Off=0 / Lim=1 / Auto=2 / ACC=3 / ICA=4
-            val adasSwi133Pairs = listOf(
-                dialogView.findViewById<MaterialButton>(R.id.btn_adas_off_d)  to 0,
-                dialogView.findViewById<MaterialButton>(R.id.btn_adas_lim_d)  to 1,
-                dialogView.findViewById<MaterialButton>(R.id.btn_adas_auto_d) to 2,
-                dialogView.findViewById<MaterialButton>(R.id.btn_adas_acc_d)  to 3,
-                dialogView.findViewById<MaterialButton>(R.id.btn_adas_ica_d)  to 4
-            )
-            bindGroup(adasSwi133Pairs, adasMode) { adasMode = it }
+        when {
+            isSWI132Profile -> {
+                // SWI132 : section SWI68 (3 boutons ACC/TJA/Off) + alertes séparées comme SWI133
+                sectionSwi68.visibility  = View.VISIBLE
+                sectionSwi133.visibility = View.GONE
+                // Masque le toggle soundWarning (non applicable SWI132) et montre les deux alertes
+                dialogView.findViewById<View>(R.id.row_sound_warning_d).visibility = View.GONE
+                dialogView.findViewById<View>(R.id.row_overspeed_d).visibility     = View.VISIBLE
+                dialogView.findViewById<View>(R.id.row_speed_tone_d).visibility    = View.VISIBLE
+                // Initialise les alertes SWI132
+                dialogView.findViewById<Switch>(R.id.sw_overspeed_alarm_d).isChecked = data.overspeedAlarm
+                dialogView.findViewById<Switch>(R.id.sw_speed_limit_tone_d).isChecked = data.speedLimitTone
+                // Mode ADAS SWI68
+                val adasSwi68Pairs = listOf(
+                    dialogView.findViewById<MaterialButton>(R.id.btn_adas_swi68_off_d) to Swi68Mode.OFF,
+                    dialogView.findViewById<MaterialButton>(R.id.btn_adas_swi68_acc_d) to Swi68Mode.ACC,
+                    dialogView.findViewById<MaterialButton>(R.id.btn_adas_swi68_tja_d) to Swi68Mode.TJA
+                )
+                bindGroup(adasSwi68Pairs, swi68Mode) { swi68Mode = it }
+            }
+            FirmwareInfo.isVsmBased() -> {
+                // SWI68/SWI69/SWI131/SWI165 : section SWI68 (ACC/TJA/Off + alerte sonore)
+                sectionSwi68.visibility  = View.VISIBLE
+                sectionSwi133.visibility = View.GONE
+                val swSoundWarning = dialogView.findViewById<Switch>(R.id.sw_sound_warning)
+                swSoundWarning.isChecked = data.soundWarning
+                val adasSwi68Pairs = listOf(
+                    dialogView.findViewById<MaterialButton>(R.id.btn_adas_swi68_off_d) to Swi68Mode.OFF,
+                    dialogView.findViewById<MaterialButton>(R.id.btn_adas_swi68_acc_d) to Swi68Mode.ACC,
+                    dialogView.findViewById<MaterialButton>(R.id.btn_adas_swi68_tja_d) to Swi68Mode.TJA
+                )
+                bindGroup(adasSwi68Pairs, swi68Mode) { swi68Mode = it }
+            }
+            else -> {
+                // SWI133/UNKNOWN : section SWI133 (overspeed + speedTone + 5 boutons ADAS)
+                sectionSwi133.visibility = View.VISIBLE
+                sectionSwi68.visibility  = View.GONE
+                val swOverspeed = dialogView.findViewById<Switch>(R.id.sw_overspeed_alarm)
+                val swSpeedTone = dialogView.findViewById<Switch>(R.id.sw_speed_limit_tone)
+                swOverspeed.isChecked = data.overspeedAlarm
+                swSpeedTone.isChecked = data.speedLimitTone
+                val adasSwi133Pairs = listOf(
+                    dialogView.findViewById<MaterialButton>(R.id.btn_adas_off_d)  to 0,
+                    dialogView.findViewById<MaterialButton>(R.id.btn_adas_lim_d)  to 1,
+                    dialogView.findViewById<MaterialButton>(R.id.btn_adas_auto_d) to 2,
+                    dialogView.findViewById<MaterialButton>(R.id.btn_adas_acc_d)  to 3,
+                    dialogView.findViewById<MaterialButton>(R.id.btn_adas_ica_d)  to 4
+                )
+                bindGroup(adasSwi133Pairs, adasMode) { adasMode = it }
+            }
         }
 
         // ── Économie d'énergie + TSR (tous firmwares connus) ───────────────
@@ -503,8 +522,16 @@ class ProfileFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            val overspeedAlarm = dialogView.findViewById<Switch?>(R.id.sw_overspeed_alarm)?.isChecked ?: false
-            val speedLimitTone = dialogView.findViewById<Switch?>(R.id.sw_speed_limit_tone)?.isChecked ?: false
+            val isSWI132Save   = FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI132
+            // SWI132 : alertes lues depuis les switches dédiés dans la section swi68
+            val overspeedAlarm = if (isSWI132Save)
+                dialogView.findViewById<Switch?>(R.id.sw_overspeed_alarm_d)?.isChecked ?: false
+            else
+                dialogView.findViewById<Switch?>(R.id.sw_overspeed_alarm)?.isChecked ?: false
+            val speedLimitTone = if (isSWI132Save)
+                dialogView.findViewById<Switch?>(R.id.sw_speed_limit_tone_d)?.isChecked ?: false
+            else
+                dialogView.findViewById<Switch?>(R.id.sw_speed_limit_tone)?.isChecked ?: false
             val soundWarning   = dialogView.findViewById<Switch?>(R.id.sw_sound_warning)?.isChecked ?: false
 
             val profile = DrivingProfile(

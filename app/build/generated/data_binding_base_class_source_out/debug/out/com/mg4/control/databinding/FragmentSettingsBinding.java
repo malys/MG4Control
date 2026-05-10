@@ -39,6 +39,9 @@ public final class FragmentSettingsBinding implements ViewBinding {
   public final MaterialButton btnDefaultShortcuts;
 
   @NonNull
+  public final MaterialButton btnDiagnostic;
+
+  @NonNull
   public final MaterialButton btnInfos;
 
   @NonNull
@@ -66,10 +69,11 @@ public final class FragmentSettingsBinding implements ViewBinding {
       @NonNull MaterialButton btnCheckUpdate, @NonNull MaterialButton btnCleanApk,
       @NonNull MaterialButton btnCloseSettings, @NonNull MaterialButton btnDefaultDashboard,
       @NonNull MaterialButton btnDefaultProfiles, @NonNull MaterialButton btnDefaultShortcuts,
-      @NonNull MaterialButton btnInfos, @NonNull MaterialButton btnLangDe,
-      @NonNull MaterialButton btnLangEn, @NonNull MaterialButton btnLangEs,
-      @NonNull MaterialButton btnLangFr, @NonNull MaterialButton btnLangIt,
-      @NonNull MaterialButton btnLangPt, @NonNull Switch switchAutoApply) {
+      @NonNull MaterialButton btnDiagnostic, @NonNull MaterialButton btnInfos,
+      @NonNull MaterialButton btnLangDe, @NonNull MaterialButton btnLangEn,
+      @NonNull MaterialButton btnLangEs, @NonNull MaterialButton btnLangFr,
+      @NonNull MaterialButton btnLangIt, @NonNull MaterialButton btnLangPt,
+      @NonNull Switch switchAutoApply) {
     this.rootView = rootView;
     this.btnCheckUpdate = btnCheckUpdate;
     this.btnCleanApk = btnCleanApk;
@@ -77,6 +81,7 @@ public final class FragmentSettingsBinding implements ViewBinding {
     this.btnDefaultDashboard = btnDefaultDashboard;
     this.btnDefaultProfiles = btnDefaultProfiles;
     this.btnDefaultShortcuts = btnDefaultShortcuts;
+    this.btnDiagnostic = btnDiagnostic;
     this.btnInfos = btnInfos;
     this.btnLangDe = btnLangDe;
     this.btnLangEn = btnLangEn;
@@ -150,6 +155,12 @@ public final class FragmentSettingsBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.btn_diagnostic;
+      MaterialButton btnDiagnostic = ViewBindings.findChildViewById(rootView, id);
+      if (btnDiagnostic == null) {
+        break missingId;
+      }
+
       id = R.id.btn_infos;
       MaterialButton btnInfos = ViewBindings.findChildViewById(rootView, id);
       if (btnInfos == null) {
@@ -199,8 +210,9 @@ public final class FragmentSettingsBinding implements ViewBinding {
       }
 
       return new FragmentSettingsBinding((LinearLayout) rootView, btnCheckUpdate, btnCleanApk,
-          btnCloseSettings, btnDefaultDashboard, btnDefaultProfiles, btnDefaultShortcuts, btnInfos,
-          btnLangDe, btnLangEn, btnLangEs, btnLangFr, btnLangIt, btnLangPt, switchAutoApply);
+          btnCloseSettings, btnDefaultDashboard, btnDefaultProfiles, btnDefaultShortcuts,
+          btnDiagnostic, btnInfos, btnLangDe, btnLangEn, btnLangEs, btnLangFr, btnLangIt, btnLangPt,
+          switchAutoApply);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

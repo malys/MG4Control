@@ -1,11 +1,14 @@
 package com.mg4.control.ui
 
 import android.app.AlertDialog
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
@@ -14,6 +17,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.Switch
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -23,10 +28,15 @@ import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
 import com.google.zxing.MultiFormatWriter
 import com.mg4.control.R
+import com.mg4.control.hardware.MG4Hardware
 import com.mg4.control.update.UpdateChecker
 import com.mg4.control.update.UpdateDialogManager
 import com.mg4.control.util.FirmwareHelper
 import com.mg4.control.util.LocaleHelper
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SettingsFragment : Fragment() {
 
@@ -176,6 +186,11 @@ class SettingsFragment : Fragment() {
             }, 3_000)
         }
 
+        // ── Bouton Diagnostic ────────────────────────────────────────────────
+        view.findViewById<MaterialButton>(R.id.btn_diagnostic).setOnClickListener {
+            showDiagnosticDialog()
+        }
+
         // ── Bouton Infos ─────────────────────────────────────────────────────
         view.findViewById<MaterialButton>(R.id.btn_infos).setOnClickListener {
             showInfosDialog()
@@ -239,6 +254,60 @@ class SettingsFragment : Fragment() {
                 btn.isEnabled = true
             }
         }, 3_000)
+    }
+
+    // ── Dialog Diagnostic ────────────────────────────────────────────────────
+
+    private fun showDiagnosticDialog() {
+        val ctx = requireContext()
+
+        val appVersion = try {
+            ctx.packageManager.getPackageInfo(ctx.packageName, 0).versionName ?: "?"
+        } catch (e: Exception) { "?" }
+
+        val scrollView = ScrollView(ctx).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+        }
+        val tvReport = TextView(ctx).apply {
+            text = getString(R.string.diag_loading)
+            typeface = Typeface.MONOSPACE
+            textSize = 10f
+            setTextColor(ctx.getColor(R.color.text_secondary))
+            val pad = (12 * resources.displayMetrics.density).toInt()
+            setPadding(pad, pad, pad, pad)
+        }
+        scrollView.addView(tvReport)
+
+        val dialog = AlertDialog.Builder(ctx)
+            .setTitle(getString(R.string.diag_title))
+            .setView(scrollView)
+            .setPositiveButton(getString(R.string.diag_copy), null)
+            .setNegativeButton(getString(R.string.nav_close), null)
+            .create()
+        dialog.window?.setBackgroundDrawable(ColorDrawable(ctx.getColor(R.color.dash_card)))
+
+        dialog.setOnShowListener {
+            // Surcharge pour ne pas fermer le dialog au clic sur "Copier"
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setOnClickListener {
+                val report = tvReport.text.toString()
+                val cm = ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                cm.setPrimaryClip(ClipData.newPlainText("MG4Control Diagnostic", report))
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.text = getString(R.string.diag_copied)
+            }
+        }
+
+        dialog.show()
+
+        // Génération du rapport sur le thread IO (inclut les TX binder SWI132)
+        CoroutineScope(Dispatchers.IO).launch {
+            val report = MG4Hardware.buildDiagnosticReport(appVersion)
+            withContext(Dispatchers.Main) {
+                if (isAdded) tvReport.text = report
+            }
+        }
     }
 
     // ── Dialog À propos ──────────────────────────────────────────────────────
