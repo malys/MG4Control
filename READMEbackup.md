@@ -1,12 +1,8 @@
-![image info](mg4control_github_banner.svg)
+![Cover](https://raw.githubusercontent.com/SliDeeN/MG4Control/968a965fa7d1d87d816fce28d4f87fe22a665c31/mg4control_github_banner.svg)
 
 > Application Android Automotive pour le contrôle avancé des paramètres de conduite du MG4 électrique.
 > Android Automotive app for advanced driving settings control on the MG4 electric vehicle.
 
-> Vous appréciez MG4Control et souhaitez soutenir son développement ?  
-You enjoy MG4Control and want to support its development ?  
-[![PayPal](https://img.shields.io/badge/Donate-PayPal-blue?logo=paypal)](https://www.paypal.com/paypalme/pfauquembergue)
-[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/slideen)
 ---
 
 <details open>
