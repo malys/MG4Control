@@ -29,5 +29,3 @@ mockup/
 # Fichiers de log
 *.log
 
-# README géré directement sur GitLab
-README.md
