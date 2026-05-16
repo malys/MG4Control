@@ -36,6 +36,9 @@
     <string name="shortcuts_action_energy_saving">Energy saving</string>
     <string name="shortcuts_action_tsr">Signs (TSR)</string>
     <string name="shortcuts_action_apply_profile">Launch a profile</string>
+    <string name="shortcuts_action_profile_picker">Profile picker (popup)</string>
+    <string name="overlay_profile_title">Driving profiles</string>
+    <string name="overlay_countdown">Closing in %1$ds</string>
     <string name="shortcuts_profile_prefix">Launch profile</string>
     <string name="shortcuts_pick_profile_title">Choose a profile</string>
     <string name="shortcuts_profile_not_found">Profile not found</string>
@@ -155,6 +158,7 @@
     <string name="diag_copy">Copy</string>
     <string name="diag_copied">Copied!</string>
     <string name="diag_loading">Analysing…</string>
+    <string name="diag_clear_crash">Clear crash log</string>
 
     <!-- Infos / About -->
     <string name="btn_check_update">Check for updates</string>

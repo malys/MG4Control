@@ -3686,6 +3686,11 @@ id open_search_view_toolbar
 id open_search_view_toolbar_container
 id outline
 id outward
+id overlay_backdrop
+id overlay_btn_close
+id overlay_card
+id overlay_countdown
+id overlay_profiles_container
 id overshoot
 id packed
 id pager_dots
@@ -4140,6 +4145,7 @@ layout notification_template_custom_big
 layout notification_template_icon_group
 layout notification_template_part_chronometer
 layout notification_template_part_time
+layout overlay_profile_picker
 layout page_dashboard_elk
 layout page_dashboard_main
 layout select_dialog_item_material
@@ -4249,6 +4255,7 @@ string climate_steering_heat
 string console_clear
 string console_title
 string dest_title
+string diag_clear_crash
 string diag_copied
 string diag_copy
 string diag_loading
@@ -4403,6 +4410,8 @@ string nav_drive
 string nav_profiles
 string nav_settings
 string nav_shortcuts
+string overlay_countdown
+string overlay_profile_title
 string password_toggle_content_description
 string path_password_eye
 string path_password_eye_mask_strike_through
@@ -4467,6 +4476,7 @@ string shortcuts_action_one_pedal
 string shortcuts_action_open_app
 string shortcuts_action_open_custom_app
 string shortcuts_action_overspeed
+string shortcuts_action_profile_picker
 string shortcuts_action_sound
 string shortcuts_action_speed_limit
 string shortcuts_action_tsr

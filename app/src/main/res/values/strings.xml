@@ -36,6 +36,9 @@
     <string name="shortcuts_action_energy_saving">Éco. énergie</string>
     <string name="shortcuts_action_tsr">Panneaux (TSR)</string>
     <string name="shortcuts_action_apply_profile">Lancer un profil</string>
+    <string name="shortcuts_action_profile_picker">Sélecteur de profil (popup)</string>
+    <string name="overlay_profile_title">Profils de conduite</string>
+    <string name="overlay_countdown">Fermeture dans %1$ds</string>
     <string name="shortcuts_profile_prefix">Lancer le profil</string>
     <string name="shortcuts_pick_profile_title">Choisir un profil</string>
     <string name="shortcuts_profile_not_found">Profil introuvable</string>
@@ -157,6 +160,7 @@
     <string name="diag_copy">Copier</string>
     <string name="diag_copied">Copié !</string>
     <string name="diag_loading">Analyse en cours…</string>
+    <string name="diag_clear_crash">Effacer le crash</string>
 
     <!-- Infos / À propos -->
     <string name="btn_check_update">Vérifier les mises à jour</string>

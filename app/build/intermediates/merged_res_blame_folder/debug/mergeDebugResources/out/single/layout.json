@@ -48,20 +48,20 @@
         "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-50:\\layout\\fragment_settings.xml"
     },
     {
-        "merged": "com.mg4.control.app-mergeDebugResources-47:/layout/fragment_shortcuts.xml",
-        "source": "com.mg4.control.app-main-50:/layout/fragment_shortcuts.xml"
-    },
-    {
         "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-mergeDebugResources-47:\\layout\\fragment_adas.xml",
         "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-50:\\layout\\fragment_adas.xml"
     },
     {
-        "merged": "com.mg4.control.app-mergeDebugResources-47:/layout/item_profile.xml",
-        "source": "com.mg4.control.app-main-50:/layout/item_profile.xml"
-    },
-    {
         "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-mergeDebugResources-47:\\layout\\fragment_console.xml",
         "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-50:\\layout\\fragment_console.xml"
+    },
+    {
+        "merged": "com.mg4.control.app-mergeDebugResources-47:/layout/overlay_profile_picker.xml",
+        "source": "com.mg4.control.app-main-50:/layout/overlay_profile_picker.xml"
+    },
+    {
+        "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-mergeDebugResources-47:\\layout\\overlay_profile_picker.xml",
+        "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-50:\\layout\\overlay_profile_picker.xml"
     },
     {
         "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-mergeDebugResources-47:\\layout\\page_dashboard_main.xml",
@@ -72,15 +72,7 @@
         "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-50:\\layout\\dialog_app_info.xml"
     },
     {
-        "merged": "com.mg4.control.app-mergeDebugResources-47:/layout/page_dashboard_main.xml",
-        "source": "com.mg4.control.app-main-50:/layout/page_dashboard_main.xml"
-    },
-    {
         "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-mergeDebugResources-47:\\layout\\fragment_dashboard.xml",
         "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-50:\\layout\\fragment_dashboard.xml"
-    },
-    {
-        "merged": "com.mg4.control.app-mergeDebugResources-47:/layout/fragment_profile.xml",
-        "source": "com.mg4.control.app-main-50:/layout/fragment_profile.xml"
     }
 ]

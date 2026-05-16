@@ -172,6 +172,14 @@ class MG4ControlService : Service() {
     private fun executeToggle(action: ShortcutAction, pressKey: String = "") {
         val prefs = getSharedPreferences(PREFS_SHORTCUTS, MODE_PRIVATE)
 
+        // PROFILE_PICKER : overlay flottant au-dessus du launcher — aucun toggle d'état
+        if (action == ShortcutAction.PROFILE_PICKER) {
+            Handler(Looper.getMainLooper()).post {
+                ProfilePickerOverlay.show(this@MG4ControlService)
+            }
+            return
+        }
+
         // APPLY_PROFILE : action directe — pas de toggle d'état, chaque pression applique le profil
         if (action == ShortcutAction.APPLY_PROFILE) {
             val profileId = prefs.getString("shortcut_${pressKey}_profile_id", null) ?: return
@@ -271,46 +279,88 @@ class MG4ControlService : Service() {
 
         val pm = ProfileManager(applicationContext)
 
-        // [BT-PROFILES] Cherche un profil BT parmi les appareils déjà connus en mémoire
-        val btProfile = BluetoothProfileManager.getConnectedMacs()
-            .firstNotNullOfOrNull { mac -> pm.getProfileForBtDevice(mac) }
+        // [BT-PROFILES] Cherche tous les profils BT parmi les appareils déjà connus en mémoire
+        val btProfiles = BluetoothProfileManager.getConnectedMacs()
+            .mapNotNull { mac -> pm.getProfileForBtDevice(mac) }
+            .distinctBy { it.id }
 
-        if (btProfile != null) {
-            AppLogger.i(TAG, "[BT] Profil BT '${btProfile.name}' trouvé au démarrage — en attente Katman1")
-            MG4Hardware.whenKatman1Ready {
-                ProfileApplier.apply(btProfile) { ok ->
-                    AppLogger.i(TAG, "[BT] Profil '${btProfile.name}' appliqué — ok=$ok")
+        when {
+            btProfiles.size >= 2 -> {
+                // Conflit BT : plusieurs appareils ont un profil associé → popup de sélection
+                AppLogger.i(TAG, "[BT] ${btProfiles.size} profils BT en conflit — popup de sélection")
+                MG4Hardware.whenKatman1Ready {
+                    ProfilePickerOverlay.show(
+                        context      = applicationContext,
+                        profiles     = btProfiles,
+                        onAutoDismiss = {
+                            // Timeout sans sélection → applique le 1er profil (comportement historique)
+                            CoroutineScope(Dispatchers.IO).launch {
+                                AppLogger.i(TAG, "[BT] Timeout → fallback profil '${btProfiles[0].name}'")
+                                ProfileApplier.apply(btProfiles[0]) { ok ->
+                                    AppLogger.i(TAG, "[BT] Fallback '${btProfiles[0].name}' — ok=$ok")
+                                }
+                            }
+                        }
+                    )
                 }
+                return
             }
-            return
+            btProfiles.size == 1 -> {
+                AppLogger.i(TAG, "[BT] Profil BT '${btProfiles[0].name}' trouvé au démarrage — en attente Katman1")
+                MG4Hardware.whenKatman1Ready {
+                    ProfileApplier.apply(btProfiles[0]) { ok ->
+                        AppLogger.i(TAG, "[BT] Profil '${btProfiles[0].name}' appliqué — ok=$ok")
+                    }
+                }
+                return
+            }
         }
 
         // [BT-PROFILES] Fallback : requête HFP async (cas téléphone connecté avant démarrage service)
         BluetoothProfileManager.checkConnectedHfpDevices(applicationContext) { devices ->
-            val hfpProfile = devices.firstNotNullOfOrNull { dev ->
-                pm.getProfileForBtDevice(dev.address)
-            }
-            if (hfpProfile != null) {
-                AppLogger.i(TAG, "[BT-HFP] Profil '${hfpProfile.name}' trouvé via HFP — en attente Katman1")
-                MG4Hardware.whenKatman1Ready {
-                    ProfileApplier.apply(hfpProfile) { ok ->
-                        AppLogger.i(TAG, "[BT-HFP] Profil '${hfpProfile.name}' appliqué — ok=$ok")
+            val hfpProfiles = devices.mapNotNull { dev -> pm.getProfileForBtDevice(dev.address) }
+                .distinctBy { it.id }
+
+            when {
+                hfpProfiles.size >= 2 -> {
+                    AppLogger.i(TAG, "[BT-HFP] ${hfpProfiles.size} profils en conflit — popup")
+                    MG4Hardware.whenKatman1Ready {
+                        ProfilePickerOverlay.show(
+                            context       = applicationContext,
+                            profiles      = hfpProfiles,
+                            onAutoDismiss = {
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    AppLogger.i(TAG, "[BT-HFP] Timeout → fallback '${hfpProfiles[0].name}'")
+                                    ProfileApplier.apply(hfpProfiles[0]) { ok ->
+                                        AppLogger.i(TAG, "[BT-HFP] Fallback appliqué — ok=$ok")
+                                    }
+                                }
+                            }
+                        )
                     }
                 }
-                return@checkConnectedHfpDevices
-            }
-
-            // Aucun match BT → profil par défaut
-            val defaultProfile = pm.getDefaultProfile()
-            if (defaultProfile == null) {
-                AppLogger.i(TAG, "Aucun profil par défaut défini — skip")
-                return@checkConnectedHfpDevices
-            }
-            AppLogger.i(TAG, "Profil par défaut '${defaultProfile.name}' — en attente Katman1")
-            MG4Hardware.whenKatman1Ready {
-                AppLogger.i(TAG, "Hardware prêt → application du profil '${defaultProfile.name}'")
-                ProfileApplier.apply(defaultProfile) { ok ->
-                    AppLogger.i(TAG, "Profil '${defaultProfile.name}' appliqué — ok=$ok")
+                hfpProfiles.size == 1 -> {
+                    AppLogger.i(TAG, "[BT-HFP] Profil '${hfpProfiles[0].name}' trouvé via HFP — en attente Katman1")
+                    MG4Hardware.whenKatman1Ready {
+                        ProfileApplier.apply(hfpProfiles[0]) { ok ->
+                            AppLogger.i(TAG, "[BT-HFP] Profil '${hfpProfiles[0].name}' appliqué — ok=$ok")
+                        }
+                    }
+                }
+                else -> {
+                    // Aucun match BT → profil par défaut
+                    val defaultProfile = pm.getDefaultProfile()
+                    if (defaultProfile == null) {
+                        AppLogger.i(TAG, "Aucun profil par défaut défini — skip")
+                        return@checkConnectedHfpDevices
+                    }
+                    AppLogger.i(TAG, "Profil par défaut '${defaultProfile.name}' — en attente Katman1")
+                    MG4Hardware.whenKatman1Ready {
+                        AppLogger.i(TAG, "Hardware prêt → application du profil '${defaultProfile.name}'")
+                        ProfileApplier.apply(defaultProfile) { ok ->
+                            AppLogger.i(TAG, "Profil '${defaultProfile.name}' appliqué — ok=$ok")
+                        }
+                    }
                 }
             }
         }
@@ -379,29 +429,49 @@ class MG4ControlService : Service() {
 
         val pm = ProfileManager(applicationContext)
 
-        // [BT-PROFILES] Cherche un profil BT parmi les appareils connectés
-        val btProfile = BluetoothProfileManager.getConnectedMacs()
-            .firstNotNullOfOrNull { mac -> pm.getProfileForBtDevice(mac) }
+        // [BT-PROFILES] Cherche tous les profils BT parmi les appareils connectés
+        val btProfiles = BluetoothProfileManager.getConnectedMacs()
+            .mapNotNull { mac -> pm.getProfileForBtDevice(mac) }
+            .distinctBy { it.id }
 
-        if (btProfile != null) {
-            AppLogger.i(TAG, "IGNITION [BT] → application du profil '${btProfile.name}'")
-            MG4Hardware.whenKatman1Ready {
-                ProfileApplier.apply(btProfile) { ok ->
-                    AppLogger.i(TAG, "IGNITION [BT] → profil '${btProfile.name}' appliqué — ok=$ok")
+        when {
+            btProfiles.size >= 2 -> {
+                AppLogger.i(TAG, "IGNITION [BT] → ${btProfiles.size} profils en conflit — popup")
+                MG4Hardware.whenKatman1Ready {
+                    ProfilePickerOverlay.show(
+                        context       = applicationContext,
+                        profiles      = btProfiles,
+                        onAutoDismiss = {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                AppLogger.i(TAG, "IGNITION [BT] Timeout → fallback '${btProfiles[0].name}'")
+                                ProfileApplier.apply(btProfiles[0]) { ok ->
+                                    AppLogger.i(TAG, "IGNITION [BT] Fallback appliqué — ok=$ok")
+                                }
+                            }
+                        }
+                    )
                 }
             }
-            return
-        }
-
-        // Aucun match BT → profil par défaut
-        val defaultProfile = pm.getDefaultProfile() ?: run {
-            AppLogger.i(TAG, "IGNITION → aucun profil par défaut, skip")
-            return
-        }
-        AppLogger.i(TAG, "IGNITION → application du profil par défaut '${defaultProfile.name}'")
-        MG4Hardware.whenKatman1Ready {
-            ProfileApplier.apply(defaultProfile) { ok ->
-                AppLogger.i(TAG, "IGNITION → profil '${defaultProfile.name}' appliqué — ok=$ok")
+            btProfiles.size == 1 -> {
+                AppLogger.i(TAG, "IGNITION [BT] → application du profil '${btProfiles[0].name}'")
+                MG4Hardware.whenKatman1Ready {
+                    ProfileApplier.apply(btProfiles[0]) { ok ->
+                        AppLogger.i(TAG, "IGNITION [BT] → profil '${btProfiles[0].name}' appliqué — ok=$ok")
+                    }
+                }
+            }
+            else -> {
+                // Aucun match BT → profil par défaut
+                val defaultProfile = pm.getDefaultProfile() ?: run {
+                    AppLogger.i(TAG, "IGNITION → aucun profil par défaut, skip")
+                    return
+                }
+                AppLogger.i(TAG, "IGNITION → application du profil par défaut '${defaultProfile.name}'")
+                MG4Hardware.whenKatman1Ready {
+                    ProfileApplier.apply(defaultProfile) { ok ->
+                        AppLogger.i(TAG, "IGNITION → profil '${defaultProfile.name}' appliqué — ok=$ok")
+                    }
+                }
             }
         }
     }

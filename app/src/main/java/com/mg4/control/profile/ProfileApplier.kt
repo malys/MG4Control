@@ -62,9 +62,13 @@ object ProfileApplier {
                     val tsrOk = MG4Hardware.setTsrMode(profile.tsrEnabled)
                     AppLogger.i(TAG, "  TsrEnabled=${profile.tsrEnabled} → $tsrOk")
 
-                    // Alertes sonores via binder direct
+                    // Alertes sonores via VSM
+                    // Délai de 150ms entre les deux écritures : le middleware véhicule traite les
+                    // propriétés dans une file avec debounce — deux écritures trop rapides font que
+                    // seule la dernière est validée. 150ms garantit que la première est traitée.
                     val oaOk = MG4Hardware.setOverspeedAlarm(profile.overspeedAlarm)
                     AppLogger.i(TAG, "  OverspeedAlarm=${profile.overspeedAlarm} → $oaOk")
+                    try { Thread.sleep(150) } catch (_: InterruptedException) {}
                     val stOk = MG4Hardware.setSpeedLimitTone(profile.speedLimitTone)
                     AppLogger.i(TAG, "  SpeedLimitTone=${profile.speedLimitTone} → $stOk")
 
@@ -109,8 +113,12 @@ object ProfileApplier {
                     }
 
                     // Alertes vitesse — appliquées APRÈS le TSR
+                    // Délai de 150ms entre les deux écritures : le middleware véhicule (VPM) traite
+                    // les propriétés dans une file avec debounce — deux écritures trop rapides font
+                    // que seule la dernière est validée. 150ms garantit que la première est traitée.
                     val oaOk = MG4Hardware.setOverspeedAlarm(profile.overspeedAlarm)
                     AppLogger.i(TAG, "  OverspeedAlarm=${profile.overspeedAlarm} → $oaOk")
+                    try { Thread.sleep(150) } catch (_: InterruptedException) {}
                     val stOk = MG4Hardware.setSpeedLimitTone(profile.speedLimitTone)
                     AppLogger.i(TAG, "  SpeedLimitTone=${profile.speedLimitTone} → $stOk")
 

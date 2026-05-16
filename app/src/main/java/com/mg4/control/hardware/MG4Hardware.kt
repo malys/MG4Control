@@ -963,6 +963,24 @@ object MG4Hardware {
         }
     }
 
+    /**
+     * Appelle une méthode void sur sVsm par réflexion.
+     * Contrairement à callVsm(), retourne true si la méthode existe et s'exécute sans exception,
+     * même si invoke() retourne null (comportement normal pour les méthodes void).
+     * Retourne false si sVsm est null ou si une exception est levée (méthode introuvable, etc.).
+     */
+    private fun callVsmVoid(methodName: String, vararg args: Any?): Boolean {
+        val vsm = sVsm ?: return false
+        return try {
+            val types = args.map { if (it is Int) Int::class.javaPrimitiveType!! else it!!.javaClass }.toTypedArray()
+            vsm.javaClass.getMethod(methodName, *types).invoke(vsm, *args)
+            true   // méthode trouvée et appelée sans exception → succès
+        } catch (e: Exception) {
+            AppLogger.w(TAG, "  VSM: $methodName() exc: ${e.message}")
+            false
+        }
+    }
+
     private fun getIntPropertyVpm(propId: Int): Int {
         val vpm = sVpm ?: return -1
         return try {
@@ -1229,32 +1247,63 @@ object MG4Hardware {
     // -------------------------------------------------------------------------
 
     fun isOverspeedAlarmOn(): Boolean {
-        if (FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI132)
+        if (FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI132) {
+            // Priorité VSM (CarVehicleSettingClient) — confirmé dans smali SWI132
+            // getOverSpeedSoundMode() : 0=OFF, 1/2/3=ON
+            val vsm = callVsm("getOverSpeedSoundMode") as? Int
+            if (vsm != null) {
+                AppLogger.d(TAG, "  SWI132 overspeed GET via VSM → $vsm")
+                return vsm > 0
+            }
             return swi132BinderGet(VSM132_TX_GET_OVERSPEED) == 1
+        }
         return getIntPropertyVpm(PROP_OVERSPEED_ALARM) > 0
     }
+
     fun setOverspeedAlarm(on: Boolean): Boolean {
         if (logEnabled) AppLogger.i(TAG, "setOverspeedAlarm → $on")
         if (FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI132) {
-            // Toggle indépendant — UNIQUEMENT TX 0x128 (setOverSpeedSoundMode), pas de TX 0x057
-            val binderOk = swi132BinderSet(VSM132_TX_OVERSPEED_SOUND, if (on) 1 else 0)
-            if (binderOk) return true
-            AppLogger.w(TAG, "  SWI132 overspeed binder failed — fallback VPM")
+            // Essai 1 : CarVehicleSettingClient — setOverSpeedSoundMode(I)V est une méthode void ;
+            // callVsmVoid() détecte le succès même quand invoke() retourne null (comportement normal).
+            if (callVsmVoid("setOverSpeedSoundMode", if (on) 1 else 0)) {
+                AppLogger.i(TAG, "  SWI132 overspeed → VSM OK")
+                return true
+            }
+            AppLogger.w(TAG, "  SWI132 overspeed: VSM failed — essai binder")
+            // Essai 2 : binder direct (TX 0x128, bloqué SELinux sur certains builds)
+            if (swi132BinderSet(VSM132_TX_OVERSPEED_SOUND, if (on) 1 else 0)) return true
+            AppLogger.w(TAG, "  SWI132 overspeed: tous les paths ont échoué")
+            return false
         }
         return setIntPropertyVpm(PROP_OVERSPEED_ALARM, if (on) 1 else 0)
     }
 
     fun isSpeedLimitToneOn(): Boolean {
-        if (FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI132)
+        if (FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI132) {
+            // getSpeedLimitSoundMode() : 0=OFF, valeur positive=ON
+            val vsm = callVsm("getSpeedLimitSoundMode") as? Int
+            if (vsm != null) {
+                AppLogger.d(TAG, "  SWI132 speedLimit GET via VSM → $vsm")
+                return vsm > 0
+            }
             return swi132BinderGet(VSM132_TX_GET_SPEED_LIMIT) == 1
+        }
         return getIntPropertyVpm(PROP_SPEED_LIMIT_TONE) > 0
     }
+
     fun setSpeedLimitTone(on: Boolean): Boolean {
         if (logEnabled) AppLogger.i(TAG, "setSpeedLimitTone → $on")
         if (FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI132) {
-            val binderOk = swi132BinderSet(VSM132_TX_SPEED_LIMIT, if (on) 1 else 0)
-            if (binderOk) return true
-            AppLogger.w(TAG, "  SWI132 speedLimitTone binder failed — fallback VPM")
+            // Essai 1 : CarVehicleSettingClient — setSpeedLimitSoundMode(I)V (méthode void)
+            if (callVsmVoid("setSpeedLimitSoundMode", if (on) 1 else 0)) {
+                AppLogger.i(TAG, "  SWI132 speedLimit → VSM OK")
+                return true
+            }
+            AppLogger.w(TAG, "  SWI132 speedLimit: VSM failed — essai binder")
+            // Essai 2 : binder direct (TX 0x12a)
+            if (swi132BinderSet(VSM132_TX_SPEED_LIMIT, if (on) 1 else 0)) return true
+            AppLogger.w(TAG, "  SWI132 speedLimit: tous les paths ont échoué")
+            return false
         }
         return setIntPropertyVpm(PROP_SPEED_LIMIT_TONE, if (on) 1 else 0)
     }
@@ -1281,30 +1330,31 @@ object MG4Hardware {
         return (callVsm(method) as? Int) ?: -1
     }
 
-    /** SWI68/SWI165 : setAccTjaMode(I)   SWI69/SWI131/SWI132 : setAccTjaState(I) */
+    /** SWI68/SWI165 : setAccTjaMode(I)V   SWI69/SWI131/SWI132 : setAccTjaState(I)V — void */
     fun setAccTjaMode(mode: Int): Boolean {
         val useNewApi = FirmwareInfo.isNewGenVsm() || FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI132
         val method = if (useNewApi) "setAccTjaState" else "setAccTjaMode"
         if (logEnabled) AppLogger.i(TAG, "$method → 0x${mode.toString(16)}")
-        callVsm(method, mode) ?: return false
-        return true
+        return callVsmVoid(method, mode)   // void method — callVsmVoid évite le faux-négatif
     }
 
     /**
-     * SWI68 : getLaneKeepingWarningSound()   SWI69/SWI131 : getLasWarningSound()
+     * SWI68/SWI165 : getLaneKeepingWarningSound()
+     * SWI69/SWI131/SWI132 : getLasWarningSound()   (confirmé dans smali SWI132)
      * Valeurs : 2=ON / 1=OFF
      */
     fun isSoundWarningOn(): Boolean {
-        val method = if (FirmwareInfo.isNewGenVsm()) "getLasWarningSound" else "getLaneKeepingWarningSound"
+        val method = if (FirmwareInfo.isNewGenVsm() || FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI132)
+            "getLasWarningSound" else "getLaneKeepingWarningSound"
         return ((callVsm(method) as? Int) ?: 1) == 2
     }
 
-    /** SWI68 : setLaneKeepingWarningSound(I)   SWI69/SWI131 : setLasWarningSound(I) */
+    /** SWI68 : setLaneKeepingWarningSound(I)   SWI69/SWI131/SWI132 : setLasWarningSound(I) — void */
     fun setSoundWarning(on: Boolean): Boolean {
         if (logEnabled) AppLogger.i(TAG, "setSoundWarning → $on")
-        val method = if (FirmwareInfo.isNewGenVsm()) "setLasWarningSound" else "setLaneKeepingWarningSound"
-        callVsm(method, if (on) 2 else 1) ?: return false
-        return true
+        val method = if (FirmwareInfo.isNewGenVsm() || FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI132)
+            "setLasWarningSound" else "setLaneKeepingWarningSound"
+        return callVsmVoid(method, if (on) 2 else 1)
     }
 
     // ── AEB — Système anti-collision avant ──────────────────────────────────
@@ -1330,20 +1380,22 @@ object MG4Hardware {
         if (logEnabled) AppLogger.i(TAG, "setAebEnabled → $on")
         return when {
             // SWI69 / SWI131 / SWI132 — CarVehicleSettingClient (même API)
+            // setFcwState(I)V et setFcwAutoBrakeMode(I)V sont des méthodes VOID →
+            // callVsmVoid() est utilisé pour éviter le faux-négatif de callVsm() != null.
             FirmwareInfo.isNewGenVsm() || FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI132 -> {
                 // OFF : setFcwState(1) + setFcwAutoBrakeMode(1) + setFcwSensitivity(0)
                 // ON  : setFcwState(2) + setFcwAutoBrakeMode(curMode)
                 // Le launcher conditionne son affichage à fcwState==1 AND autoBreakState==1
                 // → sans setFcwAutoBrakeMode, son switch reste ON même quand l'AEB est désactivé
                 if (on) {
-                    val sOk = callVsm("setFcwState", 2) != null
+                    val sOk = callVsmVoid("setFcwState", 2)
                     val curMode = (callVsm("getFcwAutoBrakeMode") as? Int) ?: 1
-                    val mOk = callVsm("setFcwAutoBrakeMode", curMode) != null
+                    val mOk = callVsmVoid("setFcwAutoBrakeMode", curMode)
                     sOk || mOk
                 } else {
-                    callVsm("setFcwState", 1)
-                    callVsm("setFcwAutoBrakeMode", 1)
-                    callVsm("setFcwSensitivity", 0) != null
+                    callVsmVoid("setFcwState", 1)
+                    callVsmVoid("setFcwAutoBrakeMode", 1)
+                    callVsmVoid("setFcwSensitivity", 0)
                 }
             }
             FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI68 ||
@@ -1351,8 +1403,9 @@ object MG4Hardware {
                 // SWI68 / SWI165 : setFcwAlarmMode(2=ON / 1=OFF) + setFcwAutoBrakeMode(1) si OFF
                 // Vérifié dans SafeSettingsRepository SWI165 — même API que SWI68,
                 // setAutoEmergencyBraking() n'est jamais utilisé par l'app officielle.
-                if (on) callVsm("setFcwAlarmMode", 2) != null
-                else { (callVsm("setFcwAlarmMode", 1) != null) or (callVsm("setFcwAutoBrakeMode", 1) != null) }
+                // setFcwAlarmMode(I)V et setFcwAutoBrakeMode(I)V sont void → callVsmVoid()
+                if (on) callVsmVoid("setFcwAlarmMode", 2)
+                else { callVsmVoid("setFcwAlarmMode", 1) or callVsmVoid("setFcwAutoBrakeMode", 1) }
             }
             else -> setIntPropertyCPM(PROP_AEB_SWITCH, AREA_GLOBAL, if (on) 0x2 else 0x1)
         }
@@ -1376,11 +1429,12 @@ object MG4Hardware {
         if (logEnabled) AppLogger.i(TAG, "setAebMode → $mode")
         return when {
             // SWI69 / SWI131 / SWI132 — CarVehicleSettingClient : fixer mode puis activer
+            // setFcwAutoBrakeMode(I)V et setFcwState(I)V sont void → callVsmVoid()
             FirmwareInfo.isNewGenVsm() || FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI132 -> {
                 // L'ordre : 1) fixer le mode, 2) activer (commit le mode).
                 val modeVal = if (mode == AebMode.ALARM_BRAKE) 2 else 1
-                val mOk = callVsm("setFcwAutoBrakeMode", modeVal) != null
-                val sOk = callVsm("setFcwState", 2) != null
+                val mOk = callVsmVoid("setFcwAutoBrakeMode", modeVal)
+                val sOk = callVsmVoid("setFcwState", 2)
                 mOk || sOk
             }
             FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI68 ||
@@ -1425,9 +1479,10 @@ object MG4Hardware {
      * SWI69/SWI131   : CarVehicleSettingClient.setFcwSensitivity(I)
      */
     fun setAebSensitivity(level: Int): Boolean {
+        // setFcwSensitivity(I)V est void → callVsmVoid() pour éviter le faux-négatif
         return if (FirmwareInfo.isVsmBased()) {
             AppLogger.i(TAG, "  AEB SET sensitivity=$level via VSM")
-            callVsm("setFcwSensitivity", level) != null
+            callVsmVoid("setFcwSensitivity", level)
         } else {
             AppLogger.i(TAG, "  AEB SET sensitivity=$level via VPM")
             setIntPropertyVpmRecovery(PROP_AEB_SENSITIVITY, level)
@@ -1674,7 +1729,12 @@ object MG4Hardware {
 
     fun isTsrOn(): Boolean = when {
         FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI132 ->
-            swi132BinderGet(VSM132_TX_GET_SLIF) == 1
+            // Priorité CarVehicleSettingClient (binder vehiclesetting bloqué SELinux)
+            // Convention identique SWI69/SWI131 : 0=ON, 1=OFF
+            (callVsm("getSLIFWarningState") as? Int)?.let { raw ->
+                AppLogger.d(TAG, "  SWI132 TSR GET via VSM → $raw")
+                raw == 0
+            } ?: (swi132BinderGet(VSM132_TX_GET_SLIF) == 1)  // fallback binder (rarement accessible)
         FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI133 ->
             getIntPropertyVpm(PROP_TSR_MODE) > 0
         FirmwareInfo.isNewGenVsm() ->   // SWI69 + SWI131 — convention inversée : 0=ON, 1=OFF
@@ -1688,8 +1748,16 @@ object MG4Hardware {
         AppLogger.i(TAG, "setTsrMode → $enabled")
         return when {
             FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI132 -> {
-                // SWI132 : SLIF via binder direct (TX 0x057) — même registre que le getter TX 0x058
-                swi132BinderSet(VSM132_TX_SLIF_WARNING, if (enabled) 1 else 0)
+                // Priorité CarVehicleSettingClient — setSLIFWarningState(I)V confirmé dans smali SWI132
+                // Convention identique SWI69/SWI131 : 0=activer, 1=désactiver
+                if (callVsmVoid("setSLIFWarningState", if (enabled) 0 else 1)) {
+                    AppLogger.i(TAG, "  SWI132 TSR → VSM OK")
+                    true
+                } else {
+                    // Fallback binder direct (bloqué SELinux sur la plupart des builds SWI132)
+                    AppLogger.w(TAG, "  SWI132 TSR: VSM failed — essai binder TX 0x057")
+                    swi132BinderSet(VSM132_TX_SLIF_WARNING, if (enabled) 1 else 0)
+                }
             }
             FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI133 -> {
                 // SWI133 : le firmware remet OVERSPEED et SPEED_TONE à ON quand le SLIF est réactivé
@@ -1716,8 +1784,8 @@ object MG4Hardware {
                 ok
             }
             FirmwareInfo.isNewGenVsm() -> {   // SWI69 + SWI131 — convention inversée : 0=activer, 1=désactiver
-                callVsm("setSLIFWarningState", if (enabled) 0 else 1) ?: return false
-                true
+                // setSLIFWarningState(I)V est void → callVsmVoid()
+                callVsmVoid("setSLIFWarningState", if (enabled) 0 else 1)
             }
             FirmwareInfo.isVsmBased() -> {    // SWI68 + SWI165
                 // L'avertissement sonore pourrait être remis à ON lors de la réactivation du TSR
@@ -1728,7 +1796,8 @@ object MG4Hardware {
                     prefs?.edit()?.putBoolean("tsr_saved_sound_warning", soundOn)?.apply()
                     AppLogger.i(TAG, "  TSR OFF — sauvegarde soundWarning=$soundOn")
                 }
-                callVsm("setSpeedAsstSlifWarning", if (enabled) 1 else 0) ?: return false
+                // setSpeedAsstSlifWarning(I)V est void → callVsmVoid()
+                if (!callVsmVoid("setSpeedAsstSlifWarning", if (enabled) 1 else 0)) return false
                 if (enabled) {
                     Thread.sleep(400)
                     val savedSound = prefs?.getBoolean("tsr_saved_sound_warning", true) ?: true
@@ -1739,6 +1808,20 @@ object MG4Hardware {
             }
             else -> false
         }
+    }
+
+    /**
+     * SWI133 : retourne (overspeed, speedTone) tels que sauvegardés lors du dernier TSR OFF.
+     * Utilisé par l'UI pour mettre à jour les switches après la réactivation du TSR, sans
+     * relire le hardware (le VPM a une latence de propagation qui renverrait encore ON
+     * pendant ~500–1000ms après les écritures internes de setTsrMode).
+     */
+    fun savedTsrAlerts(): Pair<Boolean, Boolean> {
+        val prefs = sAppContext?.getSharedPreferences("mg4_settings", 0)
+        return Pair(
+            prefs?.getBoolean("tsr_saved_overspeed",  true) ?: true,
+            prefs?.getBoolean("tsr_saved_speed_tone", true) ?: true
+        )
     }
 
     // -------------------------------------------------------------------------
@@ -1761,12 +1844,12 @@ object MG4Hardware {
             FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI133 ->
                 setIntPropertyVpmRecovery(PROP_ENERGY_SAVING, if (enabled) 1 else 0)
             FirmwareInfo.isNewGenVsm() || FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI132 -> {  // SWI69 + SWI131 + SWI132
-                callVsm("setEnduranceMode", if (enabled) 1 else 0) ?: return false
-                true
+                // setEnduranceMode(I)V est void → callVsmVoid()
+                callVsmVoid("setEnduranceMode", if (enabled) 1 else 0)
             }
             FirmwareInfo.isVsmBased() -> {   // SWI68 + SWI165
-                callVsm("setLongerEndurance", if (enabled) 1 else 0) ?: return false
-                true
+                // setLongerEndurance(I)V est void → callVsmVoid()
+                callVsmVoid("setLongerEndurance", if (enabled) 1 else 0)
             }
             else -> false
         }
@@ -2341,44 +2424,110 @@ object MG4Hardware {
             sb.appendLine()
 
             // ── CarVehicleSettingClient (Katman4) ─────────────────────────
-            sb.appendLine("── SWI132 CarVehicleSettingClient (Katman4) ──")
+            sb.appendLine("── SWI132 CarVehicleSettingClient (sVsm=${if (sVsm != null) "✓" else "✗ null"}) ──")
+            fun vsmGet(method: String): Int = try {
+                (callVsm(method) as? Int) ?: -1
+            } catch (_: Exception) { -1 }
+            fun fmtVsm(v: Int, ok: String) = if (v >= 0) "$v → $ok" else "-1 ← ERREUR (méthode absente ou sVsm null)"
+
+            // ACC/TJA
             val accTjaRaw = getAccTjaMode()
-            val accTjaLabel = when (accTjaRaw) {
+            sb.appendLine("getAccTjaState   : ${when (accTjaRaw) {
                 Swi68Mode.OFF -> "4 → OFF"
                 Swi68Mode.ACC -> "1 → ACC"
                 Swi68Mode.TJA -> "2 → TJA"
-                -1            -> "-1 ← ERREUR (Katman4 non prêt ?)"
+                -1            -> "-1 ← ERREUR"
                 else          -> "$accTjaRaw → ?"
-            }
-            sb.appendLine("getAccTjaState   : $accTjaLabel")
-            val fcwRaw = try {
-                (callVsm("getFcwState") as? Int) ?: -1
-            } catch (_: Exception) { -1 }
+            }}")
+
+            // AEB
+            val fcwRaw = vsmGet("getFcwState")
             sb.appendLine("getFcwState      : ${when (fcwRaw) {
-                2    -> "2 → AEB ON"
-                1    -> "1 → AEB OFF"
-                -1   -> "-1 ← ERREUR"
-                else -> "$fcwRaw → ?"
+                2 -> "2 → AEB ON" ; 1 -> "1 → AEB OFF" ; -1 -> "-1 ← ERREUR" ; else -> "$fcwRaw → ?"
             }}")
-            val enduranceRaw = try {
-                (callVsm("getEnduranceMode") as? Int) ?: -1
-            } catch (_: Exception) { -1 }
-            sb.appendLine("getEnduranceMode : ${when (enduranceRaw) {
-                1    -> "1 → Éco ON"
-                0    -> "0 → Éco OFF"
-                -1   -> "-1 ← ERREUR"
-                else -> "$enduranceRaw → ?"
+            val fcwModeRaw = vsmGet("getFcwAutoBrakeMode")
+            sb.appendLine("getFcwAutoBreak  : ${when (fcwModeRaw) {
+                1 -> "1 → Alerte" ; 2 -> "2 → Al.+Frein" ; -1 -> "-1 ← ERREUR" ; else -> "$fcwModeRaw → ?"
             }}")
-            val lasRaw = try {
-                (callVsm("getLasMode") as? Int) ?: -1
-            } catch (_: Exception) { -1 }
+            val fcwSenRaw = vsmGet("getFcwSensitivity")
+            sb.appendLine("getFcwSensitiv.  : ${when (fcwSenRaw) {
+                1 -> "1 → Faible" ; 2 -> "2 → Standard" ; 3 -> "3 → Élevé" ; -1 -> "-1 ← ERREUR" ; else -> "$fcwSenRaw → ?"
+            }}")
+
+            // ELK
+            val lasRaw = vsmGet("getLasMode")
             sb.appendLine("getLasMode (ELK) : ${when (lasRaw) {
-                1    -> "1 → OFF"
-                2    -> "2 → Alerte"
-                3    -> "3 → Assist"
-                5    -> "5 → Urgence"
-                -1   -> "-1 ← ERREUR"
-                else -> "$lasRaw → ?"
+                1 -> "1 → OFF" ; 2 -> "2 → Alerte" ; 3 -> "3 → Assist" ; 5 -> "5 → Urgence"
+                -1 -> "-1 ← ERREUR" ; else -> "$lasRaw → ?"
+            }}")
+
+            // ── ALERTES via VSM (nouveau path — confirmé dans smali SWI132) ─
+            sb.appendLine()
+            sb.appendLine("── SWI132 Alertes via VSM (ICarVehicleSettingService) ──")
+            val vsmOverspeed = vsmGet("getOverSpeedSoundMode")
+            sb.appendLine("getOverSpeedSoundMode  : ${when {
+                vsmOverspeed < 0  -> "-1 ← ERREUR (méthode absente ?)"
+                vsmOverspeed == 0 -> "0 → OFF"
+                else              -> "$vsmOverspeed → ON"
+            }}")
+            val vsmSpeedLimit = vsmGet("getSpeedLimitSoundMode")
+            sb.appendLine("getSpeedLimitSoundMode : ${when {
+                vsmSpeedLimit < 0  -> "-1 ← ERREUR (méthode absente ?)"
+                vsmSpeedLimit == 0 -> "0 → OFF"
+                else               -> "$vsmSpeedLimit → ON"
+            }}")
+
+            // TSR / SLIF
+            val vsmSlif = vsmGet("getSLIFWarningState")
+            sb.appendLine("getSLIFWarningState    : ${when {
+                vsmSlif < 0 -> "-1 ← ERREUR (méthode absente ?)"
+                vsmSlif == 0 -> "0 → TSR ON (convention SWI69)"
+                vsmSlif == 1 -> "1 → TSR OFF (convention SWI69)"
+                else -> "$vsmSlif → ?"
+            }}")
+
+            // Son d'alerte de voie (LAS)
+            val vsmLasSound = vsmGet("getLasWarningSound")
+            sb.appendLine("getLasWarningSound     : ${when {
+                vsmLasSound < 0 -> "-1 ← ERREUR (méthode absente ?)"
+                vsmLasSound == 2 -> "2 → ON"
+                vsmLasSound == 1 -> "1 → OFF"
+                else -> "$vsmLasSound → ?"
+            }}")
+
+            // Test SET round-trip via VSM (sans modifier l'état réel : on réécrit la valeur courante)
+            sb.appendLine()
+            sb.appendLine("── SWI132 SET round-trip via VSM ──")
+            if (vsmOverspeed >= 0) {
+                val setOk = callVsmVoid("setOverSpeedSoundMode", vsmOverspeed)
+                val verify = vsmGet("getOverSpeedSoundMode")
+                sb.appendLine("setOverSpeedSoundMode  : ${if (setOk) "✓" else "✗"} → relecture : $verify${
+                    if (setOk && verify == vsmOverspeed) " ✓ cohérent" else if (setOk) " ← valeur changée !" else ""}")
+            } else {
+                sb.appendLine("setOverSpeedSoundMode  : skip (GET KO)")
+            }
+            if (vsmSpeedLimit >= 0) {
+                val setOk = callVsmVoid("setSpeedLimitSoundMode", vsmSpeedLimit)
+                val verify = vsmGet("getSpeedLimitSoundMode")
+                sb.appendLine("setSpeedLimitSoundMode : ${if (setOk) "✓" else "✗"} → relecture : $verify${
+                    if (setOk && verify == vsmSpeedLimit) " ✓ cohérent" else if (setOk) " ← valeur changée !" else ""}")
+            } else {
+                sb.appendLine("setSpeedLimitSoundMode : skip (GET KO)")
+            }
+            if (vsmSlif >= 0) {
+                val setOk = callVsmVoid("setSLIFWarningState", vsmSlif)
+                val verify = vsmGet("getSLIFWarningState")
+                sb.appendLine("setSLIFWarningState    : ${if (setOk) "✓" else "✗"} → relecture : $verify${
+                    if (setOk && verify == vsmSlif) " ✓ cohérent" else if (setOk) " ← valeur changée !" else ""}")
+            } else {
+                sb.appendLine("setSLIFWarningState    : skip (GET KO)")
+            }
+
+            // Éco
+            val enduranceRaw = vsmGet("getEnduranceMode")
+            sb.appendLine()
+            sb.appendLine("getEnduranceMode : ${when (enduranceRaw) {
+                1 -> "1 → Éco ON" ; 0 -> "0 → Éco OFF" ; -1 -> "-1 ← ERREUR" ; else -> "$enduranceRaw → ?"
             }}")
             sb.appendLine()
         }

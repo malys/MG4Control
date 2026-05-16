@@ -84,6 +84,7 @@
     <string name="climate_steering_heat">Volant chauffant</string>
     <string name="console_clear">Effacer</string>
     <string name="console_title">⬛  Console MG4</string>
+    <string name="diag_clear_crash">Effacer le crash</string>
     <string name="diag_copied">Copié !</string>
     <string name="diag_copy">Copier</string>
     <string name="diag_loading">Analyse en cours…</string>
@@ -128,6 +129,8 @@
     <string name="nav_profiles">Profils</string>
     <string name="nav_settings">Réglages</string>
     <string name="nav_shortcuts">Raccourcis</string>
+    <string name="overlay_countdown">Fermeture dans %1$ds</string>
+    <string name="overlay_profile_title">Profils de conduite</string>
     <string name="profile_add">Nouveau profil</string>
     <string name="profile_applied">Profil appliqué : %s</string>
     <string name="profile_apply_now">Appliquer maintenant</string>
@@ -183,6 +186,7 @@
     <string name="shortcuts_action_open_app">Ouvrir MG4Control</string>
     <string name="shortcuts_action_open_custom_app">Lancer une application</string>
     <string name="shortcuts_action_overspeed">Alerte survitesse</string>
+    <string name="shortcuts_action_profile_picker">Sélecteur de profil (popup)</string>
     <string name="shortcuts_action_sound">Son</string>
     <string name="shortcuts_action_speed_limit">Alerte chgt vitesse</string>
     <string name="shortcuts_action_tsr">Panneaux (TSR)</string>

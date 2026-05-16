@@ -67,6 +67,7 @@ class DashboardFragment : Fragment() {
     private var switchOverspeed: Switch? = null
     private var switchSpeedTone: Switch? = null
     private var switchSoundWarning: Switch? = null
+    private var alertsGroupSwi133: View? = null
 
     // ── Page 0 — TSR + Économie d'énergie ───────────────────────────────────
     private var switchTsr: Switch? = null
@@ -258,6 +259,7 @@ class DashboardFragment : Fragment() {
         switchOverspeed    = view.findViewById(R.id.switch_overspeed)
         switchSpeedTone    = view.findViewById(R.id.switch_speed_tone)
         switchSoundWarning = view.findViewById(R.id.switch_sound_warning)
+        alertsGroupSwi133  = view.findViewById(R.id.alerts_group_swi133)
 
         // TSR + Économie d'énergie
         switchTsr       = view.findViewById(R.id.switch_tsr)
@@ -367,10 +369,61 @@ class DashboardFragment : Fragment() {
         // TSR — tous firmwares connus
         if (isKnown) {
             switchTsr?.setOnCheckedChangeListener { _, checked ->
-                if (!isRefreshing)
-                    MG4Hardware.whenKatman4Ready {
-                        CoroutineScope(Dispatchers.IO).launch { MG4Hardware.setTsrMode(checked) }
+                if (!isRefreshing) {
+                    val gen = FirmwareInfo.getGeneration()
+                    val hasTwoAlerts = gen == FirmwareInfo.Gen.SWI133 || gen == FirmwareInfo.Gen.SWI132
+                    // Mise à jour UI immédiate — pas besoin d'attendre le hardware :
+                    // TSR OFF → alertes forcées à OFF et section grisée (non modifiable)
+                    // TSR ON  → section ré-activée ; les valeurs réelles sont lues après le SET
+                    if (hasTwoAlerts) {
+                        if (!checked) {
+                            isRefreshing = true
+                            switchOverspeed?.isChecked = false
+                            switchSpeedTone?.isChecked = false
+                            isRefreshing = false
+                        }
+                        setAlertsSwi133Enabled(checked)
                     }
+                    MG4Hardware.whenKatman4Ready {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            MG4Hardware.setTsrMode(checked)
+                            if (checked && hasTwoAlerts) {
+                                when (gen) {
+                                    FirmwareInfo.Gen.SWI133 -> {
+                                        // Le firmware SWI133 remet overspeed/speedTone à ON dès que
+                                        // le TSR est activé. setTsrMode() les restaure ensuite via VPM,
+                                        // mais les écritures VPM ont une latence de propagation pouvant
+                                        // dépasser 500ms : lire le hardware ici renverrait encore ON.
+                                        // → On utilise directement les valeurs sauvegardées en prefs,
+                                        //   qui sont exactement ce que setTsrMode() vient de restaurer.
+                                        val (overspeed, speedTone) = MG4Hardware.savedTsrAlerts()
+                                        withContext(Dispatchers.Main) {
+                                            if (!isAdded) return@withContext
+                                            isRefreshing = true
+                                            switchOverspeed?.isChecked = overspeed
+                                            switchSpeedTone?.isChecked = speedTone
+                                            isRefreshing = false
+                                        }
+                                    }
+                                    FirmwareInfo.Gen.SWI132 -> {
+                                        // SWI132 : le TSR ne réinitialise pas overspeed/speedTone.
+                                        // La lecture VSM (CarVehicleSettingClient) est fiable sans latence.
+                                        val overspeed = MG4Hardware.isOverspeedAlarmOn()
+                                        val speedTone = MG4Hardware.isSpeedLimitToneOn()
+                                        withContext(Dispatchers.Main) {
+                                            if (!isAdded) return@withContext
+                                            isRefreshing = true
+                                            switchOverspeed?.isChecked = overspeed
+                                            switchSpeedTone?.isChecked = speedTone
+                                            isRefreshing = false
+                                        }
+                                    }
+                                    else -> {}
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -512,6 +565,21 @@ class DashboardFragment : Fragment() {
     }
 
     // ═════════════════════════════════════════════════════════════════════════
+    //  Helpers UI
+    // ═════════════════════════════════════════════════════════════════════════
+
+    /**
+     * SWI133 / SWI132 : active ou grise la section des 2 alertes sonores.
+     * Quand le TSR (RECO. PANNEAUX) est OFF, les alertes sont désactivées et non modifiables.
+     * L'alpha est appliqué sur le conteneur entier (labels + switches) pour un rendu cohérent.
+     */
+    private fun setAlertsSwi133Enabled(enabled: Boolean) {
+        alertsGroupSwi133?.alpha    = if (enabled) 1f else 0.4f
+        switchOverspeed?.isEnabled  = enabled
+        switchSpeedTone?.isEnabled  = enabled
+    }
+
+    // ═════════════════════════════════════════════════════════════════════════
     //  Refresh depuis le hardware
     // ═════════════════════════════════════════════════════════════════════════
 
@@ -586,6 +654,7 @@ class DashboardFragment : Fragment() {
             switchTsr?.isChecked          = tsrOn
             applyEnergySavingUI(energySaving)
             isRefreshing = false
+            setAlertsSwi133Enabled(tsrOn)   // grise les alertes si TSR est OFF
             applySwi133AdasUI(adasMode)
             applyAebModeButtonsEnabled(aebOn)
             if (aebMode > 0) applyAebModeUI(aebMode)
@@ -617,6 +686,7 @@ class DashboardFragment : Fragment() {
             switchTsr?.isChecked       = tsrOn
             applyEnergySavingUI(energySaving)
             isRefreshing = false
+            setAlertsSwi133Enabled(tsrOn)   // grise les alertes si TSR est OFF
             applySwi68AdasUI(mode)  // SWI132 partage les 3 boutons Off/ACC/TJA avec SWI68
             applyAebModeButtonsEnabled(aebOn)
             if (aebMode > 0) applyAebModeUI(aebMode)

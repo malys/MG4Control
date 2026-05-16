@@ -204,6 +204,11 @@ id iv_qr_code
 id iv_update_qr
 id nav_graph
 id nav_host_fragment
+id overlay_backdrop
+id overlay_btn_close
+id overlay_card
+id overlay_countdown
+id overlay_profiles_container
 id pager_dots
 id profileFragment
 id progress_bar
@@ -302,6 +307,7 @@ layout fragment_profile
 layout fragment_settings
 layout fragment_shortcuts
 layout item_profile
+layout overlay_profile_picker
 layout page_dashboard_elk
 layout page_dashboard_main
 menu bottom_nav_menu
@@ -359,6 +365,7 @@ string climate_seat_right
 string climate_steering_heat
 string console_clear
 string console_title
+string diag_clear_crash
 string diag_copied
 string diag_copy
 string diag_loading
@@ -403,6 +410,8 @@ string nav_drive
 string nav_profiles
 string nav_settings
 string nav_shortcuts
+string overlay_countdown
+string overlay_profile_title
 string profile_add
 string profile_applied
 string profile_apply_now
@@ -458,6 +467,7 @@ string shortcuts_action_one_pedal
 string shortcuts_action_open_app
 string shortcuts_action_open_custom_app
 string shortcuts_action_overspeed
+string shortcuts_action_profile_picker
 string shortcuts_action_sound
 string shortcuts_action_speed_limit
 string shortcuts_action_tsr

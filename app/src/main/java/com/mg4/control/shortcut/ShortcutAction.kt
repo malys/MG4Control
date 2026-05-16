@@ -12,7 +12,8 @@ enum class ShortcutAction(val id: Int) {
     OPEN_CUSTOM_APP(8),
     ENERGY_SAVING_TOGGLE(9),
     TSR_TOGGLE(10),
-    APPLY_PROFILE(11);
+    APPLY_PROFILE(11),
+    PROFILE_PICKER(12);
 
     companion object {
         fun fromId(id: Int) = values().firstOrNull { it.id == id } ?: NONE

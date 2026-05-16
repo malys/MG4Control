@@ -30,6 +30,8 @@ import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
 import com.google.zxing.MultiFormatWriter
 import com.mg4.control.R
+import com.mg4.control.debug.AppLogger
+import com.mg4.control.debug.CrashLogger
 import com.mg4.control.hardware.MG4Hardware
 import com.mg4.control.update.UpdateChecker
 import com.mg4.control.update.UpdateDialogManager
@@ -300,12 +302,41 @@ class SettingsFragment : Fragment() {
             ctx.packageManager.getPackageInfo(ctx.packageName, 0).versionName ?: "?"
         } catch (e: Exception) { "?" }
 
-        val scrollView = ScrollView(ctx).apply {
+        // ── Layout : crash banner (optionnel) + rapport matériel ──────────────
+        val container = LinearLayout(ctx).apply {
+            orientation = LinearLayout.VERTICAL
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             )
         }
+
+        // Section crash log (si un crash a été enregistré)
+        val crashLog = CrashLogger.read(ctx)
+        if (crashLog != null) {
+            val tvCrash = TextView(ctx).apply {
+                text = crashLog
+                typeface = Typeface.MONOSPACE
+                textSize = 9f
+                setTextColor(ctx.getColor(R.color.dash_danger))
+                val pad = (12 * resources.displayMetrics.density).toInt()
+                setPadding(pad, pad, pad, pad)
+                setBackgroundColor(ctx.getColor(R.color.dash_danger_dim))
+            }
+            container.addView(tvCrash)
+
+            // Séparateur
+            val divider = android.view.View(ctx).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    (1 * resources.displayMetrics.density).toInt()
+                ).also { it.topMargin = 0; it.bottomMargin = 0 }
+                setBackgroundColor(ctx.getColor(R.color.dash_border))
+            }
+            container.addView(divider)
+        }
+
+        // Section rapport matériel
         val tvReport = TextView(ctx).apply {
             text = getString(R.string.diag_loading)
             typeface = Typeface.MONOSPACE
@@ -314,29 +345,65 @@ class SettingsFragment : Fragment() {
             val pad = (12 * resources.displayMetrics.density).toInt()
             setPadding(pad, pad, pad, pad)
         }
-        scrollView.addView(tvReport)
+        container.addView(tvReport)
+
+        // Section AppLogger en temps réel (30 dernières lignes)
+        val tvLogs = TextView(ctx).apply {
+            typeface = Typeface.MONOSPACE
+            textSize = 9f
+            setTextColor(ctx.getColor(R.color.dash_text_lo))
+            val pad = (12 * resources.displayMetrics.density).toInt()
+            setPadding(pad, 0, pad, pad)
+            val entries = AppLogger.entries
+            text = if (entries.isEmpty()) "─── AppLogger vide ───"
+                   else "─── AppLogger (${entries.size} entrées) ───\n" +
+                        entries.takeLast(30).joinToString("\n") { e ->
+                            "${e.time} [${e.level.name[0]}] ${e.tag}: ${e.msg}"
+                        }
+        }
+        container.addView(tvLogs)
+
+        val scrollView = ScrollView(ctx).apply {
+            addView(container)
+        }
+
+        val title = if (crashLog != null)
+            "⚠ ${getString(R.string.diag_title)} — CRASH DÉTECTÉ"
+        else
+            getString(R.string.diag_title)
 
         val dialog = AlertDialog.Builder(ctx)
-            .setTitle(getString(R.string.diag_title))
+            .setTitle(title)
             .setView(scrollView)
             .setPositiveButton(getString(R.string.diag_copy), null)
+            .setNeutralButton(if (crashLog != null) getString(R.string.diag_clear_crash) else null, null)
             .setNegativeButton(getString(R.string.nav_close), null)
             .create()
         dialog.window?.setBackgroundDrawable(ColorDrawable(ctx.getColor(R.color.dash_card)))
 
         dialog.setOnShowListener {
-            // Surcharge pour ne pas fermer le dialog au clic sur "Copier"
+            // "Copier" — copie tout sans fermer le dialog
             dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setOnClickListener {
-                val report = tvReport.text.toString()
+                val fullReport = buildString {
+                    if (crashLog != null) { appendLine(crashLog); appendLine() }
+                    appendLine(tvReport.text)
+                    appendLine()
+                    appendLine(tvLogs.text)
+                }
                 val cm = ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                cm.setPrimaryClip(ClipData.newPlainText("MG4Control Diagnostic", report))
+                cm.setPrimaryClip(ClipData.newPlainText("MG4Control Diagnostic", fullReport))
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.text = getString(R.string.diag_copied)
+            }
+            // "Effacer crash" — supprime le fichier et ferme le dialog
+            dialog.getButton(AlertDialog.BUTTON_NEUTRAL)?.setOnClickListener {
+                CrashLogger.clear(ctx)
+                dialog.dismiss()
             }
         }
 
         dialog.show()
 
-        // Génération du rapport sur le thread IO (inclut les TX binder SWI132)
+        // Génération du rapport matériel sur le thread IO
         CoroutineScope(Dispatchers.IO).launch {
             val report = MG4Hardware.buildDiagnosticReport(appVersion)
             withContext(Dispatchers.Main) {

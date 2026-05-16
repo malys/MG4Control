@@ -94,7 +94,8 @@ class ShortcutsFragment : Fragment() {
             if (isKnown) {
                 add(ActionItem(getString(R.string.shortcuts_action_tsr), ShortcutAction.TSR_TOGGLE))
             }
-            add(ActionItem(getString(R.string.shortcuts_action_apply_profile),  ShortcutAction.APPLY_PROFILE))
+            add(ActionItem(getString(R.string.shortcuts_action_apply_profile),   ShortcutAction.APPLY_PROFILE))
+            add(ActionItem(getString(R.string.shortcuts_action_profile_picker), ShortcutAction.PROFILE_PICKER))
             add(ActionItem(getString(R.string.shortcuts_action_open_app),       ShortcutAction.OPEN_APP))
             add(ActionItem(getString(R.string.shortcuts_action_open_custom_app),ShortcutAction.OPEN_CUSTOM_APP))
         }

@@ -1,0 +1,230 @@
+package com.mg4.control.service
+
+import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.PixelFormat
+import android.os.Handler
+import android.os.Looper
+import android.util.TypedValue
+import android.view.ContextThemeWrapper
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.WindowManager
+import android.widget.LinearLayout
+import android.widget.TextView
+import com.google.android.material.button.MaterialButton
+import com.mg4.control.R
+import com.mg4.control.debug.AppLogger
+import com.mg4.control.model.DrivingProfile
+import com.mg4.control.profile.ProfileApplier
+import com.mg4.control.profile.ProfileManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
+/**
+ * Overlay flottant affichant la liste des profils de conduite.
+ *
+ * Deux modes d'utilisation :
+ *  - Raccourci volant → show(ctx) : affiche tous les profils
+ *  - Conflit BT       → show(ctx, profiles, onAutoDismiss) : affiche uniquement
+ *    les profils associés aux appareils connectés ; si l'utilisateur ne choisit
+ *    pas avant le timeout, [onAutoDismiss] est appelé (ex. applique le 1er profil).
+ *
+ * Toutes les opérations WindowManager se font sur le thread principal.
+ */
+object ProfilePickerOverlay {
+
+    private const val TAG             = "MG4_OVERLAY"
+    private const val AUTO_DISMISS_MS = 8_000L
+
+    private val handler = Handler(Looper.getMainLooper())
+
+    @Volatile private var overlayView: View? = null
+    private var dismissRunnable: Runnable? = null
+    private var countdownRunnable: Runnable? = null
+
+    // ── API publique ─────────────────────────────────────────────────────────
+
+    /**
+     * Affiche l'overlay avec tous les profils (raccourci volant).
+     * Peut être appelé depuis n'importe quel thread.
+     */
+    fun show(context: Context) {
+        handler.post { showOnMainThread(context, profiles = null, onAutoDismiss = null) }
+    }
+
+    /**
+     * Affiche l'overlay avec une liste restreinte de profils (conflit BT).
+     * [onAutoDismiss] est appelé si le timeout s'écoule sans sélection.
+     * Peut être appelé depuis n'importe quel thread.
+     */
+    fun show(context: Context, profiles: List<DrivingProfile>, onAutoDismiss: () -> Unit) {
+        handler.post { showOnMainThread(context, profiles, onAutoDismiss) }
+    }
+
+    /**
+     * Ferme l'overlay immédiatement (sans déclencher onAutoDismiss).
+     * Peut être appelé depuis n'importe quel thread.
+     */
+    fun dismiss(context: Context) {
+        handler.post { dismissOnMainThread(context, fireAutoDismiss = false) }
+    }
+
+    // ── Implémentation (main thread) ─────────────────────────────────────────
+
+    private fun showOnMainThread(
+        context: Context,
+        profiles: List<DrivingProfile>?,
+        onAutoDismiss: (() -> Unit)?
+    ) {
+        // Si déjà affiché → on remplace (sans déclencher l'ancien onAutoDismiss)
+        dismissOnMainThread(context, fireAutoDismiss = false)
+
+        val profilesToShow = profiles ?: ProfileManager(context).getAll()
+        if (profilesToShow.isEmpty()) {
+            AppLogger.i(TAG, "Aucun profil — overlay non affiché")
+            return
+        }
+
+        val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+
+        // Le contexte du Service n'a pas de thème Material → on l'enveloppe
+        // avec le thème de l'app pour que MaterialButton puisse s'instancier.
+        val themedContext = ContextThemeWrapper(context, R.style.Theme_MG4Control)
+
+        // Inflate la vue depuis le layout XML (utilise le contexte thémé)
+        val view = LayoutInflater.from(themedContext).inflate(R.layout.overlay_profile_picker, null)
+
+        // ── Grille 2 colonnes de profils ─────────────────────────────────
+        val container      = view.findViewById<LinearLayout>(R.id.overlay_profiles_container)
+        val accentColor    = context.getColor(R.color.dash_accent)
+        val accentDimColor = context.getColor(R.color.dash_accent_dim)
+        val dm             = context.resources.displayMetrics
+
+        fun dp(value: Float) = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value, dm).toInt()
+
+        fun makeProfileButton(profile: com.mg4.control.model.DrivingProfile) =
+            MaterialButton(themedContext).apply {
+                text      = profile.name
+                textSize  = 19f
+                isAllCaps = false
+                setTextColor(accentColor)
+                backgroundTintList = ColorStateList.valueOf(accentDimColor)
+                strokeColor        = ColorStateList.valueOf(accentColor)
+                strokeWidth        = dp(1f)
+                cornerRadius       = dp(10f)
+                setOnClickListener {
+                    AppLogger.i(TAG, "Profil sélectionné : '${profile.name}'")
+                    CoroutineScope(Dispatchers.IO).launch {
+                        ProfileApplier.apply(profile)
+                    }
+                    dismissOnMainThread(context)
+                }
+            }
+
+        // Découpe en lignes de 2, chaque ligne = LinearLayout horizontal
+        profilesToShow.chunked(2).forEach { row ->
+            val rowLayout = LinearLayout(themedContext).apply {
+                orientation = LinearLayout.HORIZONTAL
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).also { it.bottomMargin = dp(10f) }
+            }
+
+            row.forEachIndexed { index, profile ->
+                val btn = makeProfileButton(profile).apply {
+                    layoutParams = LinearLayout.LayoutParams(0, dp(90f), 1f).also {
+                        if (index == 0 && row.size == 2) it.marginEnd = dp(10f)
+                    }
+                }
+                rowLayout.addView(btn)
+            }
+
+            // Nombre impair → placeholder invisible pour garder la symétrie
+            if (row.size == 1) {
+                val spacer = android.view.View(themedContext).apply {
+                    layoutParams = LinearLayout.LayoutParams(0, dp(90f), 1f)
+                }
+                rowLayout.addView(spacer)
+            }
+
+            container.addView(rowLayout)
+        }
+
+        // ── Fermeture manuelle ────────────────────────────────────────────
+        view.findViewById<View>(R.id.overlay_btn_close)?.setOnClickListener {
+            dismissOnMainThread(context)
+        }
+
+        // ── Tap sur le fond → fermeture ───────────────────────────────────
+        view.findViewById<View>(R.id.overlay_backdrop)?.setOnClickListener {
+            dismissOnMainThread(context)
+        }
+        // La carte intérieure intercepte les appuis sans propager au fond
+        view.findViewById<View>(R.id.overlay_card)?.setOnClickListener { /* consommer */ }
+
+        // ── Paramètres WindowManager ──────────────────────────────────────
+        val params = WindowManager.LayoutParams(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+            PixelFormat.TRANSLUCENT
+        ).apply {
+            gravity = Gravity.CENTER
+        }
+
+        wm.addView(view, params)
+        overlayView = view
+        AppLogger.i(TAG, "Overlay affiché — ${profilesToShow.size} profil(s)")
+
+        // ── Compte à rebours ──────────────────────────────────────────────
+        val tvCountdown = view.findViewById<TextView>(R.id.overlay_countdown)
+        var remaining = (AUTO_DISMISS_MS / 1_000L).toInt()
+
+        val tick: Runnable = object : Runnable {
+            override fun run() {
+                if (overlayView == null) return
+                tvCountdown?.text = context.getString(R.string.overlay_countdown, remaining)
+                if (remaining > 0) {
+                    remaining--
+                    handler.postDelayed(this, 1_000L)
+                }
+            }
+        }
+        countdownRunnable = tick
+        handler.post(tick)
+
+        // ── Fermeture automatique ─────────────────────────────────────────
+        // onAutoDismiss est appelé UNIQUEMENT ici (timeout sans sélection).
+        // Si l'utilisateur choisit un profil ou appuie sur Fermer,
+        // dismissOnMainThread(fireAutoDismiss=false) annule ce runnable.
+        val dr = Runnable {
+            AppLogger.i(TAG, "Overlay — timeout, fallback onAutoDismiss")
+            dismissOnMainThread(context, fireAutoDismiss = false)
+            onAutoDismiss?.invoke()
+        }
+        dismissRunnable = dr
+        handler.postDelayed(dr, AUTO_DISMISS_MS)
+    }
+
+    private fun dismissOnMainThread(context: Context, fireAutoDismiss: Boolean = false) {
+        dismissRunnable?.let  { handler.removeCallbacks(it) }
+        countdownRunnable?.let { handler.removeCallbacks(it) }
+        dismissRunnable   = null
+        countdownRunnable = null
+
+        val v = overlayView ?: return
+        overlayView = null
+        try {
+            val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+            wm.removeView(v)
+            AppLogger.i(TAG, "Overlay fermé")
+        } catch (e: Exception) {
+            AppLogger.i(TAG, "Erreur fermeture overlay : ${e.message}")
+        }
+    }
+}
