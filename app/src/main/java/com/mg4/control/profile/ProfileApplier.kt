@@ -58,14 +58,22 @@ object ProfileApplier {
                     // → setOverspeedAlarm() et setSpeedLimitTone() envoient les TX binder corrects
                     //   (0x128 et 0x12a) sans passer par VehicleSettingManager.
 
-                    // TSR (SLIF) via binder direct (TX 0x057) — appliqué en premier comme SWI133
+                    // TSR (SLIF) via VSM — appliqué en premier comme SWI133
                     val tsrOk = MG4Hardware.setTsrMode(profile.tsrEnabled)
                     AppLogger.i(TAG, "  TsrEnabled=${profile.tsrEnabled} → $tsrOk")
 
                     // Alertes sonores via VSM
-                    // Délai de 150ms entre les deux écritures : le middleware véhicule traite les
-                    // propriétés dans une file avec debounce — deux écritures trop rapides font que
-                    // seule la dernière est validée. 150ms garantit que la première est traitée.
+                    // Le firmware SWI132 remet overspeed et speedTone à ON ~400ms après l'activation
+                    // du TSR (même comportement que SWI133). setTsrMode() retourne immédiatement sans
+                    // attendre cette réinitialisation. Si on écrit les alertes trop tôt, le firmware
+                    // les écrase ensuite. On attend 450ms pour laisser le firmware terminer sa
+                    // réinitialisation avant d'appliquer les valeurs du profil.
+                    if (profile.tsrEnabled) {
+                        try { Thread.sleep(450) } catch (_: InterruptedException) {}
+                    }
+                    // Délai de 150ms entre les deux écritures : le middleware traite les propriétés
+                    // dans une file avec debounce — deux écritures trop rapides font que seule la
+                    // dernière est validée. 150ms garantit que la première est traitée.
                     val oaOk = MG4Hardware.setOverspeedAlarm(profile.overspeedAlarm)
                     AppLogger.i(TAG, "  OverspeedAlarm=${profile.overspeedAlarm} → $oaOk")
                     try { Thread.sleep(150) } catch (_: InterruptedException) {}

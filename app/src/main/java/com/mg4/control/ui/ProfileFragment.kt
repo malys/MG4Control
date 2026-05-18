@@ -417,23 +417,23 @@ class ProfileFragment : Fragment() {
 
         when {
             isSWI132Profile -> {
-                // SWI132 : section SWI68 (3 boutons ACC/TJA/Off) + alertes séparées comme SWI133
-                sectionSwi68.visibility  = View.VISIBLE
-                sectionSwi133.visibility = View.GONE
-                // Masque le toggle soundWarning (non applicable SWI132) et montre les deux alertes
-                dialogView.findViewById<View>(R.id.row_sound_warning_d).visibility = View.GONE
-                dialogView.findViewById<View>(R.id.row_overspeed_d).visibility     = View.VISIBLE
-                dialogView.findViewById<View>(R.id.row_speed_tone_d).visibility    = View.VISIBLE
-                // Initialise les alertes SWI132
-                dialogView.findViewById<Switch>(R.id.sw_overspeed_alarm_d).isChecked = data.overspeedAlarm
-                dialogView.findViewById<Switch>(R.id.sw_speed_limit_tone_d).isChecked = data.speedLimitTone
-                // Mode ADAS SWI68
-                val adasSwi68Pairs = listOf(
-                    dialogView.findViewById<MaterialButton>(R.id.btn_adas_swi68_off_d) to Swi68Mode.OFF,
-                    dialogView.findViewById<MaterialButton>(R.id.btn_adas_swi68_acc_d) to Swi68Mode.ACC,
-                    dialogView.findViewById<MaterialButton>(R.id.btn_adas_swi68_tja_d) to Swi68Mode.TJA
+                // SWI132 : 4 boutons ADAS Off/Lim/ACC/ICA (même section que SWI133, bouton Auto masqué)
+                // + alertes séparées (survitesse + ton) comme SWI133
+                sectionSwi133.visibility = View.VISIBLE
+                sectionSwi68.visibility  = View.GONE
+                // Masquer le bouton Auto (non disponible sur SWI132)
+                dialogView.findViewById<View>(R.id.btn_adas_auto_d)?.visibility = View.GONE
+                // Alertes séparées — mêmes switches que SWI133 (sw_overspeed_alarm / sw_speed_limit_tone)
+                dialogView.findViewById<Switch>(R.id.sw_overspeed_alarm).isChecked  = data.overspeedAlarm
+                dialogView.findViewById<Switch>(R.id.sw_speed_limit_tone).isChecked = data.speedLimitTone
+                // ADAS SWI132 : boutons Off/Lim/ACC/ICA → valeurs CarAccTja stockées dans swi68AdasMode
+                val adasSwi132Pairs = listOf(
+                    dialogView.findViewById<MaterialButton>(R.id.btn_adas_off_d) to Swi68Mode.OFF,
+                    dialogView.findViewById<MaterialButton>(R.id.btn_adas_lim_d) to Swi68Mode.SHWA,
+                    dialogView.findViewById<MaterialButton>(R.id.btn_adas_acc_d) to Swi68Mode.ACC,
+                    dialogView.findViewById<MaterialButton>(R.id.btn_adas_ica_d) to Swi68Mode.TJA
                 )
-                bindGroup(adasSwi68Pairs, swi68Mode) { swi68Mode = it }
+                bindGroup(adasSwi132Pairs, swi68Mode) { swi68Mode = it }
             }
             FirmwareInfo.isVsmBased() -> {
                 // SWI68/SWI69/SWI131/SWI165 : section SWI68 (ACC/TJA/Off + alerte sonore)
@@ -562,16 +562,9 @@ class ProfileFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            val isSWI132Save   = FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI132
-            // SWI132 : alertes lues depuis les switches dédiés dans la section swi68
-            val overspeedAlarm = if (isSWI132Save)
-                dialogView.findViewById<Switch?>(R.id.sw_overspeed_alarm_d)?.isChecked ?: false
-            else
-                dialogView.findViewById<Switch?>(R.id.sw_overspeed_alarm)?.isChecked ?: false
-            val speedLimitTone = if (isSWI132Save)
-                dialogView.findViewById<Switch?>(R.id.sw_speed_limit_tone_d)?.isChecked ?: false
-            else
-                dialogView.findViewById<Switch?>(R.id.sw_speed_limit_tone)?.isChecked ?: false
+            // SWI132 utilise désormais sectionSwi133 (mêmes IDs que SWI133 — sans suffixe _d)
+            val overspeedAlarm = dialogView.findViewById<Switch?>(R.id.sw_overspeed_alarm)?.isChecked ?: false
+            val speedLimitTone = dialogView.findViewById<Switch?>(R.id.sw_speed_limit_tone)?.isChecked ?: false
             val soundWarning   = dialogView.findViewById<Switch?>(R.id.sw_sound_warning)?.isChecked ?: false
 
             val profile = DrivingProfile(

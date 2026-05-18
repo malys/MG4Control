@@ -74,11 +74,12 @@ class AdasFragment : Fragment() {
         val isVsmBased = FirmwareInfo.isVsmBased()
         val isSWI132   = gen == FirmwareInfo.Gen.SWI132
         // SWI133 : 5 boutons ADAS (Off/Limiteur/Auto/ACC/ICA)
-        // SWI68/SWI69/SWI131/SWI132/SWI165 : 3 boutons ADAS (Off/ACC/TJA)
+        // SWI132 : 4 boutons ADAS (Off/Lim/ACC/ICA) — même section que SWI133, bouton Auto masqué
+        // SWI68/SWI69/SWI131/SWI165 : 3 boutons ADAS (Off/ACC/TJA)
         view.findViewById<View>(R.id.section_swi133).visibility =
-            if (!isVsmBased) View.VISIBLE else View.GONE
+            if (!isVsmBased || isSWI132) View.VISIBLE else View.GONE
         view.findViewById<View>(R.id.section_swi68).visibility =
-            if (isVsmBased) View.VISIBLE else View.GONE
+            if (isVsmBased && !isSWI132) View.VISIBLE else View.GONE
         // Ligne du bas (AEB + alertes) — disponible si firmware connu
         view.findViewById<View>(R.id.section_bottom_row).visibility =
             if (isKnown) View.VISIBLE else View.GONE
@@ -109,7 +110,7 @@ class AdasFragment : Fragment() {
             }
         }
 
-        // ── Listeners SWI132 — alertes via binder direct (mêmes switches que SWI133) ──
+        // ── Listeners SWI132 — alertes + ADAS 4 modes (Off/Lim/ACC/ICA) ────────
         if (isSWI132) {
             switchOverspeed?.setOnCheckedChangeListener { _, checked ->
                 if (switchOverspeed?.isPressed == true)
@@ -118,6 +119,23 @@ class AdasFragment : Fragment() {
             switchSpeedTone?.setOnCheckedChangeListener { _, checked ->
                 if (switchSpeedTone?.isPressed == true)
                     CoroutineScope(Dispatchers.IO).launch { MG4Hardware.setSpeedLimitTone(checked) }
+            }
+            // Masquer le bouton Auto (non disponible sur SWI132)
+            btnAdasAuto?.visibility = View.GONE
+            // ADAS SWI132 : boutons Off/Lim/ACC/ICA → setAccTjaMode avec valeurs CarAccTja
+            val swi132AdasMap = mapOf(
+                0 to Swi68Mode.OFF,   // Off  → 0x4
+                1 to Swi68Mode.SHWA,  // Lim  → 0x3
+                3 to Swi68Mode.ACC,   // ACC  → 0x1
+                4 to Swi68Mode.TJA    // ICA  → 0x2
+            )
+            swi132AdasMap.forEach { (btnIndex, hwValue) ->
+                swi133Buttons.getOrNull(btnIndex)?.setOnClickListener {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        MG4Hardware.setAccTjaMode(hwValue)
+                        withContext(Dispatchers.Main) { if (isAdded) applySwi133ModeUI(btnIndex) }
+                    }
+                }
             }
         }
 
@@ -174,6 +192,15 @@ class AdasFragment : Fragment() {
         }
     }
 
+    /** SWI132 : CarAccTja value (0x1-0x4) → swi133 button index (0/1/3/4) */
+    private fun swi132ValueToSwi133Index(value: Int): Int = when (value) {
+        Swi68Mode.OFF  -> 0
+        Swi68Mode.SHWA -> 1
+        Swi68Mode.ACC  -> 3
+        Swi68Mode.TJA  -> 4
+        else           -> 0
+    }
+
     private fun refreshState() {
         CoroutineScope(Dispatchers.IO).launch {
             when {
@@ -185,7 +212,7 @@ class AdasFragment : Fragment() {
     }
 
     /**
-     * SWI132 : rafraîchit l'état ADAS (mode ACC/TJA via CarVehicleSettingClient),
+     * SWI132 : rafraîchit l'état ADAS (mode Off/Lim/ACC/ICA via CarVehicleSettingClient),
      * les alertes sonores (via binder getter TX 0x129/0x12b) et l'AEB.
      */
     private suspend fun refreshSwi132() {
@@ -200,7 +227,8 @@ class AdasFragment : Fragment() {
                 view?.postDelayed({ if (isAdded) refreshState() }, 2_000)
                 return@withContext
             }
-            applySwi68ModeUI(mode)   // SWI132 utilise les mêmes boutons Off/ACC/TJA que SWI68
+            // SWI132 : valeur CarAccTja (0x1-0x4) → index bouton swi133 (0/1/3/4)
+            applySwi133ModeUI(swi132ValueToSwi133Index(mode))
             switchOverspeed?.isChecked = overspeed
             switchSpeedTone?.isChecked = speedTone
             switchAeb?.isChecked = aebOn

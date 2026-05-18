@@ -275,8 +275,9 @@ class DashboardFragment : Fragment() {
         val isKnown    = gen != FirmwareInfo.Gen.UNKNOWN
         val hasClimate = FirmwareInfo.hasHeatFeatures()
 
-        view.findViewById<View>(R.id.adas_group_swi133).visibility   = if (!isVsmBased) View.VISIBLE else View.GONE
-        view.findViewById<View>(R.id.adas_group_swi68).visibility    = if (isVsmBased)  View.VISIBLE else View.GONE
+        // SWI132 utilise les 4 boutons Off/Lim/ACC/ICA (même groupe que SWI133), pas Off/ACC/TJA
+        view.findViewById<View>(R.id.adas_group_swi133).visibility   = if (!isVsmBased || isSWI132) View.VISIBLE else View.GONE
+        view.findViewById<View>(R.id.adas_group_swi68).visibility    = if (isVsmBased && !isSWI132) View.VISIBLE else View.GONE
         // SWI132 utilise deux alertes séparées (survitesse + ton) comme SWI133, pas soundWarning
         view.findViewById<View>(R.id.alerts_group_swi133).visibility = if (!isVsmBased || isSWI132) View.VISIBLE else View.GONE
         view.findViewById<View>(R.id.alerts_group_swi68).visibility  = if (isVsmBased && !isSWI132) View.VISIBLE else View.GONE
@@ -312,11 +313,18 @@ class DashboardFragment : Fragment() {
         }
 
         // ADAS
-        if (!isVsmBased) {
+        // SWI133/UNKNOWN : setMixedIntelligentDrive (VPM) — indices 0/1/3/4 → Off/Lim/ACC/ICA
+        // SWI132          : setAccTjaMode (VSM) — valeurs 0x4/0x3/0x1/0x2 → Off/Lim/ACC/ICA
+        // SWI68/SWI69/SWI131/SWI165 : setAccTjaMode (VSM) — valeurs 0x4/0x1/0x2 → Off/ACC/TJA
+        if (!isVsmBased || isSWI132) {
             swi133AdasMap.forEach { (modeIndex, btn) ->
                 btn?.setOnClickListener {
                     CoroutineScope(Dispatchers.IO).launch {
-                        MG4Hardware.setMixedIntelligentDrive(modeIndex)
+                        if (isSWI132) {
+                            MG4Hardware.setAccTjaMode(swi133IndexToSwi132Value(modeIndex))
+                        } else {
+                            MG4Hardware.setMixedIntelligentDrive(modeIndex)
+                        }
                         withContext(Dispatchers.Main) { if (isAdded) applySwi133AdasUI(modeIndex) }
                     }
                 }
@@ -569,6 +577,30 @@ class DashboardFragment : Fragment() {
     // ═════════════════════════════════════════════════════════════════════════
 
     /**
+     * SWI132 : convertit une valeur CarAccTja (0x1-0x4) en index de bouton swi133 (0/1/3/4).
+     * Off(0x4)→0, Lim/SHWA(0x3)→1, ACC(0x1)→3, ICA/TJA(0x2)→4
+     */
+    private fun swi132ValueToSwi133Index(value: Int): Int = when (value) {
+        Swi68Mode.OFF  -> 0
+        Swi68Mode.SHWA -> 1
+        Swi68Mode.ACC  -> 3
+        Swi68Mode.TJA  -> 4
+        else           -> 0
+    }
+
+    /**
+     * SWI132 : convertit un index de bouton swi133 (0/1/3/4) en valeur CarAccTja (0x1-0x4).
+     * 0→Off(0x4), 1→Lim/SHWA(0x3), 3→ACC(0x1), 4→ICA/TJA(0x2)
+     */
+    private fun swi133IndexToSwi132Value(index: Int): Int = when (index) {
+        0 -> Swi68Mode.OFF
+        1 -> Swi68Mode.SHWA
+        3 -> Swi68Mode.ACC
+        4 -> Swi68Mode.TJA
+        else -> Swi68Mode.OFF
+    }
+
+    /**
      * SWI133 / SWI132 : active ou grise la section des 2 alertes sonores.
      * Quand le TSR (RECO. PANNEAUX) est OFF, les alertes sont désactivées et non modifiables.
      * L'alpha est appliqué sur le conteneur entier (labels + switches) pour un rendu cohérent.
@@ -622,8 +654,10 @@ class DashboardFragment : Fragment() {
 
     private fun refreshAdas() {
         // Vérifie que les boutons ADAS de page 0 sont créés (AEB est sur page 1)
-        if (!FirmwareInfo.isVsmBased() && btnAdasOff == null) return
-        if (FirmwareInfo.isVsmBased() && btnSwi68Off == null) return
+        // SWI132 utilise les boutons swi133 (Off/Lim/ACC/ICA), pas les boutons swi68
+        val isSWI132forGuard = FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI132
+        if (!FirmwareInfo.isVsmBased() || isSWI132forGuard) { if (btnAdasOff == null) return }
+        else { if (btnSwi68Off == null) return }
         CoroutineScope(Dispatchers.IO).launch {
             when {
                 FirmwareInfo.getGeneration() == FirmwareInfo.Gen.SWI132 -> refreshSwi132Adas()
@@ -687,7 +721,7 @@ class DashboardFragment : Fragment() {
             applyEnergySavingUI(energySaving)
             isRefreshing = false
             setAlertsSwi133Enabled(tsrOn)   // grise les alertes si TSR est OFF
-            applySwi68AdasUI(mode)  // SWI132 partage les 3 boutons Off/ACC/TJA avec SWI68
+            applySwi133AdasUI(swi132ValueToSwi133Index(mode))  // SWI132 : Off/Lim/ACC/ICA
             applyAebModeButtonsEnabled(aebOn)
             if (aebMode > 0) applyAebModeUI(aebMode)
         }

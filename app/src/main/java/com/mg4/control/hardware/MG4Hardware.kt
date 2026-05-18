@@ -156,11 +156,12 @@ object MG4Hardware {
         const val CRANK     = 0x3   // Démarrage
     }
 
-    /** Valeurs de mode ADAS pour firmware SWI68. */
+    /** Valeurs de mode ADAS pour firmware SWI68/SWI132 (CarAccTja constants). */
     object Swi68Mode {
-        const val OFF = 0x4   // Désactiver
-        const val ACC = 0x1   // ACC
-        const val TJA = 0x2   // TJA (Traffic Jam Assist)
+        const val OFF  = 0x4   // Désactiver
+        const val SHWA = 0x3   // Speed Limit Mode (Limiteur) — SWI132 uniquement
+        const val ACC  = 0x1   // ACC
+        const val TJA  = 0x2   // TJA (Traffic Jam Assist) = ICA dans l'UI SWI132
     }
 
     /** Valeurs du mode AEB (communes SWI133 + SWI68). */
