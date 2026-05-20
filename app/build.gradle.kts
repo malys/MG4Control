@@ -11,8 +11,8 @@ android {
         applicationId = "com.mg4.control"
         minSdk = 28
         targetSdk = 34
-        versionCode = 11
-        versionName = "2.5.2"
+        versionCode = 12
+        versionName = "2.6.0"
     }
 
     buildTypes {
