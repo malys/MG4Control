@@ -173,6 +173,7 @@
     <string name="info_version_label">Version</string>
     <string name="info_firmware_label">Firmware</string>
     <string name="info_github_link">github.com/SliDeeN/MG4Control</string>
+    <string name="info_gitlab_link">gitlab.com/SliDeeN/mg4control</string>
     <string name="info_made_with_love">Made with ❤ by SliDeeN and Claude IA</string>
     <string name="info_special_thanks">Danke an confor1max für SWI68-Tests 🙏</string>
     <string name="info_based_on">Basierend auf DriveHub Dort von Merth4n &amp; hotboy_ist</string>
@@ -229,8 +230,9 @@
     <!-- Einstellungen -->
     <string name="settings_default_screen">Standardbildschirm</string>
     <string name="settings_default_screen_dashboard">Dashboard</string>
-    <string name="settings_auto_apply">Profil beim Start anwenden</string>
+    <string name="settings_auto_apply">Weitere Einstellungen</string>
     <string name="settings_auto_apply_desc">Das Standardprofil wird beim Start automatisch angewendet</string>
+    <string name="settings_auto_update_desc">Beim Start automatisch nach Updates suchen</string>
     <string name="settings_theme">Erscheinungsbild</string>
     <string name="settings_theme_auto">Auto</string>
     <string name="settings_theme_dark">Dunkles Design</string>

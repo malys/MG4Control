@@ -75,6 +75,9 @@ class MainActivity : AppCompatActivity() {
     // ── Vérification de mise à jour au démarrage ──────────────────────────────
 
     private fun checkForUpdates() {
+        val prefs = getSharedPreferences("mg4_settings", android.content.Context.MODE_PRIVATE)
+        if (!prefs.getBoolean("auto_check_update", true)) return
+
         UpdateChecker.check(
             context = this,
             onUpdateAvailable = { updateInfo ->

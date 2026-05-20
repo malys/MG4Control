@@ -204,7 +204,8 @@ id et_profile_name
 id group_info
 id group_manual
 id group_progress
-id iv_qr_code
+id iv_qr_code_github
+id iv_qr_code_gitlab
 id iv_update_qr
 id nav_graph
 id nav_host_fragment
@@ -273,6 +274,7 @@ id sw_tsr_d
 id switch_aeb
 id switch_aeb_p2
 id switch_auto_apply
+id switch_auto_update
 id switch_elk
 id switch_elk_s132
 id switch_elk_sound
@@ -292,6 +294,7 @@ id tv_firmware_info
 id tv_fw_detected_badge
 id tv_fw_unknown_body
 id tv_github_link
+id tv_gitlab_link
 id tv_manual_instructions
 id tv_profile_name
 id tv_profile_summary
@@ -411,6 +414,7 @@ string info_based_on
 string info_close
 string info_firmware_label
 string info_github_link
+string info_gitlab_link
 string info_made_with_love
 string info_special_thanks
 string info_title
@@ -452,6 +456,7 @@ string regen_one_pedal
 string regen_one_pedal_short
 string settings_auto_apply
 string settings_auto_apply_desc
+string settings_auto_update_desc
 string settings_default_screen
 string settings_default_screen_dashboard
 string settings_firmware_loading

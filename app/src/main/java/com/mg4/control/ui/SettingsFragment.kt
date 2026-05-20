@@ -45,6 +45,7 @@ import kotlinx.coroutines.withContext
 class SettingsFragment : Fragment() {
 
     private val githubUrl = "https://github.com/SliDeeN/MG4Control"
+    private val gitlabUrl = "https://gitlab.com/SliDeeN/mg4control"
 
     // Compteur pour débloquer le bouton Diagnostic (5 clics sur "Vérifier les mises à jour")
     private var updateClickCount = 0
@@ -160,6 +161,13 @@ class SettingsFragment : Fragment() {
             prefs.edit().putBoolean("auto_apply_profile", checked).apply()
         }
 
+        // ── Vérification auto des mises à jour ───────────────────────────────
+        val switchAutoUpdate = view.findViewById<Switch>(R.id.switch_auto_update)
+        switchAutoUpdate.isChecked = prefs.getBoolean("auto_check_update", true)
+        switchAutoUpdate.setOnCheckedChangeListener { _, checked ->
+            prefs.edit().putBoolean("auto_check_update", checked).apply()
+        }
+
         // ── Bouton Vérifier mise à jour ──────────────────────────────────────
         val btnUpdate     = view.findViewById<MaterialButton>(R.id.btn_check_update)
         val btnDiagnostic = view.findViewById<MaterialButton>(R.id.btn_diagnostic)
@@ -246,7 +254,7 @@ class SettingsFragment : Fragment() {
 
         // ── Bouton Fermer ─────────────────────────────────────────────────────
         view.findViewById<MaterialButton>(R.id.btn_close_settings).setOnClickListener {
-            findNavController().popBackStack()
+            findNavController().popBackStack(R.id.dashboardFragment, false)
         }
     }
 
@@ -445,12 +453,21 @@ class SettingsFragment : Fragment() {
         }
 
         // QR Code GitHub
-        val ivQr = dialogView.findViewById<ImageView>(R.id.iv_qr_code)
-        generateQrBitmap(githubUrl, 400)?.let { ivQr.setImageBitmap(it) }
+        val ivQrGithub = dialogView.findViewById<ImageView>(R.id.iv_qr_code_github)
+        generateQrBitmap(githubUrl, 400)?.let { ivQrGithub.setImageBitmap(it) }
+
+        // QR Code GitLab
+        val ivQrGitlab = dialogView.findViewById<ImageView>(R.id.iv_qr_code_gitlab)
+        generateQrBitmap(gitlabUrl, 400)?.let { ivQrGitlab.setImageBitmap(it) }
 
         // Lien GitHub cliquable
         dialogView.findViewById<TextView>(R.id.tv_github_link).setOnClickListener {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(githubUrl)))
+        }
+
+        // Lien GitLab cliquable
+        dialogView.findViewById<TextView>(R.id.tv_gitlab_link).setOnClickListener {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(gitlabUrl)))
         }
 
         // Création du dialog sans chrome Android (fond transparent = layout seul visible)

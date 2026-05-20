@@ -25,7 +25,10 @@ public final class DialogAppInfoBinding implements ViewBinding {
   public final MaterialButton btnInfoClose;
 
   @NonNull
-  public final ImageView ivQrCode;
+  public final ImageView ivQrCodeGithub;
+
+  @NonNull
+  public final ImageView ivQrCodeGitlab;
 
   @NonNull
   public final TextView tvAppVersion;
@@ -36,15 +39,21 @@ public final class DialogAppInfoBinding implements ViewBinding {
   @NonNull
   public final TextView tvGithubLink;
 
+  @NonNull
+  public final TextView tvGitlabLink;
+
   private DialogAppInfoBinding(@NonNull LinearLayout rootView, @NonNull MaterialButton btnInfoClose,
-      @NonNull ImageView ivQrCode, @NonNull TextView tvAppVersion, @NonNull TextView tvFirmwareInfo,
-      @NonNull TextView tvGithubLink) {
+      @NonNull ImageView ivQrCodeGithub, @NonNull ImageView ivQrCodeGitlab,
+      @NonNull TextView tvAppVersion, @NonNull TextView tvFirmwareInfo,
+      @NonNull TextView tvGithubLink, @NonNull TextView tvGitlabLink) {
     this.rootView = rootView;
     this.btnInfoClose = btnInfoClose;
-    this.ivQrCode = ivQrCode;
+    this.ivQrCodeGithub = ivQrCodeGithub;
+    this.ivQrCodeGitlab = ivQrCodeGitlab;
     this.tvAppVersion = tvAppVersion;
     this.tvFirmwareInfo = tvFirmwareInfo;
     this.tvGithubLink = tvGithubLink;
+    this.tvGitlabLink = tvGitlabLink;
   }
 
   @Override
@@ -80,9 +89,15 @@ public final class DialogAppInfoBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.iv_qr_code;
-      ImageView ivQrCode = ViewBindings.findChildViewById(rootView, id);
-      if (ivQrCode == null) {
+      id = R.id.iv_qr_code_github;
+      ImageView ivQrCodeGithub = ViewBindings.findChildViewById(rootView, id);
+      if (ivQrCodeGithub == null) {
+        break missingId;
+      }
+
+      id = R.id.iv_qr_code_gitlab;
+      ImageView ivQrCodeGitlab = ViewBindings.findChildViewById(rootView, id);
+      if (ivQrCodeGitlab == null) {
         break missingId;
       }
 
@@ -104,8 +119,14 @@ public final class DialogAppInfoBinding implements ViewBinding {
         break missingId;
       }
 
-      return new DialogAppInfoBinding((LinearLayout) rootView, btnInfoClose, ivQrCode, tvAppVersion,
-          tvFirmwareInfo, tvGithubLink);
+      id = R.id.tv_gitlab_link;
+      TextView tvGitlabLink = ViewBindings.findChildViewById(rootView, id);
+      if (tvGitlabLink == null) {
+        break missingId;
+      }
+
+      return new DialogAppInfoBinding((LinearLayout) rootView, btnInfoClose, ivQrCodeGithub,
+          ivQrCodeGitlab, tvAppVersion, tvFirmwareInfo, tvGithubLink, tvGitlabLink);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

@@ -74,6 +74,9 @@ public final class FragmentSettingsBinding implements ViewBinding {
   @NonNull
   public final Switch switchAutoApply;
 
+  @NonNull
+  public final Switch switchAutoUpdate;
+
   private FragmentSettingsBinding(@NonNull LinearLayout rootView,
       @NonNull MaterialButton btnCheckUpdate, @NonNull MaterialButton btnCleanApk,
       @NonNull MaterialButton btnCloseSettings, @NonNull MaterialButton btnDefaultDashboard,
@@ -83,7 +86,8 @@ public final class FragmentSettingsBinding implements ViewBinding {
       @NonNull MaterialButton btnLangEs, @NonNull MaterialButton btnLangFr,
       @NonNull MaterialButton btnLangIt, @NonNull MaterialButton btnLangPt,
       @NonNull MaterialButton btnThemeAuto, @NonNull MaterialButton btnThemeDark,
-      @NonNull MaterialButton btnThemeLight, @NonNull Switch switchAutoApply) {
+      @NonNull MaterialButton btnThemeLight, @NonNull Switch switchAutoApply,
+      @NonNull Switch switchAutoUpdate) {
     this.rootView = rootView;
     this.btnCheckUpdate = btnCheckUpdate;
     this.btnCleanApk = btnCleanApk;
@@ -103,6 +107,7 @@ public final class FragmentSettingsBinding implements ViewBinding {
     this.btnThemeDark = btnThemeDark;
     this.btnThemeLight = btnThemeLight;
     this.switchAutoApply = switchAutoApply;
+    this.switchAutoUpdate = switchAutoUpdate;
   }
 
   @Override
@@ -240,10 +245,16 @@ public final class FragmentSettingsBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.switch_auto_update;
+      Switch switchAutoUpdate = ViewBindings.findChildViewById(rootView, id);
+      if (switchAutoUpdate == null) {
+        break missingId;
+      }
+
       return new FragmentSettingsBinding((LinearLayout) rootView, btnCheckUpdate, btnCleanApk,
           btnCloseSettings, btnDefaultDashboard, btnDefaultProfiles, btnDefaultShortcuts,
           btnDiagnostic, btnInfos, btnLangDe, btnLangEn, btnLangEs, btnLangFr, btnLangIt, btnLangPt,
-          btnThemeAuto, btnThemeDark, btnThemeLight, switchAutoApply);
+          btnThemeAuto, btnThemeDark, btnThemeLight, switchAutoApply, switchAutoUpdate);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));
