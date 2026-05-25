@@ -388,10 +388,12 @@ class ShortcutsFragment : Fragment() {
     }
 
     private fun highlightConfig(map: Map<Int, MaterialButton?>, active: Int) {
+        val activeTextColor   = requireContext().getColor(R.color.text_active)
+        val inactiveTextColor = requireContext().getColor(R.color.text_secondary)
         map.forEach { (value, btn) ->
-            btn?.backgroundTintList = ColorStateList.valueOf(
-                if (value == active) accentColor else defColor
-            )
+            val isActive = value == active
+            btn?.backgroundTintList = ColorStateList.valueOf(if (isActive) accentColor else defColor)
+            btn?.setTextColor(if (isActive) activeTextColor else inactiveTextColor)
         }
     }
 

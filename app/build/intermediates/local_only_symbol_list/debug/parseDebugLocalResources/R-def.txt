@@ -37,6 +37,7 @@ drawable bg_chip_inactive
 drawable bg_fw_indicator
 drawable bg_section_rounded
 drawable dot_indicator
+drawable gradient_logo_bg
 drawable logo_topbar
 id adasFragment
 id adas_group_swi133
