@@ -85,46 +85,6 @@ L'application communique avec le véhicule via le SDK propriétaire SAIC, en acc
 
 ---
 
-## Changelog
-
-### v2.5.0
-- **Ajout** : Support complet du firmware **SWI165** (MG4 XPOWER) — détection automatique
-- **Ajout** : **ELK / LKA** (Assistant de sortie de voie) — On/Off, mode (Alerte / Assistance / Maintien d'urgence) et sensibilité (Faible / Standard / Élevé) pour tous les firmwares
-- **Ajout** : **Sensibilité AEB** (Anticollision avant) — Faible / Standard / Élevé pour tous les firmwares
-- **Ajout** : Interface principale redessinée en **deux pages** — glisser gauche/droite pour accéder à l'anticollision avant et l'assistant de sortie de voie
-
-### v2.4.0
-- **Ajout** : Support pour **SWI69 et SWI131**
-- **Ajout** : Action raccourci **"Ouvrir... "** dans l'onglet raccourcis et laisse le choix de l'application a l'utilisateur
-
-
-### v2.3.0
-- **Fix** : Bouton ON/OFF alertes sonores SWI68 depuis l'écran principal non fonctionnel (mauvais mapping des valeurs : ON=2, OFF=1 au lieu de 0/1)
-- **Fix** : Correction du raccourci ADAS sur SWI133 (appel `setMixedIntelligentDrive` corrigé)
-- **Fix** : Switches du Dashboard ne réagissaient pas correctement aux clics (`isPressed` toujours `false` au moment du callback — wrapping programmatique ajouté)
-- **Ajout** : Action raccourci **"Ouvrir l'application"** (OPEN_APP) dans l'onglet raccourcis
-- **Ajout** : Dialog d'avertissement à l'activation des raccourcis (recommande de désactiver ceux du launcher officiel)
-
-### v2.2.0
-- Refonte complète en interface unifiée (Dashboard unique)
-- Ajout du système de raccourcis volant (SWI133 + SWI68)
-- Compatibilité firmware UNKNOWN avec mode forcé
-- Mise à jour automatique via GitHub API
-- Nettoyage APK dans le dossier Téléchargements
-- Support multilingue FR / EN
-
-### v2.1.0
-- Ajout des profils de conduite (jusqu'à 5 profils)
-- Application automatique du profil au démarrage
-- Refonte UI dark theme
-
-### v2.0.0
-- Réécriture complète depuis DriveHub Dort
-- Support SWI68 (VehicleSettingManager)
-- Architecture multi-couches MG4Hardware (Katman1/2/4)
-
----
-
 ## Compatibilité
 
 | Élément | Valeur |
@@ -134,10 +94,12 @@ L'application communique avec le véhicule via le SDK propriétaire SAIC, en acc
 | SoC | SAIC MT2712 |
 | Résolution d'écran | 1280 × 480 (orientation paysage forcée) |
 | Firmware SWI133 | Compatible ✅ |
+| Firmware SWI131 | Compatible ✅ |
+| Firmware SWI132 | Compatible ✅ |
 | Firmware SWI68 | Compatible ✅ |
-| Firmware SWI69 / SWI131 | Compatible ✅ |
+| Firmware SWI69 | Compatible ✅ |
 | Firmware SWI165 | Compatible ✅ |
-| Firmware UNKNOWN | Mode forcé SWI133/SWI68/SWI69/SWI131/SWI165 disponible ⚠️ |
+| Firmware UNKNOWN | Mode forcé SWI133/SWI132/SWI68/SWI69/SWI131/SWI165 disponible ⚠️ |
 
 ---
 
@@ -504,44 +466,6 @@ The app communicates with the vehicle through the proprietary SAIC SDK, accessin
 
 ---
 
-## Changelog
-
-### v2.5.0
-- **New**: Full support for **SWI165** (MG4 XPOWER) firmware — auto-detection
-- **New**: **ELK / LKA** (Lane Keeping Assist) — On/Off, mode (Alert / Assist / Emergency Keep) and sensitivity (Low / Standard / High) for all firmwares
-- **New**: **AEB sensitivity** (Forward Collision Assist) — Low / Standard / High for all firmwares
-- **New**: Redesigned main interface with **two pages** — swipe left/right to access forward collision assist and lane keeping assist
-
-### v2.4.0
-- **New**: Support for **SWI69 and SWI131**
-- **New**: The **"Open..."** shortcut in the Shortcuts tab lets the user choose the application
-
-### v2.3.0
-- **Fix**: Sound warning ON/OFF button (SWI68) not working from main screen (wrong value mapping: ON=2, OFF=1 instead of 0/1)
-- **Fix**: ADAS shortcut on SWI133 (`setMixedIntelligentDrive` call corrected)
-- **Fix**: Dashboard switches not responding correctly to taps (`isPressed` was always `false` in callback — programmatic wrapping added)
-- **New**: **"Open app"** shortcut action (OPEN_APP) in the shortcuts tab
-- **New**: Warning dialog when enabling shortcuts (recommends disabling official launcher shortcuts first)
-
-### v2.2.0
-- Full UI rewrite as unified Dashboard
-- Steering wheel shortcut system (SWI133 + SWI68)
-- UNKNOWN firmware compatibility with forced mode
-- Auto-update via GitHub API
-- APK cleanup in Downloads folder
-- FR / EN multilingual support
-
-### v2.1.0
-- Driving profile system (up to 5 profiles)
-- Automatic profile application on startup
-- Dark theme UI overhaul
-
-### v2.0.0
-- Full rewrite from DriveHub Dort
-- SWI68 support (VehicleSettingManager)
-- Multi-layer MG4Hardware architecture (Katman1/2/4)
-
----
 
 ## Compatibility
 
@@ -551,11 +475,13 @@ The app communicates with the vehicle through the proprietary SAIC SDK, accessin
 | OS | Android Automotive 9+ (API 28+) |
 | SoC | SAIC MT2712 |
 | Screen resolution | 1280 × 480 (forced landscape) |
-| SWI133 firmware | Supported ✅ |
-| SWI68 firmware | Supported ✅ |
-| SWI69 / SWI131 firmware | Supported ✅ |
-| SWI165 firmware | Supported ✅ |
-| UNKNOWN firmware | Forced SWI133/SWI68/SWI69/SWI131/SWI165 mode available ⚠️ |
+| Firmware SWI133 | Compatible ✅ |
+| Firmware SWI131 | Compatible ✅ |
+| Firmware SWI132 | Compatible ✅ |
+| Firmware SWI68 | Compatible ✅ |
+| Firmware SWI69 | Compatible ✅ |
+| Firmware SWI165 | Compatible ✅ |
+| UNKNOWN firmware | Forced SWI133/SWI132/SWI68/SWI69/SWI131/SWI165 mode available ⚠️ |
 
 ---
 
