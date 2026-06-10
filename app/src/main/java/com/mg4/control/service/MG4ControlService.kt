@@ -306,7 +306,7 @@ class MG4ControlService : Service() {
                             // Timeout sans sélection → applique le 1er profil (comportement historique)
                             CoroutineScope(Dispatchers.IO).launch {
                                 AppLogger.i(TAG, "[BT] Timeout → fallback profil '${btProfiles[0].name}'")
-                                ProfileApplier.apply(btProfiles[0]) { ok ->
+                                ProfileApplier.apply(btProfiles[0], autoStart = true) { ok ->
                                     AppLogger.i(TAG, "[BT] Fallback '${btProfiles[0].name}' — ok=$ok")
                                 }
                             }
@@ -318,7 +318,7 @@ class MG4ControlService : Service() {
             btProfiles.size == 1 -> {
                 AppLogger.i(TAG, "[BT] Profil BT '${btProfiles[0].name}' trouvé au démarrage — en attente Katman1")
                 MG4Hardware.whenKatman1Ready {
-                    ProfileApplier.apply(btProfiles[0]) { ok ->
+                    ProfileApplier.apply(btProfiles[0], autoStart = true) { ok ->
                         AppLogger.i(TAG, "[BT] Profil '${btProfiles[0].name}' appliqué — ok=$ok")
                     }
                 }
@@ -341,7 +341,7 @@ class MG4ControlService : Service() {
                             onAutoDismiss = {
                                 CoroutineScope(Dispatchers.IO).launch {
                                     AppLogger.i(TAG, "[BT-HFP] Timeout → fallback '${hfpProfiles[0].name}'")
-                                    ProfileApplier.apply(hfpProfiles[0]) { ok ->
+                                    ProfileApplier.apply(hfpProfiles[0], autoStart = true) { ok ->
                                         AppLogger.i(TAG, "[BT-HFP] Fallback appliqué — ok=$ok")
                                     }
                                 }
@@ -352,7 +352,7 @@ class MG4ControlService : Service() {
                 hfpProfiles.size == 1 -> {
                     AppLogger.i(TAG, "[BT-HFP] Profil '${hfpProfiles[0].name}' trouvé via HFP — en attente Katman1")
                     MG4Hardware.whenKatman1Ready {
-                        ProfileApplier.apply(hfpProfiles[0]) { ok ->
+                        ProfileApplier.apply(hfpProfiles[0], autoStart = true) { ok ->
                             AppLogger.i(TAG, "[BT-HFP] Profil '${hfpProfiles[0].name}' appliqué — ok=$ok")
                         }
                     }
@@ -367,7 +367,7 @@ class MG4ControlService : Service() {
                     AppLogger.i(TAG, "Profil par défaut '${defaultProfile.name}' — en attente Katman1")
                     MG4Hardware.whenKatman1Ready {
                         AppLogger.i(TAG, "Hardware prêt → application du profil '${defaultProfile.name}'")
-                        ProfileApplier.apply(defaultProfile) { ok ->
+                        ProfileApplier.apply(defaultProfile, autoStart = true) { ok ->
                             AppLogger.i(TAG, "Profil '${defaultProfile.name}' appliqué — ok=$ok")
                         }
                     }
@@ -384,11 +384,20 @@ class MG4ControlService : Service() {
      */
     private fun registerIgnitionListener() {
         val vcListener: (Int) -> Unit = { state ->
-            if (state == MG4Hardware.CarIgnitionItem.RUN) {
-                AppLogger.i(TAG, "Katman5 IGNITION_RUN → application du profil par défaut")
-                Handler(Looper.getMainLooper()).postDelayed({
-                    applyDefaultProfileOnIgnition()
-                }, 500L)
+            when (state) {
+                MG4Hardware.CarIgnitionItem.RUN -> {
+                    AppLogger.i(TAG, "Katman5 IGNITION_RUN → application du profil")
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        applyDefaultProfileOnIgnition()
+                    }, 500L)
+                }
+                MG4Hardware.CarIgnitionItem.OFF -> {
+                    // Extinction → on oublie le choix manuel : le prochain cycle repart sur le défaut/BT
+                    if (ProfileApplier.lastManualProfileId != null) {
+                        AppLogger.i(TAG, "Katman5 IGNITION_OFF → reset du choix manuel")
+                        ProfileApplier.lastManualProfileId = null
+                    }
+                }
             }
         }
         vehicleConditionListener = vcListener
@@ -428,7 +437,7 @@ class MG4ControlService : Service() {
 
     /**
      * Applique le profil approprié suite à un événement IGNITION_STATE=RUN.
-     * Priorité : profil BT associé → profil par défaut.
+     * Priorité : choix manuel récent (popup/app) → profil BT associé → profil par défaut.
      */
     private fun applyDefaultProfileOnIgnition() {
         val prefs = getSharedPreferences("mg4_settings", MODE_PRIVATE)
@@ -438,6 +447,26 @@ class MG4ControlService : Service() {
         }
 
         val pm = ProfileManager(applicationContext)
+
+        // Choix manuel récent (popup volant / app) → prioritaire sur BT et défaut.
+        // L'utilisateur a explicitement sélectionné un profil depuis le démarrage : on le respecte.
+        val manualId = ProfileApplier.lastManualProfileId
+        if (manualId != null) {
+            val manualProfile = pm.getById(manualId)
+            if (manualProfile != null) {
+                AppLogger.i(TAG, "IGNITION → choix manuel respecté : '${manualProfile.name}'")
+                MG4Hardware.whenKatman1Ready {
+                    ProfileApplier.apply(manualProfile, autoStart = true) { ok ->
+                        AppLogger.i(TAG, "IGNITION → profil manuel '${manualProfile.name}' ré-appliqué — ok=$ok")
+                    }
+                }
+                return
+            } else {
+                // Profil supprimé entre-temps → on oublie le choix et on retombe sur le défaut/BT
+                AppLogger.i(TAG, "IGNITION → choix manuel introuvable (id=$manualId), fallback défaut/BT")
+                ProfileApplier.lastManualProfileId = null
+            }
+        }
 
         // [BT-PROFILES] Cherche tous les profils BT parmi les appareils connectés
         val btProfiles = BluetoothProfileManager.getConnectedMacs()
@@ -454,7 +483,7 @@ class MG4ControlService : Service() {
                         onAutoDismiss = {
                             CoroutineScope(Dispatchers.IO).launch {
                                 AppLogger.i(TAG, "IGNITION [BT] Timeout → fallback '${btProfiles[0].name}'")
-                                ProfileApplier.apply(btProfiles[0]) { ok ->
+                                ProfileApplier.apply(btProfiles[0], autoStart = true) { ok ->
                                     AppLogger.i(TAG, "IGNITION [BT] Fallback appliqué — ok=$ok")
                                 }
                             }
@@ -465,7 +494,7 @@ class MG4ControlService : Service() {
             btProfiles.size == 1 -> {
                 AppLogger.i(TAG, "IGNITION [BT] → application du profil '${btProfiles[0].name}'")
                 MG4Hardware.whenKatman1Ready {
-                    ProfileApplier.apply(btProfiles[0]) { ok ->
+                    ProfileApplier.apply(btProfiles[0], autoStart = true) { ok ->
                         AppLogger.i(TAG, "IGNITION [BT] → profil '${btProfiles[0].name}' appliqué — ok=$ok")
                     }
                 }
@@ -478,7 +507,7 @@ class MG4ControlService : Service() {
                 }
                 AppLogger.i(TAG, "IGNITION → application du profil par défaut '${defaultProfile.name}'")
                 MG4Hardware.whenKatman1Ready {
-                    ProfileApplier.apply(defaultProfile) { ok ->
+                    ProfileApplier.apply(defaultProfile, autoStart = true) { ok ->
                         AppLogger.i(TAG, "IGNITION → profil '${defaultProfile.name}' appliqué — ok=$ok")
                     }
                 }

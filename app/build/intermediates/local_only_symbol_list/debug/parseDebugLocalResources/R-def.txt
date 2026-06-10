@@ -389,6 +389,7 @@ string diag_copied
 string diag_copy
 string diag_loading
 string diag_title
+string diagnostic_unlocked
 string drive_custom
 string drive_eco
 string drive_energy_saving

@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import androidx.appcompat.app.AppCompatDelegate
+import com.mg4.control.MainActivity
 import com.mg4.control.util.ThemeHelper
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -46,9 +47,6 @@ class SettingsFragment : Fragment() {
 
     private val githubUrl = "https://github.com/SliDeeN/MG4Control"
     private val gitlabUrl = "https://gitlab.com/SliDeeN/mg4control"
-
-    // Compteur pour débloquer le bouton Diagnostic (5 clics sur "Vérifier les mises à jour")
-    private var updateClickCount = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -173,14 +171,10 @@ class SettingsFragment : Fragment() {
         val btnDiagnostic = view.findViewById<MaterialButton>(R.id.btn_diagnostic)
         val originalUpdateText = getString(R.string.btn_check_update)
 
-        btnUpdate.setOnClickListener {
-            // Easter egg : 5 clics d'affilé → débloque le bouton Diagnostic
-            updateClickCount++
-            if (updateClickCount >= 5) {
-                updateClickCount = 0
-                btnDiagnostic.visibility = View.VISIBLE
-            }
+        // Bouton Diagnostic débloqué via 5 clics sur le logo (cf. MainActivity)
+        btnDiagnostic.visibility = if (MainActivity.diagnosticUnlocked) View.VISIBLE else View.GONE
 
+        btnUpdate.setOnClickListener {
             btnUpdate.isEnabled = false
 
             UpdateChecker.check(

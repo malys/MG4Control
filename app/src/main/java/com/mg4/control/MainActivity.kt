@@ -8,7 +8,9 @@ import android.graphics.Paint
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -54,9 +56,28 @@ class MainActivity : AppCompatActivity() {
 
         setupFirmwareChips()
         setupNavButtons()
+        setupDiagnosticUnlock()
         checkUnknownFirmware()  // après setupFirmwareChips pour que les chips soient prêtes
         navigateToDefaultScreen(savedInstanceState)
         checkForUpdates()
+    }
+
+    // ── Déblocage du bouton Diagnostic (5 clics sur le logo) ────────────────
+
+    private var logoClickCount = 0
+
+    private fun setupDiagnosticUnlock() {
+        findViewById<View>(R.id.topbar_logo)?.setOnClickListener {
+            if (diagnosticUnlocked) return@setOnClickListener
+            logoClickCount++
+            if (logoClickCount >= 5) {
+                logoClickCount = 0
+                diagnosticUnlocked = true
+                // Révèle immédiatement le bouton si l'onglet Réglages est déjà affiché
+                findViewById<View>(R.id.btn_diagnostic)?.visibility = View.VISIBLE
+                Toast.makeText(this, getString(R.string.diagnostic_unlocked), Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     // ── Navigation vers l'écran par défaut au démarrage ─────────────────────
@@ -290,5 +311,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         dialog.show()
+    }
+
+    companion object {
+        /**
+         * Débloqué via 5 clics sur le logo en haut à gauche. En mémoire uniquement :
+         * réinitialisé au redémarrage du process (le bouton Diagnostic reste masqué par défaut).
+         */
+        @Volatile var diagnosticUnlocked = false
     }
 }

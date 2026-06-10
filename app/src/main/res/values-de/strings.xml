@@ -157,6 +157,7 @@
 
     <!-- Diagnose -->
     <string name="btn_diagnostic">Diagnose</string>
+    <string name="diagnostic_unlocked">Diagnose freigeschaltet</string>
     <string name="diag_title">Diagnose</string>
     <string name="diag_copy">Kopieren</string>
     <string name="diag_copied">Kopiert!</string>

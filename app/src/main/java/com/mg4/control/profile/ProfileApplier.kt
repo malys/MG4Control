@@ -14,12 +14,33 @@ object ProfileApplier {
     private const val TAG = "MG4_PROFILE"
 
     /**
+     * Id du dernier profil appliqué MANUELLEMENT (popup volant, bouton dans l'app, raccourci
+     * APPLY_PROFILE) — c.-à-d. avec autoStart=false. Permet au passage en READY de respecter le
+     * choix explicite de l'utilisateur au lieu de ré-appliquer le profil par défaut.
+     * En mémoire : réinitialisé à l'extinction de la voiture (IGNITION_OFF) ou au redémarrage du process.
+     */
+    @Volatile
+    var lastManualProfileId: String? = null
+
+    /**
      * Applique tous les paramètres de [profile] au véhicule de façon asynchrone.
      * Les opérations HVAC (siège/volant) sont bloquantes (polling jusqu'à 7s),
      * exécutées sur le dispatcher IO.
+     *
+     * @param autoStart true si l'application est déclenchée automatiquement au démarrage
+     *   (IGNITION/boot). Active la passe de vérification des alertes sonores (SWI132/SWI133) :
+     *   au démarrage à froid, le firmware peut ré-asserter OVERSPEED/SPEED_TONE après nos
+     *   écritures — on relit et on réécrit en cas d'écart. Inutile en application manuelle.
      */
-    fun apply(profile: DrivingProfile, onComplete: ((Boolean) -> Unit)? = null) {
-        AppLogger.i(TAG, "Application du profil : ${profile.name}")
+    fun apply(profile: DrivingProfile, autoStart: Boolean = false, onComplete: ((Boolean) -> Unit)? = null) {
+        AppLogger.i(TAG, "Application du profil : ${profile.name} (autoStart=$autoStart)")
+
+        // Application manuelle (popup volant / app / raccourci) → on mémorise le choix de l'utilisateur
+        // pour que le passage en READY le respecte au lieu de ré-appliquer le profil par défaut.
+        if (!autoStart) {
+            lastManualProfileId = profile.id
+            AppLogger.i(TAG, "  Choix manuel mémorisé : ${profile.name} (id=${profile.id})")
+        }
 
         @Suppress("OPT_IN_USAGE")
         GlobalScope.launch(Dispatchers.IO) {
@@ -160,8 +181,82 @@ object ProfileApplier {
                 }
                 // ELK — commun à tous les firmwares connus
                 applyElk(profile.elkMode, profile.elkSensitivity, profile.lasAudibleWarning, profile.lasVibrationReminder)
+
+                // ── Passe de vérification ADAS (auto-démarrage uniquement) ────────────
+                // Au démarrage à froid, le firmware peut ré-asserter certains réglages APRÈS
+                // notre écriture (alertes survitesse/ton ~400ms après le SLIF/TSR ; ELK remis à
+                // sa valeur par défaut). On relit après stabilisation et on réécrit en cas d'écart.
+                // Concerne SWI132/SWI133 (2 alertes distinctes + ELK).
+                val gen = FirmwareInfo.getGeneration()
+                if (autoStart && (gen == FirmwareInfo.Gen.SWI133 || gen == FirmwareInfo.Gen.SWI132)) {
+                    verifyAdasWithRetry(profile)
+                }
             }
         }
+    }
+
+    /**
+     * Passe de vérification post-application (auto-démarrage, SWI132/SWI133). Attend la fin de
+     * la fenêtre de ré-assertion firmware puis relit/réécrit en cas d'écart :
+     *   - alertes sonores survitesse + ton
+     *   - ELK (assistant de sortie de voie) — le firmware le remet à sa valeur par défaut au boot
+     */
+    private fun verifyAdasWithRetry(profile: DrivingProfile) {
+        AppLogger.i(TAG, "  [VERIFY] Vérification ADAS (auto-démarrage) — stabilisation 500ms")
+        try { Thread.sleep(500) } catch (_: InterruptedException) {}
+        verifyOneAlert("OverspeedAlarm", profile.overspeedAlarm,
+            { MG4Hardware.isOverspeedAlarmOn() }, { MG4Hardware.setOverspeedAlarm(it) })
+        verifyOneAlert("SpeedLimitTone", profile.speedLimitTone,
+            { MG4Hardware.isSpeedLimitToneOn() }, { MG4Hardware.setSpeedLimitTone(it) })
+        verifyElk(profile)
+    }
+
+    /**
+     * Vérifie le mode ELK (assistant de sortie de voie) après stabilisation et le réécrit s'il a
+     * dérivé (réactivation auto par le firmware). Ne fait rien si le profil ne configure pas l'ELK
+     * (elkMode=0). Réapplique la config ELK complète (mode + sensibilité + sonore/vibration SWI132).
+     */
+    private fun verifyElk(profile: DrivingProfile) {
+        if (profile.elkMode == 0) return   // ELK non configuré dans ce profil → ne pas toucher
+        repeat(3) { i ->
+            val actual = MG4Hardware.getElkMode()
+            if (actual == profile.elkMode) {
+                AppLogger.i(TAG, "  [VERIFY] ElkMode conforme (lu=$actual" +
+                    if (i > 0) ", après $i correction(s))" else ")")
+                return
+            }
+            AppLogger.w(TAG, "  [VERIFY] ElkMode ÉCART (lu=$actual, attendu=${profile.elkMode}) → réécriture (tentative ${i + 1}/3)")
+            applyElk(profile.elkMode, profile.elkSensitivity, profile.lasAudibleWarning, profile.lasVibrationReminder)
+            try { Thread.sleep(300) } catch (_: InterruptedException) {}
+        }
+        val finalVal = MG4Hardware.getElkMode()
+        if (finalVal == profile.elkMode)
+            AppLogger.i(TAG, "  [VERIFY] ElkMode finalement conforme (lu=$finalVal)")
+        else
+            AppLogger.w(TAG, "  [VERIFY] ElkMode ÉCHEC après 3 tentatives (lu=$finalVal, attendu=${profile.elkMode})")
+    }
+
+    /**
+     * Relit une alerte ; si elle diffère de la valeur voulue, la réécrit et réessaie.
+     * Jusqu'à 3 tentatives espacées de 300ms pour couvrir un écrasement firmware tardif.
+     */
+    private fun verifyOneAlert(name: String, desired: Boolean, read: () -> Boolean, write: (Boolean) -> Boolean) {
+        repeat(3) { i ->
+            val actual = read()
+            if (actual == desired) {
+                AppLogger.i(TAG, "  [VERIFY] $name conforme (lu=$actual" +
+                    if (i > 0) ", après $i correction(s))" else ")")
+                return
+            }
+            AppLogger.w(TAG, "  [VERIFY] $name ÉCART (lu=$actual, attendu=$desired) → réécriture (tentative ${i + 1}/3)")
+            write(desired)
+            try { Thread.sleep(300) } catch (_: InterruptedException) {}
+        }
+        val finalVal = read()
+        if (finalVal == desired)
+            AppLogger.i(TAG, "  [VERIFY] $name finalement conforme (lu=$finalVal)")
+        else
+            AppLogger.w(TAG, "  [VERIFY] $name ÉCHEC après 3 tentatives (lu=$finalVal, attendu=$desired)")
     }
 
     /**
