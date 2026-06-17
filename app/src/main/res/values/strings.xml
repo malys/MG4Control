@@ -240,6 +240,12 @@
     <string name="settings_auto_apply">Réglages supplémentaires</string>
     <string name="settings_auto_apply_desc">Le profil par défaut s\'applique automatiquement au lancement</string>
     <string name="settings_auto_update_desc">Vérifier les mises à jour automatiquement au lancement</string>
+    <string name="settings_vehicle_power_desc">Éteindre le véhicule en gardant l\'écran allumé</string>
+    <string name="settings_vehicle_power_btn">Éteindre</string>
+    <string name="vehicle_power_dialog_title">Éteindre le véhicule</string>
+    <string name="vehicle_power_dialog_msg">Le véhicule va être mis hors tension ; l\'écran reste actif. Disponible uniquement à l\'arrêt, levier en position P.</string>
+    <string name="vehicle_power_dialog_confirm">Éteindre</string>
+    <string name="vehicle_power_dialog_cancel">Annuler</string>
     <string name="settings_theme">Apparence</string>
     <string name="settings_theme_auto">Auto</string>
     <string name="settings_theme_dark">Mode sombre</string>

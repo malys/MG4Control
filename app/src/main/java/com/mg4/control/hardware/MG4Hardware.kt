@@ -843,52 +843,39 @@ object MG4Hardware {
         }
     }
 
-    // ── A9 (SWI132/131/69) — CarGeneralClient (plage déjà 0–100) ──
-    //   setScreenBrightness(mode, day, night)  mode: 0=JOUR, 1=NUIT, 2=AUTO
-    //   getCurrentBrightnessValue(mode) → valeur du mode ; getUIBrightnessMode() → mode courant
-    //   (décodé dans com.saicmotor.settings : DisplayService / DisplayModel)
-
-    private fun carGeneralInt(method: String, vararg intArgs: Int): Int? {
-        val cg = sCarGeneral ?: return null
-        return try {
-            val types = Array(intArgs.size) { Int::class.javaPrimitiveType!! }
-            (cg.javaClass.getMethod(method, *types).invoke(cg, *intArgs.toTypedArray()) as? Int)
-        } catch (e: Exception) {
-            AppLogger.w(TAG, "  CarGeneral.$method exc: ${e.message}")
-            null
-        }
-    }
+    // ── A9 (SWI132/131/69) — luminosité via Settings.System.SCREEN_BRIGHTNESS ──
+    // L'app Settings A9 (GeneralModel.setBrightness) pilote réellement la dalle par
+    // Settings.System.putInt("screen_brightness", 0..255) + passage en mode manuel.
+    // CarGeneralClient.setScreenBrightness(mode,day,night) ne stocke que le jour/nuit
+    // et n'a AUCUN effet sur la dalle (confirmé par les logs SWI132 : valeur lue=0,
+    // aucun changement visuel). L'app étant uid.system, elle peut écrire Settings.System.
+    private const val A9_BRIGHTNESS_NATIVE_MAX = 255
 
     private fun getBrightnessA9(): Int {
-        sCarGeneral ?: return -1
-        val mode = carGeneralInt("getUIBrightnessMode") ?: 0   // 0=jour, 1=nuit, 2=auto
-        val idx = if (mode == 1) 1 else 0                       // auto → lit la valeur jour
-        val v = carGeneralInt("getCurrentBrightnessValue", idx) ?: return -1
-        if (v < 0) return -1
-        val pct = v.coerceIn(0, 100)
-        AppLogger.d(TAG, "  A9 brightness mode=$mode value=$v → $pct%")
-        return pct
+        val resolver = sAppContext?.contentResolver ?: return -1
+        val native = try {
+            android.provider.Settings.System.getInt(resolver, android.provider.Settings.System.SCREEN_BRIGHTNESS)
+        } catch (e: Exception) {
+            AppLogger.w(TAG, "  A9 getBrightness Settings.System exc: ${e.message}"); return -1
+        }
+        if (native < 0) return -1
+        return (native * 100 / A9_BRIGHTNESS_NATIVE_MAX).coerceIn(0, 100)
     }
 
     private fun setBrightnessA9(clampedPct: Int): Boolean {
-        val cg = sCarGeneral ?: return false
-        val mode = carGeneralInt("getUIBrightnessMode") ?: 0
-        // Lit les deux valeurs courantes pour ne modifier que celle du mode actif
-        val day   = carGeneralInt("getCurrentBrightnessValue", 0) ?: clampedPct
-        val night = carGeneralInt("getCurrentBrightnessValue", 1) ?: clampedPct
-        // Mode NUIT → on change la valeur nuit ; sinon (JOUR/AUTO) → la valeur jour
-        val newMode = if (mode == 1) 1 else 0
-        val newDay   = if (newMode == 0) clampedPct else day
-        val newNight = if (newMode == 1) clampedPct else night
-        if (logEnabled) AppLogger.i(TAG, "A9 setScreenBrightness(mode=$newMode, day=$newDay, night=$newNight) [$clampedPct%]")
+        val resolver = sAppContext?.contentResolver ?: return false
+        val native = (clampedPct.coerceIn(0, 100) * A9_BRIGHTNESS_NATIVE_MAX / 100).coerceIn(1, A9_BRIGHTNESS_NATIVE_MAX)
         return try {
-            cg.javaClass.getMethod(
-                "setScreenBrightness",
-                Int::class.javaPrimitiveType, Int::class.javaPrimitiveType, Int::class.javaPrimitiveType
-            ).invoke(cg, newMode, newDay, newNight)
+            // Mode manuel, sinon l'auto-luminosité écrase aussitôt la valeur
+            android.provider.Settings.System.putInt(resolver,
+                android.provider.Settings.System.SCREEN_BRIGHTNESS_MODE,
+                android.provider.Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL)
+            android.provider.Settings.System.putInt(resolver,
+                android.provider.Settings.System.SCREEN_BRIGHTNESS, native)
+            if (logEnabled) AppLogger.i(TAG, "A9 brightness → Settings.System.SCREEN_BRIGHTNESS=$native ($clampedPct%)")
             true
         } catch (e: Exception) {
-            AppLogger.w(TAG, "  A9 setScreenBrightness exc: ${e.message}")
+            AppLogger.w(TAG, "  A9 setBrightness Settings.System exc: ${e.message}")
             false
         }
     }
@@ -1188,6 +1175,61 @@ object MG4Hardware {
             // Fallback sur setIntProperty si setIntPropertyRecovery absent
             AppLogger.d(TAG, "  VPM setIntRecovery fallback for 0x${propId.toString(16)}: ${e.message}")
             setIntPropertyVpm(propId, value)
+        }
+    }
+
+    // ── Alimentation véhicule (mise hors tension, infodivertissement maintenu) ─
+    // Reproduit le bouton "Vehicle Power → Off" du launcher MG (onglet Safety).
+    // Valeur 2 sur les 6 firmwares ; seul le chemin d'accès diffère :
+    //   • SWI133        : VehiclePropertyManager.setIntPropertyRecovery(0x6030021, 2)
+    //   • SWI68/SWI165  : VehicleSettingManager.setPowerModeSwitch(2)
+    //   • A9 (132/131/69): CarAdapterClient.queryClient(0xf) → CarComfortabletClient.setPowerModeSwitch(2)
+    // Le véhicule n'exécute la coupure qu'à l'arrêt en position P (garde côté firmware).
+    private const val PROP_POWER_MODE_SWITCH    = 0x6030021   // ID_POWER_MODE_SWITCH (SWI133)
+    private const val POWER_MODE_OFF            = 2
+    private const val COMFORTABLET_CLIENT_CLASS = "com.saicmotor.carapi.client.CarComfortabletClient"
+    private const val CAR_ADAPTER_CLIENT_CLASS  = "com.saicmotor.carapi.CarAdapterClient"
+    private const val COMFORTABLET_SERVICE_CODE = 0xf
+
+    /** Disponible sur tous les firmwares connus. */
+    fun hasVehiclePowerOff(): Boolean =
+        FirmwareInfo.getGeneration() != FirmwareInfo.Gen.UNKNOWN
+
+    /** Coupe l'alimentation du véhicule tout en gardant l'écran/infodivertissement actif. */
+    fun vehiclePowerOff(): Boolean {
+        val gen = FirmwareInfo.getGeneration()
+        AppLogger.i(TAG, "vehiclePowerOff (gen=$gen)")
+        return when {
+            gen == FirmwareInfo.Gen.SWI133 ->
+                setIntPropertyVpmRecovery(PROP_POWER_MODE_SWITCH, POWER_MODE_OFF)
+            gen == FirmwareInfo.Gen.SWI68 || gen == FirmwareInfo.Gen.SWI165 ->
+                // sVsm = VehicleSettingManager (vieux SDK)
+                callVsmVoid("setPowerModeSwitch", POWER_MODE_OFF)
+            FirmwareInfo.isNewGenVsm() || gen == FirmwareInfo.Gen.SWI132 ->
+                vehiclePowerOffA9()
+            else -> false
+        }
+    }
+
+    /** A9 (SWI132/131/69) : obtient CarComfortabletClient via l'adaptateur carapi et coupe l'alim. */
+    private fun vehiclePowerOffA9(): Boolean {
+        val cl = sVsm?.javaClass?.classLoader ?: run {
+            AppLogger.w(TAG, "  A9 power-off: sVsm/classloader null"); return false
+        }
+        return try {
+            val adapterClass = cl.loadClass(CAR_ADAPTER_CLIENT_CLASS)
+            val adapter = adapterClass.getMethod("getInstance", Context::class.java).invoke(null, sAppContext)
+            val binder = adapterClass.getMethod("queryClient", Int::class.javaPrimitiveType)
+                .invoke(adapter, COMFORTABLET_SERVICE_CODE) as? android.os.IBinder
+                ?: run { AppLogger.w(TAG, "  A9 power-off: queryClient(0xf) null"); return false }
+            val comfortClass = cl.loadClass(COMFORTABLET_CLIENT_CLASS)
+            val comfort = comfortClass.getConstructor(android.os.IBinder::class.java).newInstance(binder)
+            comfortClass.getMethod("setPowerModeSwitch", Int::class.javaPrimitiveType).invoke(comfort, POWER_MODE_OFF)
+            AppLogger.i(TAG, "  A9 power-off: CarComfortabletClient.setPowerModeSwitch($POWER_MODE_OFF) ✓")
+            true
+        } catch (e: Exception) {
+            AppLogger.w(TAG, "  A9 power-off error: ${e.javaClass.simpleName}: ${e.message}")
+            false
         }
     }
 

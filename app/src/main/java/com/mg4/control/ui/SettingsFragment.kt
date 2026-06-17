@@ -166,6 +166,29 @@ class SettingsFragment : Fragment() {
             prefs.edit().putBoolean("auto_check_update", checked).apply()
         }
 
+        // ── Alimentation véhicule (SWI133) — éteint la voiture, garde l'écran ──
+        val rowVehiclePower = view.findViewById<View>(R.id.row_vehicle_power)
+        val dividerVehiclePower = view.findViewById<View>(R.id.row_vehicle_power_divider)
+        val btnVehiclePower = view.findViewById<MaterialButton>(R.id.btn_vehicle_power_off)
+        if (!MG4Hardware.hasVehiclePowerOff()) {
+            rowVehiclePower.visibility = View.GONE
+            dividerVehiclePower.visibility = View.GONE
+        } else {
+            btnVehiclePower.setOnClickListener {
+                AlertDialog.Builder(requireContext())
+                    .setTitle(R.string.vehicle_power_dialog_title)
+                    .setMessage(R.string.vehicle_power_dialog_msg)
+                    .setNegativeButton(R.string.vehicle_power_dialog_cancel, null)
+                    .setPositiveButton(R.string.vehicle_power_dialog_confirm) { _, _ ->
+                        CoroutineScope(Dispatchers.IO).launch {
+                            val ok = MG4Hardware.vehiclePowerOff()
+                            AppLogger.i("MG4_SETTINGS", "Vehicle power off → $ok")
+                        }
+                    }
+                    .show()
+            }
+        }
+
         // ── Bouton Vérifier mise à jour ──────────────────────────────────────
         val btnUpdate     = view.findViewById<MaterialButton>(R.id.btn_check_update)
         val btnDiagnostic = view.findViewById<MaterialButton>(R.id.btn_diagnostic)

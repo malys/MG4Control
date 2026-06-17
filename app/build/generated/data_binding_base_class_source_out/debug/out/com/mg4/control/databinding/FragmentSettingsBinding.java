@@ -72,6 +72,15 @@ public final class FragmentSettingsBinding implements ViewBinding {
   public final MaterialButton btnThemeLight;
 
   @NonNull
+  public final MaterialButton btnVehiclePowerOff;
+
+  @NonNull
+  public final LinearLayout rowVehiclePower;
+
+  @NonNull
+  public final View rowVehiclePowerDivider;
+
+  @NonNull
   public final Switch switchAutoApply;
 
   @NonNull
@@ -86,8 +95,9 @@ public final class FragmentSettingsBinding implements ViewBinding {
       @NonNull MaterialButton btnLangEs, @NonNull MaterialButton btnLangFr,
       @NonNull MaterialButton btnLangIt, @NonNull MaterialButton btnLangPt,
       @NonNull MaterialButton btnThemeAuto, @NonNull MaterialButton btnThemeDark,
-      @NonNull MaterialButton btnThemeLight, @NonNull Switch switchAutoApply,
-      @NonNull Switch switchAutoUpdate) {
+      @NonNull MaterialButton btnThemeLight, @NonNull MaterialButton btnVehiclePowerOff,
+      @NonNull LinearLayout rowVehiclePower, @NonNull View rowVehiclePowerDivider,
+      @NonNull Switch switchAutoApply, @NonNull Switch switchAutoUpdate) {
     this.rootView = rootView;
     this.btnCheckUpdate = btnCheckUpdate;
     this.btnCleanApk = btnCleanApk;
@@ -106,6 +116,9 @@ public final class FragmentSettingsBinding implements ViewBinding {
     this.btnThemeAuto = btnThemeAuto;
     this.btnThemeDark = btnThemeDark;
     this.btnThemeLight = btnThemeLight;
+    this.btnVehiclePowerOff = btnVehiclePowerOff;
+    this.rowVehiclePower = rowVehiclePower;
+    this.rowVehiclePowerDivider = rowVehiclePowerDivider;
     this.switchAutoApply = switchAutoApply;
     this.switchAutoUpdate = switchAutoUpdate;
   }
@@ -239,6 +252,24 @@ public final class FragmentSettingsBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.btn_vehicle_power_off;
+      MaterialButton btnVehiclePowerOff = ViewBindings.findChildViewById(rootView, id);
+      if (btnVehiclePowerOff == null) {
+        break missingId;
+      }
+
+      id = R.id.row_vehicle_power;
+      LinearLayout rowVehiclePower = ViewBindings.findChildViewById(rootView, id);
+      if (rowVehiclePower == null) {
+        break missingId;
+      }
+
+      id = R.id.row_vehicle_power_divider;
+      View rowVehiclePowerDivider = ViewBindings.findChildViewById(rootView, id);
+      if (rowVehiclePowerDivider == null) {
+        break missingId;
+      }
+
       id = R.id.switch_auto_apply;
       Switch switchAutoApply = ViewBindings.findChildViewById(rootView, id);
       if (switchAutoApply == null) {
@@ -254,7 +285,8 @@ public final class FragmentSettingsBinding implements ViewBinding {
       return new FragmentSettingsBinding((LinearLayout) rootView, btnCheckUpdate, btnCleanApk,
           btnCloseSettings, btnDefaultDashboard, btnDefaultProfiles, btnDefaultShortcuts,
           btnDiagnostic, btnInfos, btnLangDe, btnLangEn, btnLangEs, btnLangFr, btnLangIt, btnLangPt,
-          btnThemeAuto, btnThemeDark, btnThemeLight, switchAutoApply, switchAutoUpdate);
+          btnThemeAuto, btnThemeDark, btnThemeLight, btnVehiclePowerOff, rowVehiclePower,
+          rowVehiclePowerDivider, switchAutoApply, switchAutoUpdate);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

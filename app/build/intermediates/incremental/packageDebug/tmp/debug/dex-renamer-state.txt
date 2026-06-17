@@ -1,4 +1,4 @@
-#Thu Jun 11 19:39:11 CEST 2026
+#Wed Jun 17 08:47:27 CEST 2026
 base.0=C\:\\Users\\SliDS\\Documents\\MG4 Project\\MG4Control\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
 base.1=C\:\\Users\\SliDS\\Documents\\MG4 Project\\MG4Control\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex
 base.10=C\:\\Users\\SliDS\\Documents\\MG4 Project\\MG4Control\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes2.dex

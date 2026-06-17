@@ -156,6 +156,8 @@
     <string name="settings_theme_dark">Dark mode</string>
     <string name="settings_theme_desc">Switch between dark and light theme</string>
     <string name="settings_theme_light">Light mode</string>
+    <string name="settings_vehicle_power_btn">Power off</string>
+    <string name="settings_vehicle_power_desc">Power off the vehicle while keeping the screen on</string>
     <string name="shortcuts_action_adas">ADAS</string>
     <string name="shortcuts_action_aeb">Anticollision system</string>
     <string name="shortcuts_action_apply_profile">Launch a profile</string>
@@ -219,4 +221,8 @@
     <string name="update_release_notes_label">Release notes</string>
     <string name="update_skip_btn">Don\'t remind me again</string>
     <string name="update_up_to_date">✓  Up to date</string>
+    <string name="vehicle_power_dialog_cancel">Cancel</string>
+    <string name="vehicle_power_dialog_confirm">Power off</string>
+    <string name="vehicle_power_dialog_msg">The vehicle will be powered off; the screen stays on. Only available when stopped, with the gear in P.</string>
+    <string name="vehicle_power_dialog_title">Power off vehicle</string>
 </resources>

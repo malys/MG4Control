@@ -3420,6 +3420,7 @@ id btn_update_auto
 id btn_update_later
 id btn_update_manual
 id btn_update_skip
+id btn_vehicle_power_off
 id buttonPanel
 id cache_measures
 id callMeasure
@@ -3745,6 +3746,8 @@ id row_index_key
 id row_overspeed_d
 id row_sound_warning_d
 id row_speed_tone_d
+id row_vehicle_power
+id row_vehicle_power_divider
 id rtl
 id save_non_transition_alpha
 id save_overlay_view
@@ -4502,6 +4505,8 @@ string settings_theme_auto
 string settings_theme_dark
 string settings_theme_desc
 string settings_theme_light
+string settings_vehicle_power_btn
+string settings_vehicle_power_desc
 string shortcuts_action_adas
 string shortcuts_action_aeb
 string shortcuts_action_apply_profile
@@ -4568,6 +4573,10 @@ string update_new_label
 string update_release_notes_label
 string update_skip_btn
 string update_up_to_date
+string vehicle_power_dialog_cancel
+string vehicle_power_dialog_confirm
+string vehicle_power_dialog_msg
+string vehicle_power_dialog_title
 style AlertDialog_AppCompat
 style AlertDialog_AppCompat_Light
 style Animation_AppCompat_Dialog

@@ -183,6 +183,7 @@ id btn_update_auto
 id btn_update_later
 id btn_update_manual
 id btn_update_skip
+id btn_vehicle_power_off
 id chip_swi131
 id chip_swi132
 id chip_swi133
@@ -233,6 +234,8 @@ id row_data_warning
 id row_overspeed_d
 id row_sound_warning_d
 id row_speed_tone_d
+id row_vehicle_power
+id row_vehicle_power_divider
 id sc_adas_a_0
 id sc_adas_a_1
 id sc_adas_a_2
@@ -493,6 +496,8 @@ string settings_theme_auto
 string settings_theme_dark
 string settings_theme_desc
 string settings_theme_light
+string settings_vehicle_power_btn
+string settings_vehicle_power_desc
 string shortcuts_action_adas
 string shortcuts_action_aeb
 string shortcuts_action_apply_profile
@@ -556,5 +561,9 @@ string update_new_label
 string update_release_notes_label
 string update_skip_btn
 string update_up_to_date
+string vehicle_power_dialog_cancel
+string vehicle_power_dialog_confirm
+string vehicle_power_dialog_msg
+string vehicle_power_dialog_title
 style Theme.MG4Control
 xml file_provider_paths

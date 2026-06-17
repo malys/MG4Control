@@ -238,6 +238,12 @@
     <string name="settings_auto_apply">Ajustes adicionales</string>
     <string name="settings_auto_apply_desc">El perfil predeterminado se aplica automáticamente al iniciar</string>
     <string name="settings_auto_update_desc">Buscar actualizaciones automáticamente al iniciar</string>
+    <string name="settings_vehicle_power_desc">Apagar el vehículo manteniendo la pantalla encendida</string>
+    <string name="settings_vehicle_power_btn">Apagar</string>
+    <string name="vehicle_power_dialog_title">Apagar el vehículo</string>
+    <string name="vehicle_power_dialog_msg">El vehículo se apagará; la pantalla permanece activa. Solo disponible detenido y con la palanca en P.</string>
+    <string name="vehicle_power_dialog_confirm">Apagar</string>
+    <string name="vehicle_power_dialog_cancel">Cancelar</string>
     <string name="settings_theme">Apariencia</string>
     <string name="settings_theme_auto">Auto</string>
     <string name="settings_theme_dark">Modo oscuro</string>

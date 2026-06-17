@@ -238,6 +238,12 @@
     <string name="settings_auto_apply">Impostazioni aggiuntive</string>
     <string name="settings_auto_apply_desc">Il profilo predefinito viene applicato automaticamente all\'avvio</string>
     <string name="settings_auto_update_desc">Controlla aggiornamenti automaticamente all\'avvio</string>
+    <string name="settings_vehicle_power_desc">Spegnere il veicolo mantenendo lo schermo acceso</string>
+    <string name="settings_vehicle_power_btn">Spegni</string>
+    <string name="vehicle_power_dialog_title">Spegnere il veicolo</string>
+    <string name="vehicle_power_dialog_msg">Il veicolo verrà spento; lo schermo resta attivo. Disponibile solo da fermo, con il cambio in P.</string>
+    <string name="vehicle_power_dialog_confirm">Spegni</string>
+    <string name="vehicle_power_dialog_cancel">Annulla</string>
     <string name="settings_theme">Aspetto</string>
     <string name="settings_theme_auto">Auto</string>
     <string name="settings_theme_dark">Modalità scura</string>

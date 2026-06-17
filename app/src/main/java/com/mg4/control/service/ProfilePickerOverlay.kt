@@ -21,6 +21,7 @@ import com.mg4.control.hardware.MG4Hardware
 import com.mg4.control.model.DrivingProfile
 import com.mg4.control.profile.ProfileApplier
 import com.mg4.control.profile.ProfileManager
+import com.mg4.control.util.LocaleHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -92,9 +93,15 @@ object ProfilePickerOverlay {
 
         val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
+        // Le contexte du Service n'applique pas la langue choisie dans l'app
+        // (LocaleHelper n'est posé que sur MainActivity/MG4App). Sans ça, le popup
+        // tombe sur la langue système. On enveloppe avec la locale courante (lecture
+        // fraîche → reflète un changement de langue en cours de session).
+        val localizedContext = LocaleHelper.applyLocale(context)
+
         // Le contexte du Service n'a pas de thème Material → on l'enveloppe
         // avec le thème de l'app pour que MaterialButton puisse s'instancier.
-        val themedContext = ContextThemeWrapper(context, R.style.Theme_MG4Control)
+        val themedContext = ContextThemeWrapper(localizedContext, R.style.Theme_MG4Control)
 
         // Inflate la vue depuis le layout XML (utilise le contexte thémé)
         val view = LayoutInflater.from(themedContext).inflate(R.layout.overlay_profile_picker, null)
@@ -190,7 +197,7 @@ object ProfilePickerOverlay {
         val tick: Runnable = object : Runnable {
             override fun run() {
                 if (overlayView == null) return
-                tvCountdown?.text = context.getString(R.string.overlay_countdown, remaining)
+                tvCountdown?.text = localizedContext.getString(R.string.overlay_countdown, remaining)
                 if (remaining > 0) {
                     remaining--
                     handler.postDelayed(this, 1_000L)

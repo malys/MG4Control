@@ -16,24 +16,28 @@
         "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-50:\\layout\\activity_main.xml"
     },
     {
-        "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-48:\\layout_fragment_dashboard.xml.flat",
-        "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-50:\\layout\\fragment_dashboard.xml"
+        "merged": "com.mg4.control.app-debug-48:/layout_fragment_settings.xml.flat",
+        "source": "com.mg4.control.app-main-50:/layout/fragment_settings.xml"
     },
     {
-        "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-48:\\layout_fragment_settings.xml.flat",
-        "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-50:\\layout\\fragment_settings.xml"
+        "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-48:\\layout_fragment_dashboard.xml.flat",
+        "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-50:\\layout\\fragment_dashboard.xml"
     },
     {
         "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-48:\\menu_bottom_nav_menu.xml.flat",
         "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-50:\\menu\\bottom_nav_menu.xml"
     },
     {
-        "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-48:\\mipmap-mdpi_ic_launcher_foreground.webp.flat",
-        "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-50:\\mipmap-mdpi\\ic_launcher_foreground.webp"
+        "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-48:\\layout_fragment_settings.xml.flat",
+        "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-50:\\layout\\fragment_settings.xml"
     },
     {
         "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-48:\\layout_fragment_climate.xml.flat",
         "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-50:\\layout\\fragment_climate.xml"
+    },
+    {
+        "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-48:\\mipmap-mdpi_ic_launcher_foreground.webp.flat",
+        "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-50:\\mipmap-mdpi\\ic_launcher_foreground.webp"
     },
     {
         "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-48:\\layout_dialog_update.xml.flat",
@@ -162,10 +166,6 @@
     {
         "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-48:\\mipmap-xxxhdpi_ic_launcher_foreground.webp.flat",
         "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-50:\\mipmap-xxxhdpi\\ic_launcher_foreground.webp"
-    },
-    {
-        "merged": "com.mg4.control.app-debug-48:/layout_overlay_profile_picker.xml.flat",
-        "source": "com.mg4.control.app-main-50:/layout/overlay_profile_picker.xml"
     },
     {
         "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-debug-48:\\layout_overlay_profile_picker.xml.flat",

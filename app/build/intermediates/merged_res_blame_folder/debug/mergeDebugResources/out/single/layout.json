@@ -12,16 +12,20 @@
         "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-50:\\layout\\fragment_climate.xml"
     },
     {
-        "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-mergeDebugResources-47:\\layout\\activity_main.xml",
-        "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-50:\\layout\\activity_main.xml"
-    },
-    {
         "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-mergeDebugResources-47:\\layout\\fragment_shortcuts.xml",
         "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-50:\\layout\\fragment_shortcuts.xml"
     },
     {
+        "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-mergeDebugResources-47:\\layout\\activity_main.xml",
+        "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-50:\\layout\\activity_main.xml"
+    },
+    {
         "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-mergeDebugResources-47:\\layout\\fragment_drive_regen.xml",
         "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-50:\\layout\\fragment_drive_regen.xml"
+    },
+    {
+        "merged": "com.mg4.control.app-mergeDebugResources-47:/layout/fragment_settings.xml",
+        "source": "com.mg4.control.app-main-50:/layout/fragment_settings.xml"
     },
     {
         "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-mergeDebugResources-47:\\layout\\fragment_profile.xml",
@@ -54,10 +58,6 @@
     {
         "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-mergeDebugResources-47:\\layout\\fragment_console.xml",
         "source": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-main-50:\\layout\\fragment_console.xml"
-    },
-    {
-        "merged": "com.mg4.control.app-mergeDebugResources-47:/layout/overlay_profile_picker.xml",
-        "source": "com.mg4.control.app-main-50:/layout/overlay_profile_picker.xml"
     },
     {
         "merged": "C:\\Users\\SliDS\\.gradle\\daemon\\9.0.0\\com.mg4.control.app-mergeDebugResources-47:\\layout\\overlay_profile_picker.xml",

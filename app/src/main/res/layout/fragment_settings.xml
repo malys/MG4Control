@@ -400,6 +400,46 @@
 
                 </LinearLayout>
 
+                <!-- ── Alimentation véhicule (SWI133) — éteint la voiture, garde l'écran ── -->
+                <View
+                    android:id="@+id/row_vehicle_power_divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/dash_border" />
+
+                <LinearLayout
+                    android:id="@+id/row_vehicle_power"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/settings_vehicle_power_desc"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_vehicle_power_off"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/settings_vehicle_power_btn"
+                        android:textColor="@color/dash_accent"
+                        android:textSize="11sp"
+                        android:letterSpacing="0.06"
+                        android:textAllCaps="true"
+                        app:backgroundTint="@color/dash_accent_dim"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="@color/dash_accent"
+                        app:cornerRadius="10dp" />
+
+                </LinearLayout>
+
             </LinearLayout>
 
             <!-- ── Boutons MAJ (2 colonnes : Vérifier | Nettoyer) ──────────── -->

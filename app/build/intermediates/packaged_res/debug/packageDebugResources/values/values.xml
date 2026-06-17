@@ -187,6 +187,8 @@
     <string name="settings_theme_dark">Mode sombre</string>
     <string name="settings_theme_desc">Basculer entre le thème sombre et le thème clair</string>
     <string name="settings_theme_light">Mode clair</string>
+    <string name="settings_vehicle_power_btn">Éteindre</string>
+    <string name="settings_vehicle_power_desc">Éteindre le véhicule en gardant l\'écran allumé</string>
     <string name="shortcuts_action_adas">ADAS</string>
     <string name="shortcuts_action_aeb">Système Anticollision</string>
     <string name="shortcuts_action_apply_profile">Lancer un profil</string>
@@ -250,6 +252,10 @@
     <string name="update_release_notes_label">Notes de version</string>
     <string name="update_skip_btn">Ne plus me rappeler</string>
     <string name="update_up_to_date">✓  Application à jour</string>
+    <string name="vehicle_power_dialog_cancel">Annuler</string>
+    <string name="vehicle_power_dialog_confirm">Éteindre</string>
+    <string name="vehicle_power_dialog_msg">Le véhicule va être mis hors tension ; l\'écran reste actif. Disponible uniquement à l\'arrêt, levier en position P.</string>
+    <string name="vehicle_power_dialog_title">Éteindre le véhicule</string>
     <style name="Theme.MG4Control" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/accent_normal</item>
         <item name="colorPrimaryVariant">@color/bg_card</item>

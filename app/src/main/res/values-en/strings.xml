@@ -238,6 +238,12 @@
     <string name="settings_auto_apply">Additional settings</string>
     <string name="settings_auto_apply_desc">The default profile is applied automatically at launch</string>
     <string name="settings_auto_update_desc">Automatically check for updates at launch</string>
+    <string name="settings_vehicle_power_desc">Power off the vehicle while keeping the screen on</string>
+    <string name="settings_vehicle_power_btn">Power off</string>
+    <string name="vehicle_power_dialog_title">Power off vehicle</string>
+    <string name="vehicle_power_dialog_msg">The vehicle will be powered off; the screen stays on. Only available when stopped, with the gear in P.</string>
+    <string name="vehicle_power_dialog_confirm">Power off</string>
+    <string name="vehicle_power_dialog_cancel">Cancel</string>
     <string name="settings_theme">Appearance</string>
     <string name="settings_theme_auto">Auto</string>
     <string name="settings_theme_dark">Dark mode</string>

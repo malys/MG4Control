@@ -238,6 +238,12 @@
     <string name="settings_auto_apply">Definições adicionais</string>
     <string name="settings_auto_apply_desc">O perfil padrão é aplicado automaticamente no arranque</string>
     <string name="settings_auto_update_desc">Verificar atualizações automaticamente no arranque</string>
+    <string name="settings_vehicle_power_desc">Desligar o veículo mantendo o ecrã ligado</string>
+    <string name="settings_vehicle_power_btn">Desligar</string>
+    <string name="vehicle_power_dialog_title">Desligar o veículo</string>
+    <string name="vehicle_power_dialog_msg">O veículo será desligado; o ecrã permanece ativo. Disponível apenas parado, com a alavanca em P.</string>
+    <string name="vehicle_power_dialog_confirm">Desligar</string>
+    <string name="vehicle_power_dialog_cancel">Cancelar</string>
     <string name="settings_theme">Aparência</string>
     <string name="settings_theme_auto">Auto</string>
     <string name="settings_theme_dark">Modo escuro</string>
