@@ -1,0 +1,112 @@
+name: Security
+
+# Contrôles de sécurité avant tout déploiement d'APK sur véhicule.
+# Bloquant : permission-drift + secrets. Informatif (SARIF) : SAST + dépendances.
+on:
+  push:
+    branches: [main, "feat/**", "feature/**"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write   # upload SARIF -> onglet Security
+
+jobs:
+  permission-gate:
+    name: Permission-drift gate (bloquant)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Vérifier les permissions du manifeste
+        run: bash .github/security/check-permissions.sh
+
+  secrets:
+    name: Secret scan (bloquant)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  sast:
+    name: SAST mobile (mobsfscan + semgrep)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+
+      - name: Run scanners (SARIF, non bloquant)
+        run: |
+          # Garantit un SARIF valide même si un scanner échoue -> l'upload ne casse jamais.
+          empty_sarif() {
+            printf '%s' '{"version":"2.1.0","$schema":"https://json.schemastore.org/sarif-2.1.0.json","runs":[{"tool":{"driver":{"name":"'"$1"'","rules":[]}},"results":[]}]}' > "$2"
+          }
+          pip install mobsfscan semgrep
+          mobsfscan --sarif -o mobsfscan.sarif . || true
+          [ -s mobsfscan.sarif ] || empty_sarif mobsfscan mobsfscan.sarif
+          semgrep --config p/kotlin --config p/security-audit --sarif -o semgrep.sarif . || true
+          [ -s semgrep.sarif ] || empty_sarif semgrep semgrep.sarif
+
+      - name: Upload mobsfscan SARIF
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: mobsfscan.sarif
+          category: mobsfscan
+
+      - name: Upload Semgrep SARIF
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: semgrep.sarif
+          category: semgrep
+
+      - name: Rapport sécurité (artefact)
+        if: always()
+        run: |
+          {
+            echo "# Rapport sécurité MG4Control"
+            echo "_$(date -u)_"
+            echo
+            echo "## mobsfscan"
+            python -c "import json;d=json.load(open('mobsfscan.sarif'));print('findings:',sum(len(r.get('results',[])) for r in d.get('runs',[])))" 2>/dev/null || echo "n/a"
+            echo "## semgrep"
+            python -c "import json;d=json.load(open('semgrep.sarif'));print('findings:',sum(len(r.get('results',[])) for r in d.get('runs',[])))" 2>/dev/null || echo "n/a"
+          } > security-report.md
+          cat security-report.md
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-report
+          path: |
+            security-report.md
+            *.sarif
+
+  dependencies:
+    name: Dependency scan (OWASP)
+    runs-on: ubuntu-latest
+    continue-on-error: true   # informatif
+    env:
+      NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      # Ne tourne que si une clé NVD est configurée — sinon l'API NVD est trop
+      # rate-limitée pour être utile, et l'option --nvdApiKey vide casse l'outil.
+      - name: OWASP Dependency-Check
+        if: ${{ env.NVD_API_KEY != '' }}
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: MG4Control
+          path: "."
+          format: "SARIF"
+          args: --nvdApiKey ${{ env.NVD_API_KEY }}
+      - name: Upload dependency SARIF
+        if: ${{ env.NVD_API_KEY != '' }}
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: reports/dependency-check-report.sarif
+          category: dependency-check
