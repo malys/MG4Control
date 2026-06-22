@@ -12,6 +12,9 @@ import com.mg4.control.debug.AppLogger
 import com.mg4.control.model.DriveMode
 import com.mg4.control.model.RegenLevel
 import com.mg4.control.util.FirmwareInfo
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /**
  * Hardware abstraction layer for MG4 vehicle control.
@@ -2821,4 +2824,122 @@ object MG4Hardware {
 
         return sb.toString()
     }
+
+    // ── Contrôle audio (CarAdapterService vendor SAIC) — porté depuis 2.7.0 ──
+
+    private const val DESCRIPTOR_CARADAPTER = "com.saicmotor.carapi.ICarAdapterService"
+    private const val TX_QUERY_AUDIO_CLIENT = 1
+    private const val HELPER_AUDIO_CODE     = 10
+
+    private const val AUDIO_SET_FADER_FRONT   = 12
+    private const val AUDIO_SET_BALANCE_RIGHT = 13
+    private const val AUDIO_SET_LOUDNESS      = 15
+    private const val AUDIO_GET_LOUDNESS      = 16
+    private const val AUDIO_SET_SPEED_VOL     = 17
+    private const val AUDIO_GET_SPEED_VOL     = 18
+    private const val AUDIO_SET_3D_EFFECT     = 26
+    private const val AUDIO_GET_3D_EFFECT     = 27
+    private const val AUDIO_SET_SOUND_FIELD   = 30
+    private const val AUDIO_GET_BALANCE       = 31
+    private const val AUDIO_GET_FADER         = 32
+    private const val AUDIO_SET_BOSE_SOUND    = 36
+    private const val AUDIO_GET_BOSE_SOUND    = 37
+    private const val AUDIO_SET_TONE          = 40
+    private const val AUDIO_GET_TONE          = 41
+
+    @Volatile private var sCarAdapterBinder: IBinder? = null
+    @Volatile private var sAudioHelper: IBinder? = null
+    @Volatile private var sAudioDescriptor: String = ""
+    @Volatile private var sAudioServiceConn: android.content.ServiceConnection? = null
+
+    val isAudioAvailable: Boolean get() = sAudioHelper?.isBinderAlive == true
+
+    fun initAudio(context: Context) {
+        if (sAudioHelper?.isBinderAlive == true) return
+        if (sAudioServiceConn != null) return
+        val intent = android.content.Intent().apply {
+            setClassName("com.saicmotor.caradapter", "com.saicmotor.caradapter.service.CarAdapterService")
+        }
+        val conn = object : android.content.ServiceConnection {
+            override fun onServiceConnected(name: android.content.ComponentName?, binder: IBinder?) {
+                sCarAdapterBinder = binder
+                AppLogger.i(TAG, "  Audio: CarAdapterService connecté ✓")
+                CoroutineScope(Dispatchers.IO).launch { tryGetAudioHelper() }
+            }
+            override fun onServiceDisconnected(name: android.content.ComponentName?) {
+                sCarAdapterBinder = null; sAudioHelper = null
+            }
+        }
+        sAudioServiceConn = conn
+        try {
+            val bound = context.applicationContext.bindService(intent, conn, android.content.Context.BIND_AUTO_CREATE)
+            if (!bound) {
+                sAudioServiceConn = null
+                Handler(Looper.getMainLooper()).postDelayed({ if (sAudioHelper == null) initAudio(context.applicationContext) }, 10_000L)
+            }
+        } catch (e: Exception) { sAudioServiceConn = null; AppLogger.w(TAG, "  Audio: bindService error: ${e.message}") }
+    }
+
+    private fun tryGetAudioHelper() {
+        val svc = sCarAdapterBinder ?: return
+        val data = Parcel.obtain(); val reply = Parcel.obtain()
+        try {
+            data.writeInterfaceToken(DESCRIPTOR_CARADAPTER)
+            data.writeInt(HELPER_AUDIO_CODE)
+            if (svc.transact(TX_QUERY_AUDIO_CLIENT, data, reply, 0)) {
+                reply.readException()
+                val helper = reply.readStrongBinder()
+                if (helper != null && helper.isBinderAlive) {
+                    sAudioHelper = helper; sAudioDescriptor = helper.interfaceDescriptor ?: ""
+                    AppLogger.i(TAG, "  Audio: helper OK descriptor='$sAudioDescriptor'")
+                } else {
+                    Handler(Looper.getMainLooper()).postDelayed({ CoroutineScope(Dispatchers.IO).launch { tryGetAudioHelper() } }, 5_000)
+                }
+            }
+        } finally { data.recycle(); reply.recycle() }
+    }
+
+    private fun audioGet(txCode: Int): Int {
+        val h = sAudioHelper ?: return -1
+        if (!h.isBinderAlive) { sAudioHelper = null; return -1 }
+        val data = Parcel.obtain(); val reply = Parcel.obtain()
+        return try {
+            data.writeInterfaceToken(sAudioDescriptor)
+            if (h.transact(txCode, data, reply, 0)) { reply.readException(); reply.readInt() } else -1
+        } catch (_: Exception) { -1 } finally { data.recycle(); reply.recycle() }
+    }
+
+    private fun audioSet(txCode: Int, value: Int): Boolean {
+        val h = sAudioHelper ?: return false
+        if (!h.isBinderAlive) { sAudioHelper = null; return false }
+        val data = Parcel.obtain(); val reply = Parcel.obtain()
+        return try {
+            data.writeInterfaceToken(sAudioDescriptor)
+            data.writeInt(value)
+            h.transact(txCode, data, reply, 0).also { if (it) reply.readException() }
+        } catch (_: Exception) { false } finally { data.recycle(); reply.recycle() }
+    }
+
+    private const val AUDIO_TYPE_MIN  = 0
+    private const val AUDIO_TYPE_MAX  = 3
+    private const val AUDIO_LEVEL_MIN = -9
+    private const val AUDIO_LEVEL_MAX =  9
+
+    fun getBoseSoundType(): Int              = audioGet(AUDIO_GET_BOSE_SOUND)
+    fun setBoseSoundType(t: Int): Boolean    = audioSet(AUDIO_SET_BOSE_SOUND, t.coerceIn(AUDIO_TYPE_MIN, AUDIO_TYPE_MAX))
+    fun getAudioBalance(): Int               = audioGet(AUDIO_GET_BALANCE)
+    fun setAudioBalance(v: Int): Boolean     = audioSet(AUDIO_SET_BALANCE_RIGHT, v.coerceIn(AUDIO_LEVEL_MIN, AUDIO_LEVEL_MAX))
+    fun getAudioFader(): Int                 = audioGet(AUDIO_GET_FADER)
+    fun setAudioFader(v: Int): Boolean       = audioSet(AUDIO_SET_FADER_FRONT, v.coerceIn(AUDIO_LEVEL_MIN, AUDIO_LEVEL_MAX))
+    fun getLoudnessState(): Int              = audioGet(AUDIO_GET_LOUDNESS)
+    fun setLoudnessState(s: Int): Boolean    = audioSet(AUDIO_SET_LOUDNESS, s)
+    fun getSpeedVolumeLevel(): Int           = audioGet(AUDIO_GET_SPEED_VOL)
+    fun setSpeedVolumeLevel(l: Int): Boolean = audioSet(AUDIO_SET_SPEED_VOL, l.coerceIn(AUDIO_TYPE_MIN, AUDIO_TYPE_MAX))
+    fun getSoundFieldType(): Int             = -1
+    fun setSoundFieldType(t: Int): Boolean   = audioSet(AUDIO_SET_SOUND_FIELD, t)
+    fun get3dEffectType(): Int               = audioGet(AUDIO_GET_3D_EFFECT)
+    fun set3dEffectType(t: Int): Boolean     = audioSet(AUDIO_SET_3D_EFFECT, t.coerceIn(AUDIO_TYPE_MIN, AUDIO_TYPE_MAX))
+    fun getToneControl(): Int                = audioGet(AUDIO_GET_TONE)
+    fun setToneControl(v: Int): Boolean      = audioSet(AUDIO_SET_TONE, v.coerceIn(AUDIO_LEVEL_MIN, AUDIO_LEVEL_MAX))
+
 }

@@ -29,4 +29,9 @@
         android:name="com.mg4.control.ui.ShortcutsFragment"
         android:label="@string/nav_shortcuts" />
 
+    <fragment
+        android:id="@+id/audioFragment"
+        android:name="com.mg4.control.ui.AudioFragment"
+        android:label="@string/nav_audio" />
+
 </navigation>
