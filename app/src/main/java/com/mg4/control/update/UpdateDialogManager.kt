@@ -20,9 +20,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.button.MaterialButton
-import com.google.zxing.BarcodeFormat
-import com.google.zxing.MultiFormatWriter
 import com.mg4.control.R
+import com.mg4.control.util.QrCode
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -113,7 +112,7 @@ object UpdateDialogManager {
         }
         btnClose.setOnClickListener { dialog.dismiss() }
 
-        generateQrBitmap(GITHUB_RELEASES_URL, 152)?.let { ivQr.setImageBitmap(it) }
+        QrCode.generate(GITHUB_RELEASES_URL, 152)?.let { ivQr.setImageBitmap(it) }
         tvGhLink.text = GITHUB_RELEASES_URL
         tvGhLink.paintFlags = tvGhLink.paintFlags or Paint.UNDERLINE_TEXT_FLAG
 
@@ -262,12 +261,4 @@ object UpdateDialogManager {
         return caps.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
     }
 
-    private fun generateQrBitmap(url: String, sizePx: Int): Bitmap? = runCatching {
-        val bitMatrix = MultiFormatWriter().encode(url, BarcodeFormat.QR_CODE, sizePx, sizePx)
-        val bmp = Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.RGB_565)
-        for (x in 0 until sizePx) for (y in 0 until sizePx) {
-            bmp.setPixel(x, y, if (bitMatrix[x, y]) Color.BLACK else Color.WHITE)
-        }
-        bmp
-    }.getOrNull()
 }

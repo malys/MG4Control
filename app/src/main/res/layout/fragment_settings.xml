@@ -378,6 +378,7 @@
                     android:background="@color/dash_border" />
 
                 <LinearLayout
+                    android:id="@+id/row_auto_update"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -444,6 +445,7 @@
 
             <!-- ── Boutons MAJ (2 colonnes : Vérifier | Nettoyer) ──────────── -->
             <LinearLayout
+                android:id="@+id/row_update_buttons"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
                 android:orientation="horizontal"

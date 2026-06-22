@@ -17,10 +17,6 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
 
-    <!-- Mise à jour automatique -->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INSTALL_PACKAGES" />
 
     <application
         android:name=".MG4App"
@@ -45,26 +41,6 @@
             android:name=".service.MG4ControlService"
             android:exported="false"
             android:directBootAware="true" />
-
-        <!-- FileProvider pour ouvrir l'APK dans le gestionnaire de fichiers AAOS -->
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="com.mg4.control.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_provider_paths" />
-        </provider>
-
-        <!-- Récepteur résultat d'installation silencieuse -->
-        <receiver
-            android:name=".update.InstallReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.mg4.control.ACTION_INSTALL_STATUS" />
-            </intent-filter>
-        </receiver>
 
         <receiver
             android:name=".receiver.BootReceiver"
