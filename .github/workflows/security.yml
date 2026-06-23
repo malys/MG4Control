@@ -1,7 +1,7 @@
 name: Security
 
-# Contrôles de sécurité avant tout déploiement d'APK sur véhicule.
-# Bloquant : permission-drift + secrets. Informatif (SARIF) : SAST + dépendances.
+# Security checks before any APK is deployed to a vehicle.
+# Blocking: permission-drift + secrets. Informational (SARIF): SAST + dependencies.
 on:
   push:
     branches: [main, "feat/**", "feature/**"]
@@ -10,19 +10,19 @@ on:
 
 permissions:
   contents: read
-  security-events: write   # upload SARIF -> onglet Security
+  security-events: write   # upload SARIF -> Security tab
 
 jobs:
   permission-gate:
-    name: Permission-drift gate (bloquant)
+    name: Permission-drift gate (blocking)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Vérifier les permissions du manifeste
+      - name: Check manifest permissions
         run: bash .github/security/check-permissions.sh
 
   secrets:
-    name: Secret scan (bloquant)
+    name: Secret scan (blocking)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -39,9 +39,9 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
 
-      - name: Run scanners (SARIF, non bloquant)
+      - name: Run scanners (SARIF, non-blocking)
         run: |
-          # Garantit un SARIF valide même si un scanner échoue -> l'upload ne casse jamais.
+          # Always produce a valid SARIF even if a scanner fails -> the upload never breaks.
           empty_sarif() {
             printf '%s' '{"version":"2.1.0","$schema":"https://json.schemastore.org/sarif-2.1.0.json","runs":[{"tool":{"driver":{"name":"'"$1"'","rules":[]}},"results":[]}]}' > "$2"
           }
@@ -65,11 +65,11 @@ jobs:
           sarif_file: semgrep.sarif
           category: semgrep
 
-      - name: Rapport sécurité (artefact)
+      - name: Security report (artifact)
         if: always()
         run: |
           {
-            echo "# Rapport sécurité MG4Control"
+            echo "# MG4Control security report"
             echo "_$(date -u)_"
             echo
             echo "## mobsfscan"
@@ -89,13 +89,13 @@ jobs:
   dependencies:
     name: Dependency scan (OWASP)
     runs-on: ubuntu-latest
-    continue-on-error: true   # informatif
+    continue-on-error: true   # informational
     env:
       NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
     steps:
       - uses: actions/checkout@v4
-      # Ne tourne que si une clé NVD est configurée — sinon l'API NVD est trop
-      # rate-limitée pour être utile, et l'option --nvdApiKey vide casse l'outil.
+      # Runs only when an NVD API key is configured — otherwise the NVD API is too
+      # rate-limited to be useful, and an empty --nvdApiKey breaks the tool.
       - name: OWASP Dependency-Check
         if: ${{ env.NVD_API_KEY != '' }}
         uses: dependency-check/Dependency-Check_Action@main

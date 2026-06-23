@@ -1,8 +1,8 @@
-# Permissions autorisées pour MG4Control.
-# Toute uses-permission dans un manifeste NON listée ici fait ÉCHOUER la CI.
-# Raison : l'app tourne sur un véhicule en mouvement — toute nouvelle permission
-# (surtout réseau ou écriture véhicule) doit être revue et ajoutée ici explicitement.
-# Une ligne = un nom de permission complet. '#' = commentaire.
+# Allowed permissions for MG4Control.
+# Any uses-permission in a manifest NOT listed here FAILS the CI.
+# Why: the app runs on a moving vehicle — any new permission
+# (especially network or vehicle-write) must be reviewed and added here explicitly.
+# One line = one full permission name. '#' = comment.
 
 android.permission.SYSTEM_ALERT_WINDOW
 android.permission.FOREGROUND_SERVICE
@@ -15,7 +15,7 @@ android.car.permission.CAR_ENERGY
 android.car.permission.CAR_POWERTRAIN
 android.car.permission.CAR_VENDOR_EXTENSION
 android.car.permission.CONTROL_CAR_CLIMATE
-# --- réseau / auto-update (variante online uniquement) ---
+# --- network / auto-update (online variant only) ---
 android.permission.INTERNET
 android.permission.ACCESS_NETWORK_STATE
 android.permission.INSTALL_PACKAGES
