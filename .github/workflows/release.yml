@@ -59,12 +59,15 @@ jobs:
           path: dist/*.apk
 
       - name: Publish to GitHub Release
-        if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
+          # Tag push -> release stable sur le tag. Run manuel -> prerelease "ci-<run>".
+          tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || format('ci-{0}', github.run_number) }}
+          name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || format('CI build {0}', github.run_number) }}
+          prerelease: ${{ !startsWith(github.ref, 'refs/tags/') }}
           files: dist/*.apk
           body: |
-            ## MG4Control ${{ github.ref_name }}
+            ## MG4Control ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || format('ci-{0}', github.run_number) }}
 
             Deux variantes sont fournies — **choisissez-en une** :
 
