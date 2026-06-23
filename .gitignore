@@ -9,6 +9,12 @@ local.properties
 # mokup
 mockup/
 
+# Analyse interne (non commitée) — docs de travail générés
+analysis/DIFF_2.7.0.md
+analysis/DIFF_2.7.0.full.diff
+analysis/SOH_feasibility.md
+analysis/FEATURE_BACKLOG.md
+
 # Claude Code (config locale IDE)
 .claude/
 

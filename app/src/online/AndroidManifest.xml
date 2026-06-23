@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Online flavor overlay.
+  Seul ce flavor déclare les capacités réseau et l'auto-update.
+  Le manifeste de base (donc le flavor offline) n'a AUCUN de ces droits.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INSTALL_PACKAGES" />
+
+    <application>
+
+        <!-- FileProvider pour ouvrir l'APK téléchargé (auto-update, online uniquement) -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.mg4.control.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_provider_paths" />
+        </provider>
+
+        <!-- Récepteur résultat d'installation silencieuse (auto-update) -->
+        <receiver
+            android:name=".update.InstallReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.mg4.control.ACTION_INSTALL_STATUS" />
+            </intent-filter>
+        </receiver>
+
+    </application>
+</manifest>

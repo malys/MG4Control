@@ -96,6 +96,7 @@ class MainActivity : AppCompatActivity() {
     // ── Vérification de mise à jour au démarrage ──────────────────────────────
 
     private fun checkForUpdates() {
+        if (BuildConfig.OFFLINE) return  // build offline : aucune vérif réseau
         val prefs = getSharedPreferences("mg4_settings", android.content.Context.MODE_PRIVATE)
         if (!prefs.getBoolean("auto_check_update", true)) return
 
