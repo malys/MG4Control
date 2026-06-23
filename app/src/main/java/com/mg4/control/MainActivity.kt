@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.button.MaterialButton
+import com.mg4.control.hardware.MG4Hardware
 import com.mg4.control.service.MG4ControlService
 import com.mg4.control.update.UpdateChecker
 import com.mg4.control.update.UpdateDialogManager
@@ -49,6 +50,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         startForegroundService(Intent(this, MG4ControlService::class.java))
+        MG4Hardware.initAudio(applicationContext)  // connecte le helper audio vendor
 
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
@@ -243,9 +245,17 @@ class MainActivity : AppCompatActivity() {
     // ── Boutons de navigation dans la top-bar ─────────────────────────────────
 
     private fun setupNavButtons() {
+        val btnAudio     = findViewById<MaterialButton>(R.id.btn_nav_audio)
         val btnShortcuts = findViewById<MaterialButton>(R.id.btn_nav_shortcuts)
         val btnProfiles  = findViewById<MaterialButton>(R.id.btn_nav_profiles)
         val btnSettings  = findViewById<MaterialButton>(R.id.btn_nav_settings)
+
+        btnAudio.setOnClickListener {
+            when (navController.currentDestination?.id) {
+                R.id.audioFragment -> navController.popBackStack(R.id.dashboardFragment, false)
+                else               -> navController.navigate(R.id.audioFragment)
+            }
+        }
 
         btnShortcuts.setOnClickListener {
             when (navController.currentDestination?.id) {
@@ -271,6 +281,9 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             val accent   = getColor(R.color.dash_accent_dim)
             val inactive = getColor(R.color.dash_btn)
+            btnAudio.backgroundTintList = android.content.res.ColorStateList.valueOf(
+                if (destination.id == R.id.audioFragment) accent else inactive
+            )
             btnShortcuts.backgroundTintList = android.content.res.ColorStateList.valueOf(
                 if (destination.id == R.id.shortcutsFragment) accent else inactive
             )

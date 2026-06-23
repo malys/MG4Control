@@ -269,4 +269,5 @@
     <string name="bt_pick_device_title">Appareil Bluetooth</string>
     <string name="bt_profile_applied">Profil appliqué via Bluetooth : %s</string>
     <string name="bt_no_paired_devices">Aucun appareil associé</string>
+    <string name="nav_audio">Audio</string>
 </resources>
