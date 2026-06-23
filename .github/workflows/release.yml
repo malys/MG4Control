@@ -14,6 +14,8 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      MG4_KEYSTORE_BASE64: ${{ secrets.MG4_KEYSTORE_BASE64 }}
     steps:
       - uses: actions/checkout@v4
 
@@ -26,9 +28,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Decode platform keystore
-        if: ${{ secrets.MG4_KEYSTORE_BASE64 != '' }}
-        env:
-          MG4_KEYSTORE_BASE64: ${{ secrets.MG4_KEYSTORE_BASE64 }}
+        if: ${{ env.MG4_KEYSTORE_BASE64 != '' }}
         run: |
           echo "$MG4_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/platform.keystore"
           echo "MG4_KEYSTORE=$RUNNER_TEMP/platform.keystore" >> "$GITHUB_ENV"
