@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 # Permission-drift gate.
-# Échoue si un manifeste déclare une uses-permission absente de l'allowlist.
-# Sécurité : empêche l'ajout silencieux d'une permission (réseau / véhicule)
-# sur une app qui tourne sur un véhicule en mouvement.
+# Fails if a manifest declares a uses-permission not present in the allowlist.
+# Security: prevents silently adding a permission (network / vehicle)
+# to an app that runs on a moving vehicle.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 ALLOWLIST="$ROOT/.github/security/permission-allowlist.txt"
 
-# Permissions autorisées (nettoyées des commentaires/vides)
+# Allowed permissions (comments/blank lines stripped)
 mapfile -t allowed < <(grep -vE '^\s*(#|$)' "$ALLOWLIST" | tr -d '\r' | sed 's/[[:space:]]*$//')
 
 declare -A allow_set=()
@@ -16,11 +16,11 @@ for p in "${allowed[@]}"; do allow_set["$p"]=1; done
 
 fail=0
 while IFS= read -r -d '' manifest; do
-  # Extrait les noms de permission déclarés
+  # Extract the declared permission names
   while read -r perm; do
     [ -z "$perm" ] && continue
     if [ -z "${allow_set[$perm]:-}" ]; then
-      echo "::error file=$manifest::Permission non autorisée: $perm (ajoutez-la à permission-allowlist.txt après revue sécurité)"
+      echo "::error file=$manifest::Disallowed permission: $perm (add it to permission-allowlist.txt after security review)"
       fail=1
     fi
   done < <(grep -oE 'android:name="[^"]+"' "$manifest" \
@@ -30,7 +30,7 @@ while IFS= read -r -d '' manifest; do
 done < <(find "$ROOT/app/src" -name AndroidManifest.xml -print0)
 
 if [ "$fail" -ne 0 ]; then
-  echo "❌ Permission-drift gate: au moins une permission non autorisée."
+  echo "❌ Permission-drift gate: at least one disallowed permission."
   exit 1
 fi
-echo "✅ Permission-drift gate: toutes les permissions sont autorisées."
+echo "✅ Permission-drift gate: all permissions are allowed."
